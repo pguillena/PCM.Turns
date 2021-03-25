@@ -1,0 +1,618 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        LoadComboCentroAtencion();
+        /*$('.myselect2').select2();*/
+        CargarComboCentroAtencion();
+        CargarComboZona();
+        Clasificador.LoadGrilla(1);
+    });
+
+    Clasificador = {
+        reset: function () {
+            $("#txtZona").val("");
+            $("#IdCentroAtencion").empty();
+            $("#IdCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+            CargarComboCentroAtencion();
+            Clasificador.LoadGrilla(1);
+        },
+        editar: function (identificador) {
+            var dato = {
+                CodeZone: identificador
+            };
+            if (identificador != 0) { //editar una entidad
+                $("#IdZone").val(identificador);
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44314/api/CurrentRowZone",
+                    url: "@Model.Parametros.WebApiUrl.ZoneService/CurrentRowZone",
+                    data: dato,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $('#myModal').show();
+                            $('#idZona').val(data[0].zoneName);
+                            $('#idCentroAtencion').val(data[0].codeAttentionCenter);
+                            $('#idCentroAtencion').change();
+                        }
+                    }
+                });
+            } else {//registra nueva zona
+                LoadComboCentroAtencion();
+                $("#IdZone").val(0);
+                $('#idZona').val("");
+            }
+        },
+
+         agregar: function (identificador,codate) {
+            var dato = {
+                CodeZone: identificador
+             };
+             if (identificador != 0) { //editar una entidad
+                 $("#IdZone").val(identificador);
+                 $("#IdCentroA").val(codate);
+                 LoadComboEntidad();
+                 //$("#idCentroAtencionp").attr('disabled', true);
+                 //limpiarGrilla();
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44314/api/CurrentRowZone",
+                    url: "@Model.Parametros.WebApiUrl.ZoneService/CurrentRowZone",
+                    data: dato,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $('#myModalpa').show();
+                            $('#TxtZone').text(data[0].zoneName);
+                            $('#TxtCA').text(data[0].zoneDescription);
+                            CargarRow({ CodeZone: identificador });
+                            /*$('#idCentroAtencion').val(data[0].codeAttentionCenter);
+                            $('#idCentroAtencion').change();*/
+                            j = 1;
+              
+                        }
+                    }
+                });
+
+
+            } else {//registra nueva zona
+                LoadComboCentroAtencion();
+                $("#IdZone").val(0);
+                $('#idZona').val("");
+            }
+        },
+
+
+        delete: function (identificador) {
+            fnGlobales.msg.confirm("Eliminar el registro", function () {
+                $.ajax({
+                    //url: "https://localhost:44314/api/DeleteZone",
+                    url: "@Model.Parametros.WebApiUrl.ZoneService/DeleteZone",
+                    data: JSON.stringify({ CodeZone: identificador }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.codeZone) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.LoadGrilla(1);
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        },
+
+        LoadGrilla: function (page) {
+            table = $('#tblZona');
+            var dato = {
+                strField: 'CodeZone',
+                strOrder: 'DESC',
+                strPagDesde: page,//(table.data('pagesize') * (page) - table.data('pagesize') + 1),
+                strPagHasta: table.data('pagesize'), // (table.data('pagesize') * (page)):
+                strtxtZona: $("#txtZona").val() == null ? -1 : $("#txtZona").val(),
+                strComboActivo: $("#miselect").val(),
+                strCodeAttentionCenter: $("#IdCentroAtencion").val() == null ? -1 : $("#IdCentroAtencion").val()
+            };
+            $.ajax({
+                //url: "https://localhost:44314/api/Zone",
+                url: "@Model.Parametros.WebApiUrl.ZoneService/Zone",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                //beforeSend: function () {
+                //    fnGlobales.wait.appendOverlay('#boxLista');
+                //},
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tblZona tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tblZona');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeZone);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.zoneName);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.zoneDescription);
+                rows += '<td style="width:120px;">';
+                rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeZone);
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonAgregar" class="agregar edit-modal btn  botonEditar" onclick="Clasificador.agregar('  +  r.codeZone +',' + r.codeAttentionCenter + ')" data-toggle="modal" data-target="#myModalpa"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeZone);
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.delete({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeZone);
+                rows += '</div>';
+                rows += '</td>';
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        }
+    };
+    function limpiarGrilla() {
+            for (var i = 0; i < 10000; i++) {
+                $("#row" + i).remove();
+            }
+    }
+
+    function CargarRow(datos) {
+        $.ajax({
+            //url: "https://localhost:44393/api/CurrentAttentionCenterEntity",
+            url: "@Model.Parametros.WebApiUrl.EntityService/ListaEntityZone",
+            type: "GET",
+            data: datos,
+            dataType: "json",
+            success: function (data) {
+                if (data != null) {
+                    limpiarGrilla();
+                    if (data.length > 0) {
+                        for (var j = 0; j < data.length; j++) {
+                            var fila = '<tr id="row' + j + '"><td style="display:none">' + data[j].codeEntity + '</td><td>' + data[j].description + '</td><td style="text-align:center"><button type="button" name="remove" id="' + j + '" <span class="fa fa-trash btn_remove"></span><span class="hidden-xs"> </span></button></td></tr>'; //esto seria lo que contendria la fila
+                            ///*fin*/
+                            $('#tblAgregacion tr:first').after(fila);
+                            $("#adicionados").text(""); //esta instruccion limpia el div adicioandos para que no se vayan acumulando
+                            var nFilas = $("#tblAgregacion tr").length;
+                            $("#adicionados").append(nFilas - 1);
+                        }
+                    }
+                }
+            },
+            error: function (data) {
+                fnGlobales.error.show('mensajes', data.responseText);
+            }
+        });
+    }
+
+    function Save() {
+        fnGlobales.msg.confirm("de guardar la información", function () {
+            var dato = {
+                ZoneName: $("#idZona").val(),
+                CodeAttentionCenter: parseInt($("#idCentroAtencion").val()),
+                CodeZone: parseInt($("#IdZone").val())
+            }
+            $.ajax({
+                //url: "https://localhost:44314/api/SaveZone",
+                url: "@Model.Parametros.WebApiUrl.ZoneService/SaveZone",
+                data: JSON.stringify(dato),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    switch (resultado.codeZone) {
+                        case 0:
+                            fnGlobales.msg.existe("Ya existe registrada la Zona", function () { });
+                            break;
+                        case -1:
+                            fnGlobales.msg.error("Hubo un error al realizar la operación", function () { });
+                            break;
+                        default:
+                            Clasificador.LoadGrilla(1);
+                            fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                            break;
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+            });
+        });
+    }
+
+
+    function SaveEntidad() {
+            if (document.getElementById('tblAgregacion').rows.length >= 0) {
+                fnGlobales.msg.confirm("de guardar la información", function () {
+                    var seleccion = [];
+                    for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+                        var pk = parseInt(document.getElementById('tblAgregacion').rows[i].cells[0].innerHTML);
+                        seleccion.push(pk);
+                    }
+                    var dato = {
+                        CodeZone: parseInt($("#IdZone").val()),
+                        Lista: seleccion
+                    }
+                    $.ajax({
+                        //url: "https://localhost:44393/api/SaveAttentionCenterxEntity",
+                        url: "@Model.Parametros.WebApiUrl.ZoneService/SaveEntityxZone",
+                        data: JSON.stringify(dato),
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (resultado) {
+                            
+                                                 Clasificador.LoadGrilla(1);
+                                                   fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                        },
+                        failure: function (data) {
+                            alert(data.responseText);
+                        }, //End of AJAX failure function
+                        error: function (data) {
+                            alert(data.responseText);
+                        } //End of AJAX error function
+                    });
+                });
+            } else {
+                fnGlobales.msg.error("Debe seleccionar la entidad", function () {
+
+                });
+            }
+    }
+
+
+    function LoadComboCentroAtencion() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+            url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#idCentroAtencion").empty();
+                $("#idCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#idCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+  
+     $(document).on('click', '.btn_remove', function () {
+            var button_id = $(this).attr("id");
+            //cuando da click obtenemos el id del boton
+            $('#row' + button_id + '').remove(); //borra la fila
+            //limpia el para que vuelva a contar las filas de la tabla
+            $("#adicionados").text("");
+            var nFilas = $("#tblAgregacion tr").length;
+            $("#adicionados").append(nFilas - 1);
+
+     });
+
+       var j = 1;
+    function LoadComboEntidad() {
+        var dato = {
+            strCodeCentroAttention: $("#IdCentroA").val()
+        };
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+            url: "@Model.Parametros.WebApiUrl.EntityService/AutocompleteEntidadCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            data: dato,
+            dataType: "json",
+            success: function (data) {
+                $("#idEntidad").empty();
+                $("#idEntidad").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#idEntidad").append("<option value=" + data[i].codeEntity+ ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function CargarComboZona() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44314/api/AutocompleteZona",
+            url: "@Model.Parametros.WebApiUrl.ZoneService/AutocompleteZona",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //$("#idCentroAtencion").empty();
+                //$("#idCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                //for (var i = 0; i < data.length; i++) {
+                //    $("#idCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                //}
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+     function AgregarEntidad() {
+
+            if (parseInt($("#idEntidad").val()) != -1) {
+                var combo = document.getElementById("idEntidad");
+                var selected = combo.options[combo.selectedIndex].text;
+                var CodeService = parseInt($("#idEntidad").val());
+                var descriptionServicio = selected;
+
+                IdTabla = "CONTENIDO_TABLA";
+                for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+                    IdTabla = document.getElementById('tblAgregacion').rows[i].cells[0].innerHTML;
+                    if (parseInt(IdTabla) == CodeService) {
+                        fnGlobales.msg.error("Ya existe ..seleccione otro", function () {
+
+                        });
+                        return false
+                    }
+                }
+                //var fila = '<tr id="row' + j + '"><td style="text-align:center">' + j + '</td><td style="display:none">' + CodeService + '</td><td>' + descriptionServicio + '</td><td style="text-align:center"><button type="button" name="remove" id="' + j + '" <span class="fa fa-trash btn_remove"></span><span class="hidden-xs"> </span></button></td></tr>'; //esto seria lo que contendria la fila
+                var fila = '<tr id="row' + j + '"><td style="display:none">' + CodeService + '</td><td>' + descriptionServicio + '</td><td style="text-align:center"><button type="button" name="remove" id="' + j + '" class="editar edit-modal btn  btn_remove"><span class="fa fa-trash btn_remove"></span></button></td></tr>';
+
+                /*fin*/
+                $('#tblAgregacion tr:first').after(fila);
+                $("#adicionados").text(""); //esta instruccion limpia el div adicioandos para que no se vayan acumulando
+                var nFilas = $("#tblAgregacion tr").length;
+                $("#adicionados").append(nFilas - 1);
+                j = j + 1;
+
+            }
+            else {
+                fnGlobales.msg.error("Debe seleccionar una entidad", function () {
+                });
+            }
+        }
+
+
+    function CargarComboCentroAtencion() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+            url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#IdCentroAtencion").empty();
+                $("#IdCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#IdCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+
+</script>
+
+<div class="card mb-0">
+    <div class="card-header text-center bg-danger">
+        Búsqueda de Zona
+    </div>
+
+    <div class="card-body">
+        <div class="row m-2 border-card justify-content-center align-items-center">
+            <div class="col-md-1"><strong>Zona</strong></div>
+            <div class="col-md-3"><input class="form-control" id="txtZona" /></div>
+            <div class="col-md-1"><strong>Estado</strong></div>
+            <div class="col-md-2">
+                <select class="form-control" id="miselect">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+            <div class="col-md-2"><strong>Centro de Atención</strong></div>
+            <div class="col-md-3"><select class="myselect2 form-control" id="IdCentroAtencion"></select></div>
+        </div>
+
+        <div class="col-md-12 mt-4 d-flex justify-content-center mb-1">
+            <button type="button" class="btn btn-success mr-1" onclick="Clasificador.LoadGrilla(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+            <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+            <button type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal" onclick="Clasificador.editar(0)"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+        </div>
+        <div class="col-md-12 row m-0 p-0"><hr class="hr-videos mb-2" /></div>
+        <div id="IdZone"></div>
+        <div id="IdCentroA"></div>
+
+        <div class="row px-4 py-2">
+            <div class=table-responsive>
+                <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos mb-0" id="tblZona" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.LoadGrilla" data-paginator="paginator">
+                    <tbody></tbody>
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th class="align-middle" style="display:none">codeEntity</th>
+                            <th class="align-middle" style="text-align:center;width:10%">N°</th>
+                            <th class="align-middle" style="text-align:center;width:18%">Zona</th>
+                            <th class="align-middle" style="text-align:center;width:30%">Centro de Atención</th>
+                            <th class="align-content-center text-center" colspan="1" style="width:12%">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                                    <div style="font-size:16px; padding-left: 15px;"></div>
+                                    <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal " id="myModal">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Registro de Zona</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row col-md-12" style="padding-top:10px;">
+                    <div class="col-md-6">
+                        <label> Centro de Atención:</label>
+                    </div>
+                    @*<div class="col-md-18">*@
+                    <div class="col-md-2"><select class="myselect2 form-control" id="idCentroAtencion" name="idCentroAtencion" style="width:245px;"></select></div>
+                    @*<input style="width:275px" class="form-control" id="idZona" />*@
+                    @*</div>*@
+                </div>
+                <div class="row col-md-12">
+                    <div class="col-md-6">
+                        <label> Zona:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input style="width:245px" class="form-control" id="idZona" />
+                    </div>
+                </div>
+            </div>
+            @*<--informacion del cuerpo--/>*@
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Save()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal " id="myModalpa">
+    <div class="modal-dialog  modal-dialog-centered" style="max-width:800px">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Entidades x Zona</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row col-md-12" style="padding-top:10px;">
+                    <div class="col-md-4">
+                        <label> Centro de Atención:</label>
+                    </div>
+                    @*<div class="col-md-18">*@
+                <div class="col-md-5">
+                    <label id="TxtCA"></label>
+                </div>
+                <div class="col-md-3">
+
+
+                </div>
+                </div>
+                    <div class="row col-md-12">
+                        <div class="col-md-4">
+                            <label> Zona:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <label id="TxtZone"></label>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+
+
+
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-md-4">
+                            <label> Entidad:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <select class="myselect2 form-control" id="idEntidad" style="width:245px;"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-success" onclick="AgregarEntidad()"><i class="fas fa-search"></i>Agregar</button>
+
+                        </div>
+                        <div class="col-md-12">
+                            <div class=table-responsive>
+                                <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tblAgregacion">
+                                    <tbody></tbody>
+                                    <thead class="thead-dark ">
+                                        <tr>
+
+                                            <th class="align-middle" style="display:none" id="idsDeclarados">CodEntidad</th>
+                                            <th class="align-middle" style="text-align:center;width:68%">Entidad</th>
+                                            <th class="align-content-center text-center" colspan="1" style="width:12%">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                @*<--informacion del cuerpo--/>*@
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="SaveEntidad()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+

@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+<h1 class="titulo-aplicativo">¿En qué podemos ayudarte?</h1>
+<h2 class="titulo-bienvenida text-center">Bienvenido al Libro de Reclamaciones Virtual</h2>
+<h3 class="desc-bienvenida text-center">
+    Si deseas conocer mas sobre el proceso de gestion de reclamos o las preguntas frecuentes haz 
+    &nbsp;<button type="button" class="btn btn-danger btn-modal" data-toggle="modal" data-target="#myModal">
+  click aquí</button>
+</h3>
+<div class="botones-aplicativo">
+    <a href="../Claim/Register"><button class="btn-registro"><i class="fas fa-edit fa-2x"></i><br>Ingresa tu reclamo</button></a>
+    <a href="../Claim/Login"><button class="btn-consulta"><i class="fas fa-search fa-2x"></i><br>Conoce el estado de tu reclamo</button></a>
+    <a href="#"><button class="btn-consulta"><i class="fas fa-comments fa-2x"></i><br>Envianos tus consultas o solicitudes</button></a>
+</div>
+<div class="modal" id="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" id="cabecera1">
+                <h4 class="modal-title">Libro de Reclamaciones Virtual</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body" id="accordion1">
+                <button class="btn btn-danger w-100 mb-1" data-toggle="collapse" data-target="#info-proceso-reclamo" aria-expanded="true" aria-controls="info-proceso-reclamo">
+                    <i class="fas fa-info-circle float-left"></i>Informacion sobre el proceso de reclamo
+                </button>
+
+                <div id="info-proceso-reclamo" class="collapse info-reclamo" data-parent="#accordion1" aria-labelledby="cabecera1">
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                </div>
+                
+                <button class="btn btn-danger w-100" data-toggle="collapse" data-target="#preguntas-frecuentes" aria-expanded="true" aria-controls="preguntas-frecuentes"><i class="fas fa-question-circle float-left"></i> Preguntas frecuentes</button>
+                
+                <div id="preguntas-frecuentes" class="collapse preguntas-frecuentes" data-parent="#accordion1" aria-labelledby="cabecera1">
+                    <span class="question">1. ¿Lorem Ipsum is simply dummy text of the printing and typesetting industry.?</span>
+                    <p> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                    <span class="question">2. ¿Lorem Ipsum is simply dummy text of the printing and typesetting industry.?</span>
+                    <p> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remainin</p>
+                    <span class="question">3. ¿Lorem Ipsum is simply dummy text of the printing and typesetting industry.?</span>
+                    <p> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remainin</p>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+

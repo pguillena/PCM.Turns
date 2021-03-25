@@ -1,0 +1,339 @@
+﻿@model Turns.Web.Models.ParameterModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+<link href="~/css/Modal.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        /*AutoCompletePeople();*/
+        if (sessionStorage.getItem("SessionRoles") == null) {
+            window.location.href = "http://192.168.120.205";
+        }
+        var usuario = sessionStorage.getItem("SessionRoles");
+        //console.log(JSON.parse(usuario));
+        $("#_PersonId").val(JSON.parse(usuario).data[0].PersonId);
+        $("#_UserName").val(JSON.parse(usuario).data[0].usuario);
+
+           var sel = document.getElementById("ddlTipoDocumento");
+        $("#bandera").val(0)
+        $("#datos_personales").hide();
+        $('#imgLoading').hide();
+
+
+         $('#nroDocumento').focus();
+        //$('#ddlTipoDocumento').change(function(){
+        //        $('#nroDocumento').focus();
+        //});
+        $("#ddlTipoDocumento").change(function () {
+            if (parseInt($("#ddlTipoDocumento").val()) != 1) {
+                $("#nroDocumento").val("");
+                $("#apellido").val("");
+                $("#nombre").val("");
+                $("#datos_personales").show();
+                $("#teclado").hide();
+                $("#bandera").val(1)
+
+            } else {
+                $("#datos_personales").hide();
+                $("#teclado").show();
+            }
+        });
+
+        $("#chxDoc").change(function () {
+            var checkBox = document.getElementById("chxDoc");
+            if (checkBox.checked == true) {
+                $("#ddlTipoDocumento").append('<option value="4">OTROS</option>');
+            } else {
+                sel.remove(3);
+            }
+        });
+        CargarCombo();
+          Clasificador.listar(1);
+
+    });
+
+         Clasificador = {
+            reset: function () {
+                $("#txtdocumento").val("");
+             },
+             listar: function (page) {
+                table = $('#tablaAppointment');
+                var dato = {
+                    CodeAttentionCenter: 5,
+                    ndoc: $("#txtdocumento").val()
+                };
+                  $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44314/api/CurrentRowZone",
+                      url: "@Model.Parametros.WebApiUrl.TicketService/ConsultaCita",
+                    data: dato,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+
+
+                            Clasificador.generar(data);
+                        } else {
+
+                             var tabla = $('#tablaAppointment').children('tbody');
+                            tabla.children('tr').remove();
+                            $('#tablaAppointment tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                        }
+                    }
+                });
+
+             },
+               generar: function (lista) {
+                var table = $('#tablaAppointment');
+                var tabla = table.children('tbody');
+                tabla.children('tr').remove();
+                   var rows = '';
+                $.each(lista, function (i, r) {
+
+
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeAttentionCenter);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.numberDocument);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionPeople);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionSchedule);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionAttentionCenter);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionService);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionChannelTypeAttention);
+                    rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.appointmentDate);
+                    rows += '<td>';
+                rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.registrar(' + r.codeAppointment + ')" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeZone);
+                rows += '</div>';
+                rows += '</td>';
+                rows += '</tr>';
+                });
+                fnGlobales.pagination.update(table);
+                tabla.append(rows);
+             },
+             registrar: function (id) {
+
+             }
+        };
+
+
+
+    function CargarCombo()
+    {
+          $.ajax({
+                type: "GET",
+                //url: "https://localhost:44314/api/AutocompleteZona",
+                url: "@Model.Parametros.WebApiUrl.TicketTypeService/AutocompleteTipoTicket",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#cbtipo").empty();
+                    $("#cbtipo").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#cbtipo").append("<option value=" + data[i].codeTicketType + ">" + data[i].description+ "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+        });
+    }
+
+
+
+
+</script>
+<input id="_PersonId" type="hidden">
+<input id="_UserName" type="hidden">
+<div class="card">
+
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="card-header text-center bg-danger ">
+                CITAS RESERVADAS
+            </div>
+
+
+            <div class="card-body p-3">
+                <div class="row m-2 border-card align-items-center">
+                    <div class="col-md-2"><strong>N° Documento</strong></div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="txtdocumento" />
+
+
+                    </div>
+                    <div class="col-md-3"><strong>Apellido y Nombres</strong></div>
+
+                    <div class="col-md-4"><strong></strong></div>
+
+                </div>
+
+
+                <div class="col-md-12 mt-4 d-flex justify-content-center">
+                    <button type="button" class="btn btn-success mr-1" onclick="Clasificador.listar(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+                    <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+
+                </div>
+
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tablaAppointment" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.listar" data-paginator="paginator">
+                        <thead class="thead-dark ">
+                            <tr>
+                                <th class="align-middle" style="display:none;"> codeAppointment</th>
+                                <th class="align-middle" style="text-align:center;width:2%">N°</th>
+                                <th class="align-middle" style="text-align:center;width:8%">DNI</th>
+                                <th class="align-middle" style="text-align:center;width:20%">Nombres</th>
+                                <th class="align-middle" style="text-align:center;width:8%">Horario</th>
+                                <th class="align-middle" style="text-align:center;width:10%">Centro de Atención</th>
+                                <th class="align-middle" style="text-align:center;width:18%">Tramite</th>
+                                <th class="align-middle" style="text-align:center;width:10%">Tipo de Atención</th>
+                                <th class="align-middle" style="text-align:center;width:10%">Fecha de Cita</th>
+                                <th class="align-middle" style="text-align:center;width:10%">Registrar</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="8">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                                        <div style="font-size:16px; padding-left: 15px;"></div>
+                                        <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" style="width:100%">
+
+
+            <div class="card-header text-center bg-danger ">
+                ATENCIONES
+            </div>
+
+            <div class="card-body p-3">
+
+
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="sincita" role="tabpanel" aria-labelledby="profile-tab" style="width:100%">
+
+
+            <div class="card-header text-center bg-danger ">
+                SIN CITA
+            </div>
+
+            <div class="card-body p-3">
+
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-5">
+                        <h3 class="subtitulo-turnos mt-4">Ingresa tus Datos Personales</h3>
+
+                        <div class="form-group" id="cbxDocumento">
+                            <label for="exampleInputEmail1">Tipo de Documento</label>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <select class="custom-select mr-2" id="ddlTipoDocumento" name="ddlTipoDocumento">
+                                    <option value="1">DNI</option>
+                                    <option value="2">CARNET DE EXTRANJERÍA</option>
+                                    <option value="3">PASAPORTE</option>
+                                    @*<option value="4">OTROS</option>*@
+                                </select>
+                                <div><input type="checkbox" valorKey="" name="chxDoc" id="chxDoc" /></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Número de Documento</label>
+                            <input class="form-control" id="nroDocumento" dirname="nroDocumento" aria-describedby="emailHelp" placeholder="Ingrese el número" maxlength="8" type="number" name="name">
+                            <input id="result" name="result" type="hidden">
+
+                        </div>
+
+                        <div id="teclado" name="teclado">
+                            <button class="btn-Number" onclick="digitar(7)">7</button>
+                            <button class="btn-Number" onclick="digitar(8)">8</button>
+                            <button class="btn-Number" onclick="digitar(9)">9</button>
+                            <button class="btn-Number" onclick="digitar(4)">4</button>
+                            <button class="btn-Number" onclick="digitar(5)">5</button>
+                            <button class="btn-Number" onclick="digitar(6)">6</button>
+                            <button class="btn-Number" onclick="digitar(1)">1</button>
+                            <button class="btn-Number" onclick="digitar(2)">2</button>
+                            <button class="btn-Number" onclick="digitar(3)">3</button>
+                            <button class="btn-Number" onclick="digitar(0)">0</button>
+                            <button class="btn-Number2" onclick="LimpiarDigitos()" value="9">&nbsp;Borrar&nbsp;</button>
+                        </div>
+
+                        <div id="datos_personales" name="datos_personales" class="form-group">
+                            <div id="bandera" name="bandera" type="hidden"></div>
+                            <label for="exampleInputEmail1">Apellidos</label>
+                            <input type="text" class="form-control" id="apellido" name="apellido" aria-describedby="emailHelp" placeholder="">
+
+                            <label for="exampleInputEmail1">Nombres</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" aria-describedby="emailHelp" placeholder="">
+                        </div>
+                        <div class="clearfix"></div>
+                        <button class="btn btn-danger btn-block btn-lg mt-1" onclick="buscarPersona()">Continue</button>
+                        <div id="openModal" class="modalDialog">
+                            <div style="text-align:center">
+                                <a href="#close" title="Close" class="close" onclick="javascript:CloseModal();">X</a>
+                                <h2 id="txtTitulo" name="txtTitulo"></h2>
+                                <img src="/Images/loading.gif" id="imgLoading" name="imgLoading" />
+                                <div id="datospersona" name="datospersona" style="font-size:15pt;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="modal " id="myModal">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger" id="cabecera">
+                    <h5 class="modal-title">Registro de atención</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row col-md-12">
+                        <div class="col-md-2">
+                            <label> Tipo:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <select class="myselect2 form-control" id="cbtipo" style="width:270px;"></select>
+                        </div>
+                    </div>
+                </div>
+                @*<--informacion del cuerpo--/>*@
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Save()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,291 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+
+       // LoadComboEntidad();
+        AutocompleteCentroAtencion();
+        AutocompleteChannelTypeAttention();
+        $('#datepicker').datepicker({
+            dateFormat: 'dd-mm-yy'
+        });  
+        $('#datepicker2').datepicker({
+            dateFormat: 'dd-mm-yy'
+        });
+        Clasificador.listar(1);
+
+    });
+     $(document).on('change', '#cbxCentroAtencion', function (event) {
+        var vCodeAttentionCenter = $('#cbxCentroAtencion').val();
+        CargaServicexAttentionCenter(vCodeAttentionCenter);
+    });
+    Clasificador = {
+        reset: function () {
+           // $("#cbxCentroAtencion").val("");
+            $("#cbxCentroAtencion").val("-1");
+            $("#cbxChannelTypeAttention").val("-1");
+            $("#datepicker").val("");
+            $("#txtNroCitas").val("");
+            Clasificador.listar(1);
+        },
+        listar: function (page) {
+            table = $('#tablaAppointment');
+            var dato = {                
+             strPagDesde:page ,
+                strPagHasta: table.data('pagesize'),
+                strField: 'CodeAppointment',
+                'asc',
+                strIdComboActivo:'1',
+                CodeAttentionCenter: $("#cbxCentroAtencion").val() == -1 ? 0 : $("#cbxCentroAtencion").val(),
+                CodeServiceEntity:  $("#cbxServicio").val() == -1 ? 0 : $("#cbxServicio").val(),
+                CodeChannelTypeAttention: $("#cbxChannelTypeAttention").val() == -1 ? 0 : $("#cbxChannelTypeAttention").val(),
+                CodeReservationType:  $("#cbxTipoReserva").val() == -1 ? 0 : $("#cbxTipoReserva").val(),
+                AppointmentDateBegin: $("#datepicker").val() == null ? -1 : $("#datepicker").val(),
+                AppointmentDateEnd: $("#datepicker2").val() == null ? -1 : $("#datepicker2").val(),
+
+            };
+            $.ajax({
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/Report",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                //beforeSend: function () {
+                //    fnGlobales.strOrder: wait.appendOverlay('#boxLista');
+                //},
+                success: function (data) {
+                     if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = $('#tablaAppointment').children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tablaAppointment tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tablaAppointment');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeAttentionCenter);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.numberDocument);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionPeople);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionSchedule);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionAttentionCenter);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionService);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionChannelTypeAttention);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.appointmentDate);
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        }
+        };
+
+
+    function AutocompleteCentroAtencion() {
+        $.ajax({
+            type: "GET",
+           // url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+            url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxCentroAtencion").empty();
+                $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+        }
+
+    function AutocompleteChannelTypeAttention() {
+        $.ajax({
+            type: "GET",
+            url: "@Model.Parametros.WebApiUrl.AppointmentService/GetAllChannelTypeAttention",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxChannelTypeAttention").empty();
+                $("#cbxChannelTypeAttention").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxChannelTypeAttention").append("<option value=" + data[i].codeChannelTypeAttention + ">" + data[i].descriptionChannelTypeAttention + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    
+    function CargaServicexAttentionCenter(vCodeAttentionCenter) {
+        var dato = { CodeAttentionCenter: vCodeAttentionCenter };
+         var prueba1 = JSON.stringify(dato);
+         $.ajax({
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/ListarServicexAttentionCenter",
+                data: prueba1,
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                success: function (data) {
+                  //Entidad
+                    //cbxCentroAtencion
+                    $("#cbxServicio").empty();
+                    $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#cbxServicio").append("<option value=" + data[i].codeService + ">" + data[i].descriptionService + "</option>");
+                   }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+         });
+
+    };
+
+
+    function ExportAppointment() {
+        var dato = {
+                strField: 'CodeAppointment',
+                strOrder: 'asc',
+                strPagDesde:1 ,
+                strPagHasta: 1000,
+                CodeAttentionCenter: $("#cbxCentroAtencion").val() == -1 ? 0 : $("#cbxCentroAtencion").val(),
+                CodeServiceEntity:  $("#cbxServicio").val() == -1 ? 0 : $("#cbxServicio").val(),
+                CodeChannelTypeAttention: $("#cbxChannelTypeAttention").val() == -1 ? 0 : $("#cbxChannelTypeAttention").val(),
+                cbxTipoReserva:  $("#cbxTipoReserva").val() == -1 ? 0 : $("#cbxTipoReserva").val(),
+                AppointmentDateBegin: $("#datepicker").val() == null ? -1 : $("#datepicker").val(),
+                AppointmentDateEnd: $("#datepicker2").val() == null ? -1 : $("#datepicker2").val()
+
+            };
+         $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ExportAppointment","Appointment")',
+                data:dato,
+                dataType: 'json',
+                success: function (data) {
+                    window.location.href='../../DocCitasTemp/ReporteCitas.xlsx';
+                    //alert('ok');
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+
+
+        }
+
+
+</script>
+
+<div class="card">
+    @*style="width: 80rem;">*@
+    <div class="card-header text-center bg-danger ">
+        Reporte de Citas
+    </div>
+    <div class="card-body p-3 ">
+        <div class="border-card">
+            <div class="row m-2 ">
+                <div class="col-md-2"><strong>Centro de Atención</strong></div>
+                <div class="col-md-4"><select class="myselect2 form-control" id="cbxCentroAtencion"></select></div>
+                <div class="col-md-2"><strong>Trámite</strong></div>
+                <div class="col-md-4"><select class="myselect2 form-control" id="cbxServicio"></select></div>
+
+            </div>
+            <div class="row m-2 ">
+                <div class="col-md-2"><strong>Tipo de Atención</strong></div>
+                <div class="col-md-4"><select class="myselect2 form-control" id="cbxChannelTypeAttention"></select></div>
+                <label class="col-md-2">Tipo de Reserva:</label>
+                <div class="col-md-4">
+                    <select id="cbxTipoReserva" class="myselect2 form-control">
+                        <option value="0">-- Seleccione--</option>
+                        <option value="1">CUPOS</option>
+                        <option value="2">CITAS</option>
+                    </select>
+                </div>
+                @*<div class="col-md-2"><strong>Nro. Citas</strong></div>
+        <div class="col-md-4"><input class="form-control" id="txtNroCitas" type="text" name="name" value="" /></div>*@
+            </div>
+            <div class="row m-2">
+                <div class="col-md-2"><strong>Fecha Inicio</strong></div>
+                <div class="col-md-4"> <input placeholder="Seleccione Fecha" type="text" id="datepicker" class="form-control datepicker"></div>
+
+                <div class="col-md-2"><strong>Fecha Fin</strong></div>
+                <div class="col-md-4"> <input placeholder="Seleccione Fecha" type="text" id="datepicker2" class="form-control datepicker"></div>
+            </div>
+            <div class="   col-md-12 mt-4 d-flex justify-content-center">
+                <button type="button" class="btn btn-outline-secondary mr-1" onclick="Clasificador.listar(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+                <button type="button" class="btn btn-outline-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+                <button type="button" class="btn btn-outline-success" style="margin-left:3px;"
+                        onclick="ExportAppointment()">
+                    <i class="fas fa-plus-circle" style="margin-right:5px;"></i>Exportar
+                </button>
+            </div>
+            <div id="hdnUnIde"></div>
+        </div>
+    </div>
+        <div class="card" style="padding: 2em 1em;">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tablaAppointment" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.listar" data-paginator="paginator">
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th class="align-middle" style="display:none;"> codeAppointment</th>
+                            <th class="align-middle" style="text-align:center;width:2%">N°</th>
+                            <th class="align-middle" style="text-align:center;width:8%">DNI</th>
+                            <th class="align-middle" style="text-align:center;width:20%">Nombres</th>
+                            <th class="align-middle" style="text-align:center;width:8%">Horario</th>
+                            <th class="align-middle" style="text-align:center;width:8%">Centro de Atención</th>
+                            <th class="align-middle" style="text-align:center;width:18%">Tramite</th>
+                            <th class="align-middle" style="text-align:center;width:8%">Tipo de Atención</th>
+                            <th class="align-middle" style="text-align:center;width:10%">Fecha de Cita</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="8">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                                    <div style="font-size:16px; padding-left: 15px;"></div>
+                                    <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+</div>

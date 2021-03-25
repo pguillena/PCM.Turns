@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (sessionStorage.getItem("SessionRoles") == null) {
+            window.location.href = "http://192.168.120.205";
+        }        
+        setInterval(AnimateHand(),2500);      
+        function AnimateHand() {            
+            $("#hand").animate({ left: '60%' }, { duration: 1500 });
+        }
+   });
+</script>
+<div class="dashboard" onclick="location.href='@Url.Action("Contact")'">
+    <img src="~/images/logo_mac.png" class="animated fadeInDown pb-4" />
+    @*<h1 class="title-bienvenida animated zoomIn">BIENVENIDO</h1>*@
+    <h2 class="title-aplicacion animated fadeInDown">Sistema Integrado de Gestión de Turnos</h2>
+    <span class="btn-ingreso animated fadeInUp">INGRESE AQUI &nbsp;&nbsp; <br /><i class="far fa-hand-point-up fa-3x"></i></span>
+</div>

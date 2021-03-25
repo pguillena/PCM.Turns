@@ -1,0 +1,409 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Display1";
+    Layout = "~/Views/Shared/_LayoutDisplay.cshtml";
+}
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var myvid = document.getElementById("myvideo");
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44382/api/ListarVideoAprobado",
+            url: "@Model.Parametros.WebApiUrl.VideoService/ListarVideoAprobado",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var myvids = [
+                    //"http://127.0.0.1:61365/Uploads/Video/video_saludo.mp4",
+                    // "http://127.0.0.1:61365/Uploads/Video/video1.mp4"
+                ];
+
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].route != null) {
+                        myvids.push("http://127.0.0.1:61365" + data[i].route);
+                        //myvids.push("http://localhost:1469" + data[i].route);
+                    }
+                }
+                var activeVideo = 0;
+                myvid.addEventListener('ended', function (e) {
+                    // update the active video index
+                    activeVideo = (++activeVideo) % myvids.length;
+
+                    // update the video source and play
+                    myvid.src = myvids[activeVideo];
+                    myvid.autoplay();
+                });
+
+                listarbanner();
+                listarTicket();
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+
+    });
+
+
+
+    function listarbanner() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44324/api/AutocompleteBanner",
+            url: "@Model.Parametros.WebApiUrl.BannerService/AutocompleteBanner",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                $('#divBanner').empty();
+                var html = "";
+                $('#divBanner').append(html);
+                html = "<marquee class='col-lg textoDisplay1' direction='left' scrollamount='10'><ul class='m-0'>";
+                for (var i = 0; i < data.length; i++) {
+                    html += '<li style="display: inline-block; margin-right: 80%">' + data[i].bannerName + '</li>';
+                }
+                html += "</ul></marquee>";
+                $('#divBanner').append(html);
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function listarTicket() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44321/api/ListarTicket",
+            url: "@Model.Parametros.WebApiUrl.TicketService/ListarTicket",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) { 
+                if (data.length == 1) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#ticket1").removeClass("cardTurn");
+                    $("#ticket1").addClass("cardTurnActivo");
+
+                } else if (data.length == 2) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#ticket2").addClass("cardTurnActivo");
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+                } else if (data.length == 3) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#lblcasilla3").text(data[2].ticketName);
+
+
+                    $("#ticket2").removeClass("cardTurnActivo");
+                    $("#ticket2").addClass("cardTurn");
+
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+
+                    $("#ticket3").removeClass("cardTurn");
+                    $("#ticket3").addClass("cardTurnActivo");
+
+                } else if (data.length == 4) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#lblcasilla3").text(data[2].ticketName);
+                    $("#lblcasilla4").text(data[3].ticketName);
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+
+                    $("#ticket2").removeClass("cardTurnActivo");
+                    $("#ticket2").addClass("cardTurn");
+
+                    $("#ticket3").removeClass("cardTurnActivo");
+                    $("#ticket3").addClass("cardTurn");
+
+                    $("#ticket4").removeClass("cardTurn");
+                    $("#ticket4").addClass("cardTurnActivo");
+
+
+                } else if (data.length == 5) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#lblcasilla3").text(data[2].ticketName);
+                    $("#lblcasilla4").text(data[3].ticketName);
+                    $("#lblcasilla5").text(data[4].ticketName);
+
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+
+                    $("#ticket2").removeClass("cardTurnActivo");
+                    $("#ticket2").addClass("cardTurn");
+
+                    $("#ticket3").removeClass("cardTurnActivo");
+                    $("#ticket3").addClass("cardTurn");
+
+
+                    $("#ticket4").removeClass("cardTurnActivo");
+                    $("#ticket4").addClass("cardTurn");
+
+                    $("#ticket5").removeClass("cardTurn");
+                    $("#ticket5").addClass("cardTurnActivo");
+
+                } else if (data.length == 6) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#lblcasilla3").text(data[2].ticketName);
+                    $("#lblcasilla4").text(data[3].ticketName);
+                    $("#lblcasilla5").text(data[4].ticketName);
+                    $("#lblcasilla6").text(data[5].ticketName);
+
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+
+                    $("#ticket2").removeClass("cardTurnActivo");
+                    $("#ticket2").addClass("cardTurn");
+
+                    $("#ticket3").removeClass("cardTurnActivo");
+                    $("#ticket3").addClass("cardTurn");
+
+                    $("#ticket4").removeClass("cardTurnActivo");
+                    $("#ticket4").addClass("cardTurn");
+
+                    $("#ticket5").removeClass("cardTurnActivo");
+                    $("#ticket5").addClass("cardTurn");
+
+                    $("#ticket6").removeClass("cardTurn");
+                    $("#ticket6").addClass("cardTurnActivo");
+
+                } else if (data.length == 7) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#lblcasilla3").text(data[2].ticketName);
+                    $("#lblcasilla4").text(data[3].ticketName);
+                    $("#lblcasilla5").text(data[4].ticketName);
+                    $("#lblcasilla6").text(data[5].ticketName);
+                    $("#lblcasilla7").text(data[6].ticketName);
+
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+
+                    $("#ticket2").removeClass("cardTurnActivo");
+                    $("#ticket2").addClass("cardTurn");
+
+                    $("#ticket3").removeClass("cardTurnActivo");
+                    $("#ticket3").addClass("cardTurn");
+
+                    $("#ticket4").removeClass("cardTurnActivo");
+                    $("#ticket4").addClass("cardTurn");
+
+                    $("#ticket5").removeClass("cardTurnActivo");
+                    $("#ticket5").addClass("cardTurn");
+
+                    $("#ticket6").removeClass("cardTurnActivo");
+                    $("#ticket6").addClass("cardTurn");
+
+                    $("#ticket7").removeClass("cardTurn");
+                    $("#ticket7").addClass("cardTurnActivo");
+
+
+                } else if (data.length == 8) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#lblcasilla3").text(data[2].ticketName);
+                    $("#lblcasilla4").text(data[3].ticketName);
+                    $("#lblcasilla5").text(data[4].ticketName);
+                    $("#lblcasilla6").text(data[5].ticketName);
+                    $("#lblcasilla7").text(data[6].ticketName);
+                    $("#lblcasilla8").text(data[7].ticketName);
+
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+
+                    $("#ticket2").removeClass("cardTurnActivo");
+                    $("#ticket2").addClass("cardTurn");
+
+                    $("#ticket3").removeClass("cardTurnActivo");
+                    $("#ticket3").addClass("cardTurn");
+
+                    $("#ticket4").removeClass("cardTurnActivo");
+                    $("#ticket4").addClass("cardTurn");
+
+                    $("#ticket5").removeClass("cardTurnActivo");
+                    $("#ticket5").addClass("cardTurn");
+
+                    $("#ticket6").removeClass("cardTurnActivo");
+                    $("#ticket6").addClass("cardTurn");
+
+                    $("#ticket7").removeClass("cardTurnActivo");
+                    $("#ticket7").addClass("cardTurn");
+
+                    $("#ticket8").removeClass("cardTurn");
+                    $("#ticket8").addClass("cardTurnActivo");
+
+                } else if (data.length == 9) {
+                    $("#lblcasilla1").text(data[0].ticketName);
+                    $("#lblcasilla2").text(data[1].ticketName);
+                    $("#lblcasilla3").text(data[2].ticketName);
+                    $("#lblcasilla4").text(data[3].ticketName);
+                    $("#lblcasilla5").text(data[4].ticketName);
+                    $("#lblcasilla6").text(data[5].ticketName);
+                    $("#lblcasilla7").text(data[6].ticketName);
+                    $("#lblcasilla8").text(data[7].ticketName);
+                    $("#lblcasilla9").text(data[8].ticketName);
+
+                    $("#ticket1").removeClass("cardTurnActivo");
+                    $("#ticket1").addClass("cardTurn");
+
+                    $("#ticket2").removeClass("cardTurnActivo");
+                    $("#ticket2").addClass("cardTurn");
+
+                    $("#ticket3").removeClass("cardTurnActivo");
+                    $("#ticket3").addClass("cardTurn");
+
+                    $("#ticket4").removeClass("cardTurnActivo");
+                    $("#ticket4").addClass("cardTurn");
+
+                    $("#ticket5").removeClass("cardTurnActivo");
+                    $("#ticket5").addClass("cardTurn");
+
+                    $("#ticket6").removeClass("cardTurnActivo");
+                    $("#ticket6").addClass("cardTurn");
+
+                    $("#ticket7").removeClass("cardTurnActivo");
+                    $("#ticket7").addClass("cardTurn");
+
+                    $("#ticket8").removeClass("cardTurnActivo");
+                    $("#ticket8").addClass("cardTurn");
+
+                    $("#ticket9").removeClass("cardTurn");
+                    $("#ticket9").addClass("cardTurnActivo");
+
+                }
+                //    else {
+
+                //        if ((data.length - 6) == 1) {
+                //             $("#lblcasilla1").text(data[data.length-1].ticketName);
+                //            $("#ticket1").removeClass("cardTurn");
+                //            $("#ticket1").addClass("cardTurnActivo");
+                //        }
+
+
+
+                //        $.each(data, function (index, val) {
+
+                //            //console.log(val, "dfsdf");
+
+                //                $("#lblcasilla1").text(val.ticketName);
+
+                //                $("#lblcasilla2").text(val.ticketName);
+                //                $("#lblcasilla3").text(val.ticketName);
+                //                $("#lblcasilla4").text(val.ticketName);
+                //                $("#lblcasilla5").text(val.ticketName);
+                //                $("#lblcasilla6").text(val.ticketName);
+
+                //        });
+
+
+
+                //    // $("#lblcasilla1").text(data[row - 1].ticketName);
+                //    //$("#lblcasilla2").text(data[row - 2].ticketName);
+                //    //$("#lblcasilla3").text(data[row - 3].ticketName);
+                //    //$("#lblcasilla4").text(data[row - 4].ticketName);
+                //    //$("#lblcasilla5").text(data[row - 5].ticketName);
+                //    //$("#lblcasilla6").text(data[row - 6].ticketName);
+
+                //    //$("#ticket1").removeClass("cardTurn");
+                //    //$("#ticket1").addClass("cardTurnActivo");
+
+                //    //$("#ticket2").removeClass("cardTurnActivo");
+                //    //$("#ticket2").addClass("cardTurn");
+
+                //    //$("#ticket3").removeClass("cardTurnActivo");
+                //    //$("#ticket3").addClass("cardTurn");
+
+                //    //$("#ticket4").removeClass("cardTurnActivo");
+                //    //$("#ticket4").addClass("cardTurn");
+
+                //    //$("#ticket5").removeClass("cardTurnActivo");
+                //    //$("#ticket5").addClass("cardTurn");
+
+                //    //$("#ticket6").removeClass("cardTurn");
+                //    //$("#ticket6").addClass("cardTurnActivo");
+
+
+                //}
+
+
+
+
+
+
+                //$('#divTicket').empty();
+                //var html = "";
+                //$('#divTicket').append(html);
+                ////html = "<ul id='divPaginateServices'><li>";
+                //var contador = data.length;
+                //for (var i = 0; i < contador; i++) {
+                //    if (contador < 6 && contador=6) {
+                //        html += '<div class="col-sm-6 col-md-4 cardTurnActivo">' + data[i].ticketName + '<i  class="fas fa-caret-right" style="padding-left:20px;"></i> V16 </div>';
+                //    } else {
+                //        html += '<div class="col-sm-6 col-md-4 cardTurnActivo">' + data[i].ticketName + '<i  class="fas fa-caret-right" style="padding-left:20px;"></i> V16 </div>';
+                //    }
+                //}
+                //html += "</li></ul>";
+                //$('#divTicket').append(html);
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+</script>
+
+<div class="row">
+    <div class="col-lg text-center contentVideo">
+        @*<img class="videoDisplay1" src="~/images/Demo.gif" />*@
+        @*<video id="myvideo" class="videoDisplay1" autoplay>
+            <source src="~/Uploads/Video/video2.mp4" type="video/mp4" />
+
+            <source src="~/Uploads/Video/ProblemaAtencionIncidenciasPCM.mp4" type="video/mp4" />
+        </video>*@
+        @*<video class="videoDisplay1" src="http://localhost:1469/Uploads/Video/video_saludo.mp4"*@
+        <video class="videoDisplay1" src="http://192.168.120.205:8090/Uploads/Video/video_saludo.mp4"
+               
+               id="myvideo" style="background:black" autoplay>
+        </video>
+    </div>
+</div>
+
+
+<div class="row text-center contentTurn1" id="divTicket" name="divTicket">
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket1"><label id="lblcasilla1"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket2"><label id="lblcasilla2"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket3"><label id="lblcasilla3"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket4"><label id="lblcasilla4"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket5"><label id="lblcasilla5"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket6"><label id="lblcasilla6"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket7"><label id="lblcasilla7"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket8"><label id="lblcasilla8"></label></div>
+    <div class="col-sm-6 col-md-4 cardTurn" id="ticket9"><label id="lblcasilla9"></label></div>
+</div>
+
+<div class="row" id="divBanner" name="divBanner">
+
+    @*<marquee class="col-lg textoDisplay1" direction="left" scrollamount="10">
+            POR SU SEGURIDAD SE SOLICITA PRESENTAR SU DNI Y TARJETA MULTIRED GLOBAL DÉBITO PARA OPERACIONES DE RETIRO POR VENTANILLA SUPERIORES A S/. 1,500.00 O $ 550.00.
+        </marquee>*@
+
+</div>
+

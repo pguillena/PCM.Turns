@@ -1,0 +1,329 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>9d42497a-7f13-4f5e-9694-0df19f2c1698</UserSecretsId>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <AssemblyName>Turns.Web</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Appointment\**" />
+    <Content Remove="Areas\Appointment\**" />
+    <EmbeddedResource Remove="Areas\Appointment\**" />
+    <None Remove="Areas\Appointment\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Areas\Appointment\Controllers\AppointmentController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Appointment\Views\Appointment\Appointmentscheduling.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Appointment\Views\Appointment\ConfigureScheduleException.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Appointment\Views\Appointment\ReportAppointment.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Appointment\Views\Appointment\ReportNumberAppointment.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Appointment\Views\Appointment\ConfigureScheduleService.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Appointment\Views\Appointment\ReservationPeople.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Appointment\Views\Appointment\ReservationAppointment.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
+    <PackageReference Include="EPPlus" Version="4.5.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="popper.js" Version="1.14.3" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Administration\Data\" />
+    <Folder Include="Areas\Administration\Models\" />
+    <Folder Include="Areas\Appointment\Data\" />
+    <Folder Include="Areas\Appointment\Models\" />
+    <Folder Include="Areas\Attention\Data\" />
+    <Folder Include="Areas\Attention\Models\" />
+    <Folder Include="Areas\Display\Data\" />
+    <Folder Include="Areas\Display\Models\" />
+    <Folder Include="Areas\Principal\Data\" />
+    <Folder Include="Areas\Principal\Models\" />
+    <Folder Include="Areas\Reporte\Data\" />
+    <Folder Include="Areas\Reporte\Models\" />
+    <Folder Include="Areas\Security\Data\" />
+    <Folder Include="Areas\Security\Models\" />
+    <Folder Include="Areas\Ticket\Data\" />
+    <Folder Include="Areas\Ticket\Models\" />
+    <Folder Include="Areas\Ticket\Reporte\" />
+    <Folder Include="Cls\" />
+    <Folder Include="wwwroot\lib\fullcalendar\poppers\" />
+    <Folder Include="wwwroot\DocCitasTemp\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Appointment\Views\Appointment\ConfigurationReservationType.cshtml" />
+    <None Include="Areas\Ticket\Views\Ticket\Contact.cshtml" />
+    <None Include="Areas\Ticket\Views\Ticket\Index.cshtml" />
+    <None Include="Areas\Ticket\Views\Ticket\Service.cshtml" />
+    <None Include="Areas\Ticket\Views\Ticket\Ticket.cshtml" />
+    <None Include="Areas\Ticket\Views\Ticket\TicketR.cshtml" />
+    
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-fullcalendar.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-fullcalendar.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-theme.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap-theme.min.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrapValidator.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\bootstrapValidator.min.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\style.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\css\style.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootbox - Copia.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootbox.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootbox.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap-table.1.10.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap-validate.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\bootstrap.min.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\ar.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\az.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\bg.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\ca.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\cs.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\da.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\de.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\el.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\en.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\es.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\et.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\eu.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\fa.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\fi.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\fr.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\gl.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\he.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\hi.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\hr.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\hu.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\hy.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\id.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\is.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\it.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\ja.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\km.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\ko.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\lt.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\lv.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\mk.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\ms.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\nb.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\nl.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\pl.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\pt-BR.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\pt.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\ro.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\ru.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\sk.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\sl.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\sr-Cyrl.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\sr.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\sv.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\th.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\tr.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\uk.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\vi.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\zh-CN.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\i18n\zh-TW.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\mdb.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\mdb.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.bundle.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\popper.min.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap4\js\select2.full.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\select2.full.min.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\select2.js" />
+    <None Include="wwwroot\lib\bootstrap4\js\select2.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\bootstrap\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\bootstrap\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales-all.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales-all.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\af.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ar-dz.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ar-kw.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ar-ly.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ar-ma.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ar-sa.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ar-tn.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ar.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\bg.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\bs.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ca.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\cs.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\da.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\de.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\el.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\en-au.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\en-gb.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\en-nz.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\es-us.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\es.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\et.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\eu.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\fa.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\fi.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\fr-ca.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\fr-ch.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\fr.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\gl.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\he.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\hi.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\hr.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\hu.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\id.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\is.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\it.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ja.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ka.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\kk.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ko.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\lb.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\lt.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\lv.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\mk.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ms.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\nb.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\nl.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\nn.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\pl.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\pt-br.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\pt.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ro.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\ru.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\sk.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\sl.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\sq.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\sr-cyrl.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\sr.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\sv.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\th.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\tr.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\uk.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\vi.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\zh-cn.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\locales\zh-tw.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\core\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\daygrid\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\daygrid\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\google-calendar\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\google-calendar\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\interaction\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\interaction\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\list\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\list\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\luxon\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\luxon\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\moment-timezone\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\moment-timezone\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\moment\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\moment\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\rrule\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\rrule\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\timegrid\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\timegrid\main.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Services\Video\Video.Entity\Video.Entity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Administration\Views\Administration\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Display\Views\Display\Display5.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Display\Views\Display\Display4.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Display\Views\Display\Display3.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Display\Views\Display\Display2.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Ticket\Views\Ticket\Contact.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Ticket\Views\Ticket\Ticket.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Ticket\Views\Ticket\TicketR.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Ticket\Views\Ticket\Service.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Ticket\Views\Ticket\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://ide-integration.batect.dev/v1/configSchema.json" /></VisualStudio></ProjectExtensions>
+
+</Project>

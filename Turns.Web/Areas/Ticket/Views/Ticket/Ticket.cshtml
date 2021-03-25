@@ -1,0 +1,94 @@
+﻿@model Turns.Web.Models.ParameterModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutRegistro.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {      
+        $('#idTicket').val("@ViewBag.CodeTicket");
+        Imprimir();
+    });
+
+    function Imprimir() {
+        @*window.print();
+            location.href = '@Url.Action("Contact","Ticket")';*@
+
+        var dato = {
+                CodeTicket:parseInt($("#idTicket").val())
+        };
+
+        $.ajax({
+            //url: "https://localhost:44321/api/ReportTicket",
+            url: "@Model.Parametros.WebApiUrl.TicketService/ReportTicket",
+            type: "GET",
+            data: dato,
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data[0].codeTicket > 0) {
+                    $('#divReporte').empty();
+                    var html = "";
+                    $('#divReporte').append(html);
+                    //html = "<div class='card-body p-0 m-0' style='height=281'><div class='mb-4 text-center'><img style='width:50%;' src='http://localhost:1469/images/logo_mac_impresion.jpg'></div>";
+                    html = "<div class='card-body p-0 m-0' style='height=281'><div class='mb-4 text-center'><img style='width:50%;' src='http://127.0.0.1:61365/images/logo_mac_impresion.jpg'></div>";              
+
+                    for (var i = 0; i < data.length; i++) {
+                        html += "<form class='form-login'><div class='text-center'><div class='mb-6'><h4>" + data[0].description + "</h4></div></div><div class='text-center'><div class='mb-4'><h1><b>" + data[0].ticketName + "</b></h1></div></div><div class='text-center';><div class='mb-3' style='font-size:11px;'>Fecha: " + data[0].registryDate + "</div></div></form>";
+                    }
+                    html += "</div>";
+                    $('#divReporte').append(html);
+
+                    var divToPrint = document.getElementById('divReporte');
+                    var newWin = window.open('', 'Print-Window', 'width=450,height=281,scrollbars=NO');
+                    newWin.document.open();
+                    console.log(divToPrint.innerHTML);
+                    newWin.document.write('<html><head></head><body onload="window.print()"><div style="text-align:center;font-family:arial">' + divToPrint.innerHTML + '</div></body></html>');
+                    newWin.document.close();
+
+                   
+                    //window.print();
+                    //window.close();  
+                    location.href = '@Url.Action("Contact","Ticket")';
+                } else {
+                    alert("Hubo un error");
+                }                
+            },
+            error: function (data) {
+                fnGlobales.error.show('mensajes', data.responseText);
+            }
+        });
+    }
+
+</script>
+
+<section class="col-sx-12 wrapper-frmSesion">
+    <div id="idTicket" name="idTicket" type="hidden"></div>
+    <div class="container" id="report">
+        <div class="card col-sx-12 shadow" id="divReporte" name="divReporte" >
+            @*<div class="card-body">
+                <div><img src="~/images/logo_mac.png"></div>
+                <form class="form-login">               
+                    <div class="text-center">
+                        <div class=" mb-5">
+                            Centro Comercial Agustino Plaza
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class=" mb-5">
+                            <h2><b>P1-0001</b></h2>
+                        </div>
+                    </div>             
+                    <div class="text-center">
+                        <div class=" mb-3">
+                            Fecha: 07/10/2019 Hora: 10:15
+                        </div>
+                    </div>
+                </form>
+            </div>*@   
+        </div>
+    </div>
+</section>
+

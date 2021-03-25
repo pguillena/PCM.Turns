@@ -1,0 +1,125 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "ReportAttention";
+    Layout = "~/Views/Shared/_LayoutDisplay.cshtml";
+}
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+              
+
+
+    });
+
+
+    function GetEnAtencion() {
+        var cantidadMostrados = 88;
+        
+     var dato = {
+         strPagDesde: 1,
+         strPagHasta: cantidadMostrados,
+         strField: 'CodeEntity',
+         strOrder: 'asc',
+         CodeAttentionCenter:0,
+         CodeTicketState: 6, //Iniciado
+         TicketDateBegin: '',
+         TicketDateEnd: ''
+         };
+
+
+  $.ajax({
+             // url: "http://localhost:64485/api/GetCitaCola",
+      url: "@Model.Parametros.WebApiUrl.AppointmentService/GetListaAtencionXEntidad",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+      success: function (data) {
+
+          var html = "";
+          $('#idDivPrincipal').empty();          
+          $('#idDivPrincipal').append(html);
+
+           
+          if (data.length > 0) {
+              for (var i = 0; i < data.length; i++) {
+                  if (data[i].descriptionEntity != null && i < descriptionEntity) {
+
+
+                      html += ' <div class="row">';
+                      html += '<div class="col-sm-9 cardTurn22">' + data[i].firstName.substr(0, 1) + "." + data[i].firstLastName + ' </div> <div class="col-sm-3 cardTurn22">  <i class="fas fa-caret-right"></i> ' + data[i].windowName + '</div> ';
+                      html += '</div>';
+
+
+                      if (data[i].isPreferential == 1) {
+                          html += ' <div class="row">';
+                          html += '<div class="col-sm-9 cardTurn22Preferencial">' + data[i].firstName.substr(0, 1) + "." + data[i].firstLastName + '</div> <div class="col-sm-3 cardTurn22Preferencial">  <i class="fas fa-caret-right"></i> ' + data[i].windowName + '</div> ';
+                          html += '</div>';
+
+                      }
+                      else {
+                        /*  if (icontador == data.length) {
+                              html += ' <div class="row">';
+                              html += '<div class="col-sm-9 cardTurn22Activo2">' + data[i].firstName.substr(0, 1) + "." + data[i].firstLastName + '</div> <div class="col-sm-3 cardTurn22Activo2">  <i class="fas fa-caret-right"></i> ' + data[i].windowName + '</div> ';
+                              html += '</div>';
+                          }
+                          else {*/
+                              html += ' <div class="row">';
+                              html += '<div class="col-sm-9 cardTurn22">' + data[i].firstName.substr(0, 1) + "." + data[i].firstLastName + ' </div> <div class="col-sm-3 cardTurn22">  <i class="fas fa-caret-right"></i> ' + data[i].windowName + '</div> ';
+                              html += '</div>';
+                        //  }
+                      }
+                      icontador++;
+
+
+                      if (data[i].numberCall > 0 && data[i].codeTicketState == 5) {
+
+                          dataLlamados.push(data[i]);
+
+                      }
+
+
+
+
+                  }
+              }
+
+    
+
+          }
+
+
+          html += '</div>';
+
+
+
+
+
+          $('#divListaCitas').append(html);
+
+     
+                },
+            failure: function (data) {
+                  fnGlobales.error.show('mensajes', data.responseText);
+            },
+      error: function (data) {
+          alert(data.error);
+                }
+            });
+
+	}
+
+
+
+
+</script>
+
+
+<div class="row" id="idDivPrincipal">
+
+   
+
+
+</div>

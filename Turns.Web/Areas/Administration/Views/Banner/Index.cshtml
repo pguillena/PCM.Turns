@@ -1,0 +1,276 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {        
+        AutocompleteBanner();
+        Clasificador.LoadGrilla(1);
+        $('.myselect2').select2();        
+    });
+
+    Clasificador = {
+        reset: function () {
+            $("#txtBanner").val("");
+            Clasificador.LoadGrilla(1);
+        },
+
+        editar: function (identificador) {
+            var dato = {
+                CodeBanner: identificador
+            };
+            if (identificador != 0) { //editar una entidad
+                $("#IdBanner").val(identificador);
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44324/api/CurrentRowBanner",
+                    url: "@Model.Parametros.WebApiUrl.BannerService/CurrentRowBanner",
+                    data: dato,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $('#myModal').show();
+                            $('#banner').val(data[0].bannerName);
+
+                        }
+                    }
+                });
+            } else {//registra nueva entidad
+                $("#IdBanner").val(0);
+                $('#banner').val("");
+            }
+        },
+
+        delete: function (identificador) {
+            fnGlobales.msg.confirm("Eliminar el registro", function () {
+                $.ajax({
+                    //url: "https://localhost:44324/api/DeleteBanner",
+                    url: "@Model.Parametros.WebApiUrl.BannerService/DeleteBanner",
+                    data: JSON.stringify({ CodeBanner: identificador }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.codeEntity) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.LoadGrilla(1);
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        },
+
+        LoadGrilla: function (page) {
+            table = $('#tblBanner');
+            var dato = {
+                strField: 'CodeBanner',
+                strOrder: 'DESC',
+                strPagDesde: page,//(table.data('pagesize') * (page) - table.data('pagesize') + 1),
+                strPagHasta: table.data('pagesize') // (table.data('pagesize') * (page))
+                //strtxtZona:$("#txtZona").val()==""? "-1":$("#txtZona").val()
+            };
+            $.ajax({
+                //url: "https://localhost:44324/api/Banner",
+                url: "@Model.Parametros.WebApiUrl.BannerService/Banner",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                //beforeSend: function () {
+                //    fnGlobales.wait.appendOverlay('#boxLista');
+                //},
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = $('#CodeZone').children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tblBanner tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tblBanner');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeBanner);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.bannerName);
+                rows += '<td style="width:120px;">';
+                rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeBanner);
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.delete({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeBanner);
+                rows += '</div>';
+                rows += '</td>';
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        }
+    };
+
+    function Save() {
+        fnGlobales.msg.confirm("de guardar la información", function () {
+            var dato = {
+                BannerName: $("#banner").val(),
+                CodeBanner: parseInt($("#IdBanner").val())
+            }
+            $.ajax({
+                //url: "https://localhost:44324/api/SaveBanner",
+                url: "@Model.Parametros.WebApiUrl.BannerService/SaveBanner",
+                data: JSON.stringify(dato),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    switch (resultado.codeBanner) {
+                        case 0:
+                            fnGlobales.msg.existe("Ya existe registrada el Banner", function () { });
+                            break;
+                        case -1:
+                            fnGlobales.msg.error("Hubo un error al realizar la operación", function () { });
+                            break;
+                        default:
+                            Clasificador.LoadGrilla(1);
+                            fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                            break;
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+            });
+        });
+    }
+
+     function AutocompleteBanner() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44324/api/AutocompleteBanner", 
+            url: "@Model.Parametros.WebApiUrl.BannerService/AutocompleteBanner",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxBanner").empty();
+                $("#cbxBanner").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxBanner").append("<option value=" + data[i].codeBanner + ">" + data[i].bannerName + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+
+</script>
+
+<div class="card mb-0">
+    
+    <div class="card-header text-center bg-danger">
+        Búsqueda de Banner
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2 border-card justify-content-center align-items-center">
+            <div class="col-md-1"><strong>Banner</strong></div>
+            <div class="col-md-4"><select class="myselect2 form-control" id="cbxBanner" name="cbxBanner"></select></div>
+
+            <div class="col-md-1"><strong>Estado</strong></div>
+            <div class="col-md-4">
+                <select class="form-control" id="miselect">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 d-flex justify-content-center">
+    <button type="button" class="btn btn-success mr-1" onclick="Clasificador.LoadGrilla(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+    <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+    <button type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal" onclick="Clasificador.editar(0)"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+</div>
+<div class="col-md-12"><hr class="hr-videos mb-2" /></div>
+<div class="card px-4">
+    <div id="IdBanner"></div>
+    <div class="row p-3">
+      
+            <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tblBanner" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.LoadGrilla" data-paginator="paginator">
+                <tbody></tbody>
+                <thead class="thead-dark ">
+                    <tr>
+                        <th class="align-middle" style="display:none">CodeBanner</th>
+                        <th class="align-middle" style="text-align:center;">N°</th>
+                        <th class="align-middle" style="text-align:center;">Nombre de Banner</th>
+                        <th class="align-middle" style="text-align:center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div style="font-size:16px; padding-left: 15px;"></div>
+                                <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+   
+    </div>
+</div>
+
+
+
+<div class="modal " id="myModal">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Registro de Banner</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row col-md-18">
+                    <div class="col-md-5">
+                        <label> Banner:</label>
+                    </div>
+                    <div class="col-md-18">
+                        <input style="width:275px" class="form-control" id="banner" />
+                    </div>
+                </div>
+            </div>
+            @*<--informacion del cuerpo--/>*@
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Save()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+            </div>
+        </div>
+    </div>
+</div>

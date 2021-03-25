@@ -1,0 +1,175 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+       // LoadComboEntidad();
+        AutocompleteCentroAtencion();
+        AutocompleteChannelTypeAttention();
+        Clasificador.listar(1);
+        $('#datepicker1').datepicker();
+        $('#datepicker2').datepicker();
+    });
+
+    Clasificador = {
+        reset: function () {
+           // $("#cbxCentroAtencion").val("");
+            $("#cbxCentroAtencion").val("-1");
+            $("#cbxChannelTypeAttention").val("-1");
+            $("#datepicker1").val("");
+            $("#datepicker2").val("");
+            $("#txtNroCitas").val("");
+            Clasificador.listar(1);
+        },
+        listar: function (page) {
+            table = $('#tablaAppointment');
+            var dato = {
+                strField: 'CodeAppointment',
+                strOrder: 'DESC',
+                strPagDesde:page ,
+                strPagHasta: table.data('pagesize'),
+                strIdComboActivo: 1,
+                CodeAttentionCenter:  $("#cbxCentroAtencion").val() == null ? -1 : $("#cbxCentroAtencion").val(),
+                CodeChannelTypeAttention:  $("#cbxChannelTypeAttention").val() == null ? -1 : $("#cbxChannelTypeAttention").val(),
+                AppointmentDate : $("#datepicker").val() == null ? -1 : $("#datepicker").val(),
+
+            };
+            $.ajax({
+               url: "@Model.Parametros.WebApiUrl.AppointmentService/Appointment",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                //beforeSend: function () {
+                //    fnGlobales.wait.appendOverlay('#boxLista');
+                //},
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = $('#tablaAppointment').children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tablaAppointment tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></tr>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tablaAppointment');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeAppointment);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.dni);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionName);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionSchedule);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionAttentionCenter);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionService);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.descriptionChannelTypeAttention);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.appointmentDate);
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        }
+        };
+
+
+    function ExportAppointment() {
+        var dato = {
+            CodeAttentionCenter:  $("#cbxCentroAtencion").val() == null ? -1 : $("#cbxCentroAtencion").val(),
+            CodeChannelTypeAttention: $("#cbxChannelTypeAttention").val() == null ? -1 : $("#cbxChannelTypeAttention").val(),
+            AppointmentDate:  $("#cbxCentroAtencion").val() == null ? -1 : $("#cbxCentroAtencion").val()
+            };
+         $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ExportAppointment","Appointment")',
+                data:dato,
+                dataType: 'json',
+                success: function (data) {
+                    alert('ok');
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+
+
+        }
+
+
+</script>
+
+<div class="card">
+    @*style="width: 80rem;">*@
+    <div class="card-header text-center bg-danger ">
+        Reporte de Citas
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2 border-card">
+            <div class="col-md-2"><strong>DNI</strong></div>
+            <div class="col-md-4"><input class="form-control" id="txtDni" style="text-align:left;" name="input_dni" placeholder="Ingrese Dni" type="number" required /></div>
+
+        </div>
+        <div class="row m-2 border-card">
+            <div class="col-md-2"><strong>Fecha Inicial</strong></div>
+            <div class="col-md-4"> <input placeholder="Seleccione Fecha" type="text" id="datepicker1" class="form-control datepicker"></div>
+
+            <div class="col-md-2"><strong>Fecha Final</strong></div>
+            <div class="col-md-4"> <input placeholder="Seleccione Fecha" type="text" id="datepicker2" class="form-control datepicker"></div>
+        </div>
+        <div class="   col-md-12 mt-4 d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-secondary mr-1" onclick="Clasificador.listar(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+            <button type="button" class="btn btn-outline-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+            <button type="button" class="btn btn-outline-success" style="margin-left:3px;"
+                    onclick="ExportAppointment()">
+                <i class="fas fa-plus-circle" style="margin-right:5px;"></i>Exportar
+            </button>
+        </div>
+        <div id="hdnUnIde"></div>
+        <div class="card" style="padding: 2em 1em;">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tablaAppointment" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.listar" data-paginator="paginator">
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th class="align-middle" style="display:none;"> codeAppointment</th>
+                            <th class="align-middle" style="text-align:center;width:2%">N°</th>
+                            <th class="align-middle" style="text-align:center;width:6%">DNI</th>
+                            <th class="align-middle" style="text-align:center;width:30%">Nombres</th>
+                            <th class="align-middle" style="text-align:center;width:8%">Horario</th>
+                            <th class="align-middle" style="text-align:center;width:8%">Sede</th>
+                            <th class="align-middle" style="text-align:center;width:18%">Tramite</th>
+                            <th class="align-middle" style="text-align:center;width:8%">Tipo de Atención</th>
+                            <th class="align-middle" style="text-align:center;width:10%">Fecha de Cita</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="8">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div style="font-size:16px; padding-left: 15px;"></div>
+                                    <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

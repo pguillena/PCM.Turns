@@ -1,0 +1,134 @@
+﻿
+@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutRegistro.cshtml";
+}
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.myselect2').select2();
+
+        });
+
+
+
+        function ValidarUsuario() {
+               $.ajax({
+                //url: "https://localhost:44321/api/ListarTicketAtendidos",
+                url: "@Model.Parametros.WebApiUrl.SecurityService/ListarUsuarioLocal",
+                type: "GET",
+                   data: {
+                       strField: 'IdEmpresa',
+                       strOrder: 'ASC',
+                       strPagDesde: 1,
+                       strPagHasta: 100,
+                       Credencial: $("#txtCredencial").val(),
+                       Clave: $("#txtClave").val()
+                   },
+                dataType: "json",
+                   success: function (data) {
+                    if (data.length > 0) {
+                        $("#cbxEmpresa").empty();
+                        $("#cbxEmpresa").append('<option value=-1>--Seleccione--</option>');
+                        for (var i = 0; i < data.length; i++) {
+
+                            $("#cbxEmpresa").append("<option value=" + data[i].idLocal + ">" + data[i].local + "</option>");
+                        }
+
+                    } else {
+                        $("#cbxEmpresa").empty();
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        }
+
+</script>
+
+<section class="col-sx-12 wrapper-frmSesion" style="padding-top:120px;">
+    <div class="container">
+        <div class="card col-sx-12 shadow">
+            <div class="card-body">
+                <div class="card-title pb-3"><img src="~/images/logo_pcm.png"></div>
+                <form class="form-login">
+                    <div class="text-left">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Usuario" required id="txtCredencial">
+                        </div>
+                    </div>
+
+
+                    <div class="text-left">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            </div>
+                            <input type="password" class="form-control" placeholder="Contraseña" required id="txtClave">
+                        </div>
+                    </div>
+                    @*<div class="form-row text-center mb-2">
+                        <div class="col-md-12"><select class="myselect2 form-control" id="cbxEmpresa" name="cbxEmpresa"></select></div>
+                    </div>*@
+
+                    <div class="text-left">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-map-marked-alt"></i></span>
+                            </div>
+                            <select class="myselect2 form-control" id="cbxEmpresa" name="cbxEmpresa"></select>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-row text-center">
+                        <div class="col-md-5"><img src="~/images/captchaImage.jfif"></div>
+                        <div class="col-md-7"><input type="text" class="form-control" id="textCaptcha" placeholder="Ingrese la palabra"></div>
+                    </div>
+
+
+
+
+                    @*<div class="text-left">
+
+            <div class="dropdown">
+                <label for="exampleInputEmail1" style="color:red">Sistema :</label>
+                <div class="btn-group">
+                    <button class="btn btn-secondary btn-sm" type="button">
+                        Seleccione
+                    </button>
+                    <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Sistema de Turnos</a>
+                        <a class="dropdown-item" href="#">Sistema de Citas</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>*@
+                    @*<div class="form-group">
+
+            <select class="custom-select">
+                <option>Seleccione</option>
+                <option>Sistema de Turnos</option>
+                <option>Sistema de Citas</option>
+            </select>
+        </div>*@
+
+                    <span onclick="ValidarUsuario();" id="btnLogin" class="btn btn-lg btn-danger text-center">Iniciar Sesión</span>
+                    @* <span class="text-center d-block"><a href="#" class="olvide-contrasenia">¿Olvidó su contraseña?</a></span>*@
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+

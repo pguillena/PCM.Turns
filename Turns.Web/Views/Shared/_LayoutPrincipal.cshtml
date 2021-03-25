@@ -1,0 +1,143 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAC EXPRESS | Inicio</title>
+    <link rel="stylesheet" href="~/Content/fontawesome-all.min.css">
+
+    <!-- Theme style -->
+    @*<link rel="stylesheet" href="~/Content/bootstrap4.min.css">*@
+    <link rel="stylesheet" href="~/Content/libro-reclamaciones.css">
+    <link rel="stylesheet" href="~/Content/fuentes/fuentes-personalizadas.css" />
+ 
+    <link href="~/Content/Menu/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Menu/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Menu/bower_components/Ionicons/css/ionicons.min.css" rel="stylesheet" />
+    <link href="~/Content/Menu/dist/css/AdminLTE.css" rel="stylesheet" />
+    <link href="~/Content/Menu/dist/css/skins/skin-blue.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-table.1.10.min.css" rel="stylesheet" />
+    <link href="~/Content/validationEngine.jquery.css" rel="stylesheet" />
+
+    <script src="~/Scripts/Menu/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="~/Scripts/Menu/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/Menu/bower_components/jquery/dist/bootstrap-dialog.min.js"></script>
+    <script src="~/Scripts/Menu/dist/js/adminlte.min.js"></script>
+    <script src="~/Scripts/Table/bootbox.min.js"></script>
+    <script src="~/Scripts/jquery.validationEngine.js"></script>
+
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    @*@Styles.Render("~/Content/css")*@
+    @*@Scripts.Render("~/bundles/jquery")*@
+
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini" style="border-top-width: 0px;">
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @RenderSection("scripts", required: false)
+
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header" style="margin-left: 0px;">
+            <div class="container" style="padding-bottom: 5px; padding-top: 5px;">
+                <a class="navbar-reclamaciones">
+                    <div class="contenedor-escudo-reclamaciones">
+                        <img src="~/Content/svg/escudo-svg.svg" class="escudo-reclamaciones">
+                    </div>
+                    <div class="contenedor-gob-pe-reclamaciones">
+                        <img src="~/Content/svg/logo-gobpe.svg" class="gob-pe-reclamaciones">
+                    </div>
+                    <div class="separador-reclamaciones d-none d-lg-inline">
+                        <img src="~/Content/svg/logo-texto.svg" class="texto-logo-reclamaciones">
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                @*<img src="~/Images/icon-mac.PNG" style="width: 30px; height: 30px;"/>*@
+                <span class="logo-mini"><b>MAC</b>e</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>MAC </b>express</span>
+            </a>
+
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+
+                <!-- Navbar Right Menu -->
+                @*@Html.Action("IndexCabecera", "Menu", new { area = "Base" })*@
+
+            </nav>
+        </header>
+
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                @*@Html.Action("Index", "Menu", new { area = "Base" })*@
+
+            </section>
+
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            @*<section class="content-header" style="margin-top: 30px;">
+                    <h1>
+                        Page Header
+                        <small>Optional description</small>
+                    </h1>
+
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#"><i class="fa fa-dashboard"></i> Inicio</a>
+                        </li>
+                        <li class="active">Here</li>
+                    </ol>
+                </section>*@
+
+            <!-- Main content -->
+            <section class="content container-fluid">
+
+                @RenderBody()
+                <!--------------------------
+                | Your Page Content Here |
+                -------------------------->
+                
+            </section>
+        </div>
+
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- To the right -->
+            @*<div class="pull-right hidden-xs">
+                    Anything you want
+                </div>*@
+
+            <!-- Default to the left -->
+            <strong>&copy; 2019 Mejora Atención al ciudadano express</strong> Todos los derechos reservados (v.1.0)
+        </footer>
+    </div>
+
+    
+</body>
+</html>

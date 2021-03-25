@@ -1,0 +1,598 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Configuración de Horario de Citas por Servicio";
+      Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+
+<div class="row" style="justify-content:center; padding:20px;" >
+    <div class="card" style="width: 98rem;">
+        <div class="card-header text-center bg-danger">
+            Configuración de Horario de Citas por Servicio
+        </div>
+        <div class="card-body">
+            <div class="row" style="margin:20px;">
+                <form id="basic-form" class="align-content-xl-stretch">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                @*<div class="card-header text-center" style="height:2rem;">
+                    <h6>Servicio y Lugar de Atenciòn</h6>
+                </div>*@
+
+                                <div class="card-body">
+
+
+                                    <div class="row">
+                                        <label class="col-sm-2">Servicio:</label>
+                                        <select id="cbxServicio" class="col-sm-4"></select>
+                                        <label class="col-sm-2">Centro MAC:</label>
+                                        <select id="cbxCentroAtencion" class="col-sm-4"></select>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    
+                                    <div class="row">
+                                        <label class="col-sm-2">Tipo de Reserva:</label>
+                                        <select id="cbxTipoReserva" class="col-sm-2">
+                                            <option value="0">-- SELECCIONE--</option>
+                                            <option value="1">CUPOS</option>
+                                            <option value="2">CITAS</option>
+                                        </select>
+                                        <label class="col-sm-2">Horario:</label>
+                                        <select id="cbxIntervaloHorario" class="col-sm-2">
+                                            <option value="0">-- SELECCIONE--</option>
+                                            <option value="1">30 MIN</option>
+                                            <option value="2">40 MIN</option>                                            
+                                        </select>
+                                        <label class="col-sm-2">Canal:</label>
+                                        <select id="cbxCanal" class="col-sm-2">
+                                            <option value="0">-- SELECCIONE--</option>
+                                            <option value="1">WEB</option>
+                                            <option value="2">ALO MAC</option>                                            
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-12 text-center">
+                            <button id="btnProgramar" type="button" class="btn btn-outline-secondary mr-1"><i class="fas fa-search" style="margin-right:5px;"></i>Programar</button>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <br /><br />
+                            <div class="card">
+                                <div class="card-header text-center" style="height:2rem;font-size:10px;">
+                                    <h6>Programación de Citas:</h6>
+                                </div>
+
+                                <div class="card-body" style="text-align:center">
+                                    <div class="row" style="margin-left:10px; margin-right:15px;">
+
+                                        <div class="col-lg-12">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>                                                        
+                                                        <th>Item</th>
+                                                        <th>Hora Inicio</th>
+                                                        <th>Hora Fin</th>
+                                                        <th>Lunes</th>
+                                                        <th>Martes</th>
+                                                        <th>Miercoles</th>
+                                                        <th>Jueves</th>
+                                                        <th>Viernes</th>
+                                                        <th>Sabado</th>
+                                                        <th>Domingo</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblProgramacion">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <br />
+
+                                </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="row" style="margin:40px;">
+                                    @*<div class="card-body text-center">*@
+                                    <div class="card-body align-items-center d-flex justify-content-center">
+                                        @*<div class="col-sm-4">
+                            <div class="form-group" id="divcaptch"></div>
+                            <input type="text" class="form-control" id="txtCaptcha" placeholder="captcha" style="display:none" required>
+                        </div>*@
+
+
+                                        <div class="col-sm-3">
+                                            <div class="btn-group" style="text-align:center">
+                                                <button id="btnGrabarCronograma" type="button" class="btn btn-success btn-lg">Grabar Cronograma</button>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="btn-group" style="text-align:center">
+                                                <button id="btnRegresar" type="button" class="btn btn-danger btn-lg">Cancelar</button>
+                                            </div>
+                                        </div>
+                                        @*</div>*@
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+    var citaSelecionada = {};
+    var vCaptcha = "";
+
+        $(document).ready(function () {
+
+    
+        $('#btnReservarCita').prop('disabled', true);
+        $("#txtCe").hide();
+
+        $("#cbxServicio").empty();
+        $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+        $("#cbxCentroAtencion").empty();
+        $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+
+      //  cargaVacio();
+
+     
+            $("#btnProgramar").click(function () {
+                var valido = true;
+                var clasN = "texto";
+
+            if ($('#cbxCanal').val() == '0') {
+                valido = false;
+                fnGlobales.msg.error("Debe seleccionar el canal que desea programar", function () { });
+            }
+
+                
+            if ($('#cbxTipoReserva').val() == '1') {
+              clasN = "soloNumero";
+            }
+
+
+            var prueba3 = {
+                CodeAttentionCenter: $('#cbxCentroAtencion').val(),
+                CodeServiceEntity: $('#cbxServicio').val(),
+                Intervalo: $('#cbxIntervaloHorario').val(),
+                CodeReservationType: $('#cbxTipoReserva').val(),
+                CodeChannelTypeAttention: $('#cbxCanal').val(),
+            };
+                var prueba1 = JSON.stringify(prueba3);
+
+                if (valido) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Model.Parametros.WebApiUrl.AppointmentService/GetScheduleId",
+                        data: prueba1,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (lstResult) {
+                            $('#tblProgramacion').html('');
+                            console.log('lstResult:' + JSON.stringify(lstResult));
+                            debugger;
+                            for (var i = 0; i < lstResult.length; i++) {
+                                var vCodeSchedule = lstResult[i].codeSchedule.toString();
+                                var quota5 = lstResult[i].quota5.toString();
+                                 var quota6 = lstResult[i].quota6.toString();
+                                var a = '<tr>';                            
+                                var b = '<td>' + (i + 1) + '</td>';
+                                //var c = '<td><label type="text" style="width:80px;"  id="txt_Ini_' + vCodeSchedule + '" value="' + lstResult[i].startTime + '"/></td>';
+                                //var d = '<td><label type="text"  style="width:80px;"  id="txt_Fin_' + vCodeSchedule + '" value="' + lstResult[i].endTime + '"/></td>';
+                                var c = '<td>'+lstResult[i].startTime+' </td>';
+                                var d = '<td>' + lstResult[i].endTime + '</td>';
+                                var e = '<td><input type="text" class="'+clasN+'" style="width:60px;"  id="txt_7_' + vCodeSchedule + '" value="' + lstResult[i].quota7 + '"/></td>';
+                                var f = '<td><input type="text" class="'+clasN+'" style="width:60px;"  id="txt_1_' + vCodeSchedule + '" value="' + lstResult[i].quota1 + '"/></td>';
+                                var g = '<td><input type="text" class="'+clasN+'" style="width:60px;"   id="txt_2_' + vCodeSchedule + '" value="' + lstResult[i].quota2 + '"/></td>';
+                                var h = '<td><input type="text" class="'+clasN+'" style="width:60px;"   id="txt_3_' + vCodeSchedule + '" value="' + lstResult[i].quota3 + '"/></td>';
+                                var j = '<td><input type="text" class="'+clasN+'" style="width:60px;"  id="txt_4_' + vCodeSchedule + '" value="' + lstResult[i].quota4 + '"/></td>';
+                                var k = '<td><input type="text" class="'+clasN+'" style="width:60px;"  id="txt_5_' + vCodeSchedule + '" value="' + quota5 + '"/></td>';
+                                var l = '<td><input type="text" class="'+clasN+'" style="width:60px;"  id="txt_6_' + vCodeSchedule + '" value="' +quota6 + '"/></td>';
+                                var m = '</tr>';
+                                    $('#tblProgramacion').append(a + b + c +d+g+ h+j+k+l+ e + f+m);
+
+                                }
+
+
+                                $('.soloNumero').on('input', function () { 
+                                    this.value = this.value.replace(/[^0-9]/g,'');
+                                });
+
+
+                        }, //End of AJAX Success function
+
+                        failure: function (data) {
+                            alert(data.responseText);
+                        }, //End of AJAX failure function
+                        error: function (data) {
+                            alert(data.responseText);
+                        } //End of AJAX error function
+
+                    });
+
+                }
+
+        });
+
+        $("#btnRegresar").click(function () {
+            window.location.href = '@Url.Action("ReservationPeople", "Appointment")';
+        });
+
+
+     $("#btnGrabarCronograma").click(function () {
+
+            var prueba3 = {
+                CodeAttentionCenter: $('#cbxCentroAtencion').val(),
+                CodeServiceEntity: $('#cbxServicio').val(),
+                Intervalo: $('#cbxIntervaloHorario').val(),
+                CodeReservationType: $('#cbxTipoReserva').val(),
+                CodeChannelTypeAttention: $('#cbxCanal').val(),
+            };
+            var prueba1 = JSON.stringify(prueba3);
+            $.ajax({
+                type: "POST",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetScheduleId",
+                data: prueba1,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (lstResult) {
+
+                    var lstRespuesta = [];
+
+                    for (var i = 0; i < lstResult.length; i++) {
+                        var vCodeSchedule = lstResult[i].codeSchedule.toString();
+
+                        var aRow = {
+                                    "CodeAttentionCenter": $('#cbxCentroAtencion').val(),
+                                    "CodeServiceEntity": $('#cbxServicio').val(),
+                                    "CodeSchedule": vCodeSchedule,
+                                    "CodeChannelTypeAttention": $('#cbxCanal').val(),
+                                    "CodeReservationType":$('#cbxTipoReserva').val(),
+                                    "Quota1": $('#txt_1_' + vCodeSchedule).val(),
+                                    "Quota2": $('#txt_2_' + vCodeSchedule).val(),
+                                    "Quota3": $('#txt_3_' + vCodeSchedule).val(),
+                                    "Quota4": $('#txt_4_' + vCodeSchedule).val(),
+                                    "Quota5": $('#txt_5_' + vCodeSchedule).val(),
+                                    "Quota6": $('#txt_6_' + vCodeSchedule).val(),
+                                    "Quota7": $('#txt_7_' + vCodeSchedule).val()
+
+                                };
+                                lstRespuesta.push(aRow);
+                        }
+
+                    
+                    $.ajax({
+                        url: "@Model.Parametros.WebApiUrl.AppointmentService/InsertScheduleAttentionCenter",
+                        data:JSON.stringify( lstRespuesta ),
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        beforeSend: function () {
+
+                        },
+                        success: function (data) {
+
+                            if (data[0].response == 1) {
+                                fnGlobales.msg.success("Se registró Correctamente el Horario Seleccionado", function () { });
+                                //Limpiar();
+                            }
+                        
+
+                        },
+                        complete: function () {
+
+                        },
+                        failure: function (jqXHR, textStatus, errorThrown) {
+                            console.error(response);
+                            fnGlobales.msg.error("Ocurrió un Problema", function () { });
+                        }
+                    });
+
+
+                }, //End of AJAX Success function
+
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+
+            });
+
+
+
+        });
+
+
+
+        CargaServicio();
+
+        //CargaActivityxId(0, 0);
+
+        //CargaTipoDocumento();
+
+
+     });
+
+
+
+
+    $(document).on('change', '#cbxServicio', function (event) {
+
+        var vCodeServiceEntity = $('#cbxServicio').val();
+        //$("#calendar").remove();
+        //$("#calendarContainer").append("<div id='calendar'></div>");
+        ////CargaActivityxId(0, 0);
+
+        CargaCentroAtencion(vCodeServiceEntity);
+    });
+
+   
+    function CargaServicio() {
+         $.ajax({
+                type: "GET",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetAllService",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                  //Entidad
+                    //cbxCentroAtencion
+                    debugger;
+                    $("#cbxServicio").empty();
+                    $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                       //SErviceAttentionCenter con servicio activado para citas
+                       $("#cbxServicio").append("<option value=" + data[i].codeServiceEntity + ">" + data[i].descriptionService + "</option>");
+                   }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+    };
+
+    function CargaCentroAtencion(vCodeServiceEntity) {
+        var dato = { CodeServiceEntity:vCodeServiceEntity };
+         $.ajax({
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetAttentionCenterId",
+                data: dato,
+                type: 'GET',
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                success: function (data) {
+                  //Entidad
+                    //cbxCentroAtencion
+                    $("#cbxCentroAtencion").empty();
+                    $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#cbxCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].descriptionAttentionCenter + "</option>");
+                   }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+         });
+
+    };
+
+    function CargaActivityxId(vCodeAttentionCenter, vCodeServiceEntity) {
+        //Entidad
+         //cbxCentroAtencion
+
+        var init = function () {
+
+            obtenerProgramacionCita();
+        }
+
+        var obtenerProgramacionCita = function () {
+            var prueba3 = { CodeAttentionCenter: vCodeAttentionCenter, CodeServiceEntity: vCodeServiceEntity };
+            var prueba1 = JSON.stringify(prueba3);
+            $.ajax({
+                type: "POST",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetActivityId",
+                data: prueba1,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    DataToEventList(data);
+                    loadCalendar(eventList);
+                    //alert(data);
+                    //console.log(data);
+                }, //End of AJAX Success function
+
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+
+            });
+
+        }
+
+        var DataToEventList = function (dataSoruce) {
+            eventList = [];
+            $.each(dataSoruce, function (i, item) {
+              
+                var eventModel = {
+                    id: item.codeActivity,
+                    codeschedule: item.codeSchedule,
+                    codeactivity: item.codeActivity,
+                    activityDate: item.activityDate,
+                    codeservice: item.codeService,
+                    codeServAttenCenter: item.codeServAttenCenter,
+                    codeattentioncenter: item.codeAttentionCenter,
+                    title: item.descriptionActivity,
+                    start: Date.parse( item.startTime, "yyyy-mm-dd hh:mm:ss"),
+                    end: Date.parse( item.endTime, "yyyy-mm-dd hh:mm:ss"),
+                    quota: item.quota,
+                    disponible: item.available,
+                    color: (item.available === true) ? '#005E8A' : '#D63232'
+                }
+                
+                eventList.push(eventModel);
+            });
+           
+        }
+
+        var loadCalendar = function () {
+
+            var today = new Date();
+           // alert(today.getDay());
+            var calendarEl = document.getElementById('calendar');
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+                theme: true,
+                themeSystem: 'bootstrap',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay'
+                },
+                firstDay: today.getDay(),
+                defaultView: 'timeGridWeek',
+                defaultDate: new Date(),
+                locale: 'es',
+                buttonIcons: true, // show the prev/next text
+                weekNumbers: true,
+                navLinks: true, // can click day/week names to navigate views
+                selectable: false,
+                selectMirror: true,
+                allDaySlot: false,
+                height: 500,
+                minTime: '08:00:00',
+                maxTime: '20:00:00',
+                eventClick: function (info) {
+
+                    if (info.event.extendedProps.disponible === true) {
+
+                        //alert('Event: ' + info.event.title);
+                        var newDate = FullCalendar.formatDate(info.event.start, {
+                            day: 'numeric',
+                            month: 'numeric',
+                            year: 'numeric',
+                            locale: 'es-PE'
+                        });
+
+
+                        citaSelecionada = {
+                            CodeActivity: info.event.id
+                        };
+
+                        var table = $('#dtService').DataTable();
+                        var filas = table.data().length;
+                        var i;
+                        for (i = 0;i <= filas; i++) {
+                            var idactivity = table.cell(table.row(i).node(), 0).data();
+                            var idservice = table.cell(table.row(i).node(), 1).data();
+                            var dateactivity = table.cell(table.row(i).node(), 8).data();
+                            if (idactivity == info.event.id) {
+                                //alert(table.cell(table.row(i).node(), 0).data());
+                                fnGlobales.msg.existe("No puede agregar cita a la misma hora", function () { });
+                                return false;
+                            }
+
+                            if (dateactivity == info.event.extendedProps.activityDate && idservice == info.event.extendedProps.codeservice) {
+                                //alert(dateactivity);
+                                fnGlobales.msg.existe("No puede agregar cita en el mismo dia", function () { });
+                                return false;
+                            }
+                        }
+
+                        table.row.add([
+                               info.event.id,
+                               $("#cbxServicio option:selected").val(),
+                               $("#cbxServicio option:selected").text(),
+                               $("#cbxCentroAtencion option:selected").val(),
+                               $("#cbxCentroAtencion option:selected").text(),
+                               info.event.extendedProps.codeschedule,
+                               newDate,
+                               info.event.title,
+                               info.event.extendedProps.activityDate,
+
+                            ] ).draw( false );
+
+                    }
+                },
+                eventRender: function (info) {
+
+                    var jqElement = $(info.el);
+                    jqElement.find(".fc-time").remove();
+                    var fc_title = jqElement.find(".fc-title")
+
+                    fc_title.css({
+                        'font-size': '13px',
+                        //'height': '50px',
+                        'color': '#FFFFFF'
+                    });
+                    if (info.event.extendedProps.disponible === true) {
+                        jqElement.css('cursor', 'pointer');
+                    } else {
+                        fc_title.prepend("<i class='glyphicon glyphicon-user'></i>");
+                    }
+                    jqElement.tooltip(
+                        {
+                            //title: "Cupo: " + info.event.extendedProps.quota,
+                            title: info.event.title,
+                            modelo: '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+                        }
+                    );
+
+                },
+
+                editable: false,
+                eventLimit: true, // allow "more" link when too many events
+                events: eventList
+            });
+
+            calendar.render();
+        }
+        init();
+
+
+    };
+
+ 
+   
+
+
+</script>

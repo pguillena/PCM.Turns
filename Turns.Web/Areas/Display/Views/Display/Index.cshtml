@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+@*<script type="text/javascript">
+    $(document).ready(function () {
+        alert("gg");
+    });
+</script>*@
+<div class="card">
+    @*<div class="card-header text-center bg-danger">
+            Listado de Videos
+        </div>*@
+    @*<hr class="hr-videos" />*@
+    <div class="col-md-12 mt-4 d-flex justify-content-center">
+        @*<button type="button" class="btn btn-outline-secondary mr-1"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>*@
+        @*<button class="btn-ServiceActive" data-toggle="modal" data-target="#myModal"><i class="fas fa-university fa-2x"></i><br>BANCO DE LA NACIÓN</button>*@
+        @*<button type="button" class="btn btn-outline-secondary mr-1" style="margin-left:3px;"><i class="fas fa-times-circle"></i>Limpiar</button>*@
+        @*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*@
+        @*<button type="button" class="btn btn-outline-success" style="margin-left:3px;"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>*@
+        <button type="button" class="btn btn-outline-success" style="margin-left:3px;"><i class="fas fa-check"></i>Asignar</button>
+    </div>
+    <div class="row p-3">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover tabla-estado-reclamos" id="tablaReclamo">
+                @*<thead class="thead-dark text-center">*@
+                <tr class="thead-dark text-center">
+                    <th class="align-middle" width="5%">N°</th>
+                    <th class="align-middle">Video</th>
+                    <th class="align-middle" width="15%">Descripción</th>
+                    <th class="align-middle" width="10%">Fecha registro</th>
+                    <th class="align-middle" width="8%">Estado</th>
+                    <th class="align-middle" width="8%">Editar</th>
+                    <th class="align-middle" width="8%">Eliminar</th>
+                </tr>
+                @*</thead>*@
+                @*<tbody class="text-center">*@
+                <tr class="text-center">
+                    <td class="align-middle">1</td>
+                    <td class="align-middle">Video 1</td>
+                    <td class="align-middle">Centro MAC Lima Norte</td>
+                    <td class="align-middle">11/07/2019</td>
+                    <td class="align-middle">Registrado</td>
+                    <td class="align-middle icono-fa"><a href="#"><i class="fas fa-edit fa-2x"></i></a></td>
+                    <td class="align-middle icono-fa"><a href="#"><i class="fas fa-trash-alt fa-2x"></i></a></td>
+                </tr>
+                <tr class="text-center">
+                    <td class="align-middle">2</td>
+                    <td class="align-middle">Video 2</td>
+                    <td class="align-middle">Centro MAC Lima Norte</td>
+                    <td class="align-middle">12/08/2019</td>
+                    <td class="align-middle">Registrado</td>
+                    <td class="align-middle icono-fa"><a href="#"><i class="fas fa-edit fa-2x"></i></a></td>
+                    <td class="align-middle icono-fa"><a href="#"><i class="fas fa-trash-alt fa-2x"></i></a></td>
+                </tr>
+                @*</tbody>*@
+            </table>
+        </div>
+    </div>
+</div>
+

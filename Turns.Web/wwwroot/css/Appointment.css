@@ -1,0 +1,72 @@
+/* //////////////////////////////////////////////////////////
+Reserva de Citas
+Copyright 2019 Presidencia del Consejo de Ministros - PCM
+
+Colores principales:
+--------------------
+Rojo    -> BF0909
+Gris    -> 3C4145
+Turquesa -> 0CAFD0
+Celeste  -> C1EEF7
+
+/* FONTS CUSTOM ------------------
+--------------------------------*/
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../webfonts/montserrat-regular-webfont.woff2') format('woff2'), url('../webfonts/montserrat-regular-webfont.woff') format('woff');
+}
+
+.btn-primary {
+    color: #fff !important;
+    background-color: #ff1a1a !important;
+    border-color: #cc0000 !important;
+}
+p.note {
+    font-size: 1rem;
+    color: red;
+}
+
+input {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    font-family: 'Lato';
+    width: 300px;
+    margin-top: 10px;
+}
+
+label {
+    width: 300px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+    label span {
+        font-size: 1rem;
+    }
+
+    label.error {
+        color: red;
+        font-size: 1rem;
+        display: block;
+        margin-top: 5px;
+    }
+
+input.error {
+    border: 1px dashed red;
+    font-weight: 300;
+    color: red;
+}
+
+table {
+    margin: 0 auto;
+    width: 100%;
+    clear: both;
+    border-collapse: collapse;
+    table-layout: fixed;
+    // ***********add this word-wrap:break-word;
+    // ***********and this
+}
+

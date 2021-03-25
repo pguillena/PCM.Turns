@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema de Reserva de Citas</title>
+
+    <link rel="stylesheet" href="~/css/fontawesome.min.css" />
+
+    <link href="~/css/Appointment.css" rel="stylesheet" />
+    <link href='~/lib/fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='~/lib/fullcalendar/timegrid/main.css' rel='stylesheet' />
+    <link href='~/lib/fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <link href='~/lib/fullcalendar/list/main.css' rel='stylesheet' />
+    <link href="~/css/Turns.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-4.3.1-dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-4.3.1-dist/css/bootstrapValidator.css" rel="stylesheet" />
+    <link href="~/lib/sweetalert2/sweetalert2.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-4.3.1-dist/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+
+
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/lib/bootstrap-4.3.1-dist/js/bootstrap.js"></script>
+
+    <script src="~/lib/bootstrap-4.3.1-dist/js/bootstrapValidator.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+    <script src='~/lib/fullcalendar/core/main.js'></script>
+    <script src='~/lib/fullcalendar/interaction/main.js'></script>
+    <script src='~/lib/fullcalendar/bootstrap/main.js'></script>
+    <script src='~/lib/fullcalendar/daygrid/main.js'></script>
+    <script src='~/lib/fullcalendar/timegrid/main.js'></script>
+    <script src='~/lib/fullcalendar/list/main.js'></script>
+    <script src="~/lib/sweetalert2/sweetalert2.js"></script>
+    <script src="~/js/Globales.js"></script>
+    <script src="~/lib/bootstrap-4.3.1-dist/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/bootstrap-4.3.1-dist/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/dataTables.buttons.min.js"></script>
+    <script src="~/js/dataTables.editor.min.js"></script>
+    <script src="~/js/dataTables.responsive.min.js"></script>
+    <script src="~/js/dataTables.select.min.js"></script>
+
+    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+
+</head>
+<body>
+    <header>
+        <div class="header__content container flex">
+            <div class="logo">
+                <a href="../Claim/Index">
+                    <img src="~/images/logo_escudo.svg" class="logo__escudo" alt="Escudo Peruano">
+                    <img src="~/images/logo_gobpe.svg" class="logo__gobpe" alt="gob.pe">
+                    <img src="~/images/logo_texto.svg" class="logo__texto" alt="Plataforma digital única del Estado Peruano">
+                </a>
+            </div>
+            @* <div class="wrap-ingresar"><a href="#"><button class="btn btn-danger">Ingresar <i class="fas fa-sign-in-alt"></i></button></a></div>*@
+        </div>
+    </header>
+
+    @*<partial name="_CookieConsentPartial" />*@
+<section class="col-sm-12 main-content--oscuro pt-5">   
+    <div class="content-wrapper">
+                @RenderBody()
+    </div>
+ 
+    </section>
+    <footer class="text-left">
+        <div class="container info-footer">
+            FOOTER
+        </div>
+    </footer>
+
+    @*<environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap4/js/bootstrap.js"></script>
+            <script src="~/js/site.js"></script>
+        </environment>*@
+
+    <script>
+        $('#navtabAtencion a').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+        })
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+
+    <div class="card">
+        <div class="card-header text-center bg-danger ">
+            Monitoreo del Sistema de Turnos
+        </div>
+        <div class="row p-3">
+            <div class="form-row  col-md-3">
+                <div class="menu-panel pl-0 col-sm-12">
+                    <a>
+                        <div class="item-panel d-flex align-items-center shadow-bg">
+                            <div class="text"><strong>Atendidos</strong><br /><p class="small-text">Ticket que fueron atendidos en las ventanillas.</p></div>
+                            <div class="icon bg-danger">5460</div>
+                        </div>
+                    </a>
+                    <a>
+                        <div class="item-panel d-flex align-items-center shadow-bg">
+                            <div class="text"><strong>En Espera</strong><br /><p class="small-text">Ticket en espera de ser atendidos.</p></div>
+                            <div class="icon bg-danger">680</div>
+                        </div>
+                    </a>
+
+                    <a>
+                        <div class="item-panel d-flex align-items-center shadow-bg">
+                            <div class="text"><strong>Abandono</strong><br /><p class="small-text">Ticket que no fueron atendidos.</p></div>
+                            <div class="icon bg-danger">15680</div>
+                        </div>
+                    </a>
+                    <a>
+                        <div class="item-panel d-flex align-items-center shadow-bg">
+                            <div class="text"><strong>En atención</strong><br /><p class="small-text">Ventanillas activas en el MAC.</p></div>
+                            <div class="icon bg-danger">352</div>
+                        </div>
+                    </a>
+                    @*<a>
+                        <div class="item-panel d-flex align-items-center shadow-bg">
+                            <div class="text"><strong>Por Responder</strong><br /><p class="small-text">Derivado a otra entidad.</p></div>
+                            <div class="icon bg-danger">2856</div>
+                        </div>
+                    </a>*@
+                </div>
+            </div>
+            <div class="col-md-9 m-0 p-0">
+                <div class="card shadow-bg p-3">
+                    <h2 class="titulo-estadistico">Atenciones por MacExpress</h2>
+                    <canvas id="myChart1" width="400" height="95"></canvas>
+                </div>
+                <div class="card shadow-bg p-3">
+                    <h2 class="titulo-estadistico">Tipo de Atención</h2>
+                    <canvas id="myChart2" width="400" height="95"></canvas>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+        @*<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>*@
+        <script src="~/js/Chart.js"></script>
+        <script>
+
+            //var densityData = {
+            //              label: 'Density of Planet (kg/m3)',
+            //              data: [5427, 5243, 5514, 3933, 1326, 687, 1271, 1638],
+            //              backgroundColor: 'rgba(0, 99, 132, 0.6)',
+            //              borderColor: 'rgba(0, 99, 132, 1)',
+            //              yAxisID: "y-axis-density"
+            //            };
+ 
+            //            var gravityData = {
+            //              label: 'Gravity of Planet (m/s2)',
+            //              data: [3.7, 8.9, 9.8, 3.7, 23.1, 9.0, 8.7, 11.0],
+            //              backgroundColor: 'rgba(99, 132, 0, 0.6)',
+            //              borderColor: 'rgba(99, 132, 0, 1)',
+            //              yAxisID: "y-axis-gravity"
+            //            };
+ 
+            //            var planetData = {
+            //              labels: ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"],
+            //              datasets: [densityData, gravityData]
+            //            };
+ 
+            //            var chartOptions = {
+            //              scales: {
+            //                xAxes: [{
+            //                  barPercentage: 1,
+            //                  categoryPercentage: 0.6
+            //                }],
+            //                yAxes: [{
+            //                  id: "y-axis-density"
+            //                }, {
+            //                  id: "y-axis-gravity"
+            //                }]
+            //              }
+            //            };
+ 
+            //            var barChart = new Chart(densityCanvas, {
+            //              type: 'bar',
+            //              data: planetData,
+            //              options: chartOptions
+            //            })
+
+
+
+
+
+
+
+
+
+
+            var ctx = document.getElementById('myChart1').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Banco Nación', 'Reniec', 'Sunat', 'MTC', 'Migraciones', 'INPE','Poder Judicial','SIS','OSCE'],
+                    datasets: [{
+                        label: 'N° de Atenciones',
+                        data: [12.2, 19, 3, 5, 2, 3,1,10,2],
+                        backgroundColor: [
+                            'rgba(8, 8, 8, 0.1)',
+                            'rgba(140, 140, 140, 0.6)',
+                            'rgba(171, 164, 164, 0.4)',
+                            'rgba(68, 63, 63, 0.2)',
+                            'rgba(140, 140, 140, 0.6)',
+                            'rgba(140, 140, 140, 0.5)',
+
+                            'rgba(140, 140, 140, 0.5)',
+                            'rgba(140, 140, 140, 0.5)',
+                            'rgba(140, 140, 140, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(7, 7, 7, 0.3)',
+                            'rgba(140, 140, 140, 1)',
+                            'rgba(171, 164, 164, 1)',
+                            'rgba(68, 63, 63, 0.6)',
+                            'rgba(140, 140, 140, 0.8)',
+                            'rgba(68, 63, 63, 0.2)',
+
+                            'rgba(68, 63, 63, 0.2)',
+                            'rgba(68, 63, 63, 0.2)',
+                            'rgba(68, 63, 63, 0.2)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+        <script>
+            var ctx = document.getElementById('myChart2').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Adulto Mayor', 'Normal', 'Gestante', 'Discapacitado'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5],
+                        backgroundColor: [
+                            'rgba(8, 8, 8, 0.1)',
+                            'rgba(140, 140, 140, 0.6)',
+                            'rgba(171, 164, 164, 0.4)',
+                            'rgba(68, 63, 63, 0.2)'
+                            //,
+                            //'rgba(140, 140, 140, 0.6)',
+                            //'rgba(140, 140, 140, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(7, 7, 7, 0.3)',
+                            'rgba(140, 140, 140, 1)',
+                            'rgba(171, 164, 164, 1)',
+                            'rgba(68, 63, 63, 0.6)'
+                            //,
+                            //'rgba(140, 140, 140, 0.8)',
+                            //'rgba(68, 63, 63, 0.2)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>

@@ -1,0 +1,928 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Citas";
+    Layout = "~/Views/Shared/_LayoutAppointment.cshtml";
+}
+
+
+<div class="row" style="justify-content:center; ">
+    <div class="card" style="width: 98rem;">
+        <div class="card-header text-center bg-danger">
+            Reserva de Citas
+        </div>
+        <div class="card-body">
+            <div class="row" style="margin:20px;">
+                <form id="basic-form" class="align-content-xl-stretch">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="card">
+                                <div class="card-header text-center" style="height:2rem;font-size:10px;">
+                                    <h6>Datos del Ciudadano:</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div>
+                                        <label class="control-label" style="text-align:left;width:40px;">Dni:</label>
+                                        <label class="control-label" id="lbldni" style="text-align:left;width:700px;"></label>
+                                        <input type="hidden" id="hDni" />
+                                    </div>
+                                    <div>
+                                        <label class="control-label" style="text-align:left;width:80px;">Nombre:</label>
+                                        <label class="control-label" id="lblnombres" style="text-align:left;width:700px;"></label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header text-center" style="height:2rem;">
+                                    <h6>Servicio y Lugar de Atenciòn</h6>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-11">
+                                            <div class="form-group">
+                                                <label>Servicio:</label>
+                                                <select id="cbxServicio" class="form-control"></select>
+                                                <label>Centro MAC:</label>
+                                                <select id="cbxCentroAtencion" class="form-control"></select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="card" style="width:61rem;">
+                                <div class="card-header text-center" style="height:2rem;font-size:10px;">
+                                    <h6>Información de Cita:</h6>
+                                </div>
+
+                                <div class="card-body" style="text-align:center">
+                                    <img src="~/images/loading.gif" id="imgloading" style="width:150px; margin-top:10%;margin-bottom:10%;"/>
+
+                                    <div id="calendarContainer">
+                                        <div id='calendar' class="fc fc-ltr fc-bootstrap"></div>
+                                    </div>
+                                    <div>
+                                        <label>Leyenda</label>
+                                        <button type="button" class="btn btn-success btn-sm" style="color:White; background-color:#33B531; margin:10px;">
+                                            <i class="fas fa-baseball-ball"></i> Disponible
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" style="color:White; background-color:#D63232; margin:10px;">
+                                            <i class="fas fa-baseball-ball"></i> Ocupado
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header text-center" style="height:2rem; font-size:10px;">
+                                    <h6>Trámites Seleccionados</h6>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            @*  <table id="dtService" name="dtService" class="table table-striped table-bordered table-sm" cellspacing="0">*@
+                                            <table id="dtService" name="dtService" class="display nowrap dataTable no-footer dtr-inline" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th class="th-sm">CodigoActividad</th>
+                                                        <th class="th-sm">CodigoServicio</th>
+                                                        <th class="th-sm">Servicio</th>
+                                                        <th class="th-sm">CodigoMac</th>
+                                                        <th class="th-sm">Mac</th>
+                                                        <th class="th-sm">CodigoHorario</th>
+                                                        <th class="th-sm">Fecha</th>
+                                                        <th class="th-sm">Hora</th>
+                                                        <th class="th-sm">FechaActividad</th>
+                                                        <th class="th-sm">CodigoReserva</th>
+                                                        <th class="th-sm">Acciones</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="dtDatos"></tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="row" style="margin:40px;">
+                                    @*<div class="card-body text-center">*@
+                                    <div class="card-body align-items-center d-flex justify-content-center">
+                                        @*<div class="col-sm-4">
+                                                <div class="form-group" id="divcaptch"></div>
+                                                <input type="text" class="form-control" id="txtCaptcha" placeholder="captcha" style="display:none" required>
+                                            </div>*@
+
+                                        <div class="col-sm-2">
+                                            <div class="btn-group" style="text-align:center">
+                                                <button id="btnRegresar" type="button" class="btn btn-danger btn-lg">Regresar</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="btn-group" style="text-align:center">
+                                                <button id="btnReservarCita" type="button" class="btn btn-success btn-lg">Reservar</button>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="btn-group" style="text-align:center">
+                                                <button id="btnLimpiar" type="button" class="btn btn-success btn-lg">Limpiar</button>
+                                            </div>
+
+                                        </div>
+                                        @*</div>*@
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+    var citaSelecionada = {};
+    var vCaptcha = "";
+
+        $(document).ready(function () {
+            $('#imgloading').hide();
+        CargaActivityxId(0, 0);
+        $('#btnReservarCita').prop('disabled', true);
+        $("#txtCe").hide();
+
+        $("#cbxServicio").empty();
+        $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+        $("#cbxCentroAtencion").empty();
+        $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+
+        var key = 'Datos_Ciudadano';
+        var item = JSON.parse(localStorage.getItem(key));
+
+        if (localStorage.length > 0) {
+            $("#lbldni").text(item.vDni);
+            $("#hDni").val(item.vDni);
+
+            $("#lblnombres").text((item.vName + ' ' + item.vApePaterno + ' ' + item.vApeMaterno).toUpperCase()
+            );
+            console.log(item);
+        } else {
+            // No items
+             $("#hDni").val("");
+        }
+
+      //  cargaVacio();
+
+        $('#dtService').removeAttr('width').dataTable({
+            //"autoWidth": false,
+            "pageLength": 5,
+            "bLengthChange": false,
+               language: {
+                "decimal": "",
+                "emptyTable": "No hay información",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                "infoPostFix": "",
+                   "thousands": ",",
+                   "week":"Semana",
+                "lengthMenu": "Mostrar _MENU_ Entradas",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "zeroRecords": "Sin resultados encontrados",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Ultimo",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            },
+            //responsive: true,
+            //fixedColumn: true,
+            columnDefs: [
+                {
+                targets: 0,
+                visible: false
+                },
+                {
+                targets: 1,
+                visible: false
+                },
+                {
+                width: 250,
+                targets: 2
+                },
+                {
+                targets: 3,
+                visible: false
+                },
+                {
+                width: 100,
+                targets: 4
+                    },
+                {
+                targets: 5,
+                visible: false
+                    },
+                {
+                width: 80,
+                targets: 6
+                    },
+                {
+                width: 70,
+                targets: 7
+                },
+                {
+                targets: 8,
+                visible: false
+                },
+                 {
+                targets: 9,
+                visible: false
+                },
+                {
+                    width: 20,
+                    className: 'text-center',
+                    targets: -1, //-1 es la ultima columna y 0 la primera
+                    data: null,
+                    //defaultContent: '<div class="btn-group"> <button type="button" class="btn btn-info btn-xs dt-view" style="margin-right:16px;"><span class="glyphicon glyphicon-eye-open glyphicon-info-sign" aria-hidden="true"></span></button>  <button type="button" class="btn btn-primary btn-xs dt-edit" style="margin-right:16px;"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs dt-delete"><span class="glyphicon glyphicon-remove glyphicon-trash" aria-hidden="true"></span></button></div>'
+                    //defaultContent:'<button type="button" class="editar edit-modal btn  botonEditar"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button>'
+                    //  defaultContent: '<button id="button" class="btn btn-danger btn-rounded btn-sm my-0">Delete</button>'
+                    //defaultContent:'<input type="button" onclick="deleteRow(this)"><span class="fa fa-trash "></span></input>'
+                    defaultContent: '<span align="center" class="table-remove"><button type="button" onclick="deleteRow(this)" class="btn btn-danger btn-rounded btn-sm my-0"><span class="fa fa-trash " style="color:white;"></span></button></span>'
+                }        //value="Delete"
+            ]
+
+        });
+
+
+
+        $("#btnRegresar").click(function () {
+            window.location.href = '@Url.Action("ReservationPeople", "Appointment")';
+        });
+
+
+        $("#btnReservarCita").click(function () {
+
+            var getcbxServicio = $("#cbxServicio").val();
+            var getcbxCentroAtencion = $("#cbxCentroAtencion").val();
+
+
+            if (getcbxServicio == -1) {
+                fnGlobales.msg.error("Seleccione Combo Servicio", function () { });
+                return false;
+            }
+
+            if (getcbxCentroAtencion == -1) {
+                fnGlobales.msg.error("Seleccione Combo Centro Mac", function () { });
+                return false;
+            }
+
+            if ($("#lbldni").text() == '') {
+                fnGlobales.msg.error("Ingrese DNI", function () { });
+                return false;
+            }
+            if ($("#lblnombres").text() == '') {
+                fnGlobales.msg.error("Ingrese Nombres", function () { });
+                return false;
+            }
+
+            var oAppointmentEntity =[];
+            var table = $('#dtService').DataTable();
+            var filas = table.data().length;
+
+            if (filas < 1) {
+                fnGlobales.msg.error("Debe escoger al menos una cita para su reserva", function () { });
+                return false;
+            }
+            
+            for (var i = 0; i < filas; i++) {
+                var rowmodel = {
+                 "Dni": item.vDni,
+                "FirstName": item.vName,
+                "FirstLastName": item.vApePaterno,
+                "SecondLastName": item.vApeMaterno,
+                "Email": item.vCorreo,
+                "Telephone": item.vTelefono,
+
+                "CodeActivity": table.cell(table.row(i).node(), 0).data(),
+                "CodeServiceEntity": table.cell(table.row(i).node(), 1).data(),
+                "CodeAttentionCenter": table.cell(table.row(i).node(), 3).data(),
+                "CodeSchedule": table.cell(table.row(i).node(), 5).data(),
+                "AppointmentDate": table.cell(table.row(i).node(), 6).data(),
+                "CodeAppointment": table.cell(table.row(i).node(), 9).data(),
+                "CodeChannelTypeAttention": 1,
+                };
+                oAppointmentEntity.push(rowmodel)
+            }
+
+
+                $.ajax({
+                    url: "@Model.Parametros.WebApiUrl.AppointmentService/InsertActivity",
+                    data:JSON.stringify( oAppointmentEntity ),
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    beforeSend: function () {
+
+                    },
+                    success: function (data) {
+                        
+                        if (data[0].response == 1) {
+                            $("#calendar").remove();
+                            $("#calendarContainer").append("<div id='calendar'></div>");
+                            CargaActivityxId(getcbxCentroAtencion, getcbxServicio);
+                            localStorage.clear();
+                            fnGlobales.msg.success("Reserva Correcta", function () {
+                                  window.location.href = '@Url.Action("ReservationPeople", "Appointment")';
+                            });
+
+                            //Limpiar();
+                        }
+                        if (data[0].response == 2) {
+                            fnGlobales.msg.error("Existe una cita Reservada con el Documento ingresado", function () { });
+                        }
+
+                    },
+                    complete: function () {
+
+                    },
+                    failure: function (jqXHR, textStatus, errorThrown) {
+                        console.error(response);
+                        fnGlobales.msg.error("Ocurrió un Problema", function () { });
+                    }
+                });
+
+        });
+
+        $("#btnLimpiar").click(function () {
+
+            Limpiar();
+            LimpiarCalendar();
+
+        });
+
+        CargaServicio();
+
+        //CargaActivityxId(0, 0);
+
+        //CargaTipoDocumento();
+
+         $("#basic-form").validate({
+            rules: {
+              name : {
+                required: true
+              },
+              apepat : {
+                required: true
+              },
+              apemat : {
+                required: true
+              },
+              fecha : {
+                required: true
+               },
+              hora : {
+                required: true
+              },
+              age: {
+                required: true,
+                number: true,
+                min: 18
+              },
+              email: {
+                email: true
+              },
+              weight: {
+                required: {
+                  depends: function(elem) {
+                    return $("#age").val() > 50
+                  }
+                },
+                number: true,
+                min: 0
+              },
+              input_telf: 'customphone',
+              input_dni: 'dniCheck'
+             },
+            messages : {
+                name: {
+                required: "Campo Requerido"
+                },
+                apepat: {
+                required: "Campo Requerido"
+                },
+                apemat: {
+                required: "Campo Requerido"
+                },
+                fecha: {
+                required: "Campo Requerido"
+                },
+                hora: {
+                required: "Campo Requerido"
+              },
+              age: {
+                required: "Campo Requerido",
+                number: "Please enter your age as a numerical value",
+                min: "You must be at least 18 years old"
+              },
+               email: {
+                required: "Campo Requerido",
+                email: "Ingrese Correo Electrónico Correcto"
+              },
+              weight: {
+                number: "Please enter your weight as a numerical value"
+                },
+              input_telf: {
+                 required: "Campo Requerido",
+                },
+              input_dni: {
+                 required: "Campo Requerido",
+                }
+            }
+
+         });
+
+            obtenerCitaCiudadano();
+     });
+
+    function obtenerCitaCiudadano()
+    {
+        $('#dtService').DataTable().clear();
+               var key = 'Datos_Ciudadano';
+                var item = JSON.parse(localStorage.getItem(key));
+            // alert(item.vDni);
+            var prueba2 = {  Dni: item.vDni,CodeAttentionCenter: 0, CodeServiceEntity: 0 };
+            var prueba1 = JSON.stringify(prueba2);
+            $.ajax({
+                type: "POST",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetActivityId",
+                data: prueba1,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+
+                    debugger;
+                    //ciudadano
+                        var table = $('#dtService').DataTable();
+                        var filas = table.data().length;
+                    var i;
+                    for (i = 0; i <= data.length; i++) {
+
+                        table.row.add([
+                                   data[i].codeActivity,
+                                   data[i].codeServiceEntity,
+                                   data[i].descriptionService,
+                                   data[i].codeAttentionCenter,
+                                   data[i].descriptionAttentionCenter,
+                                   data[i].codeSchedule,
+                                   data[i].activityDate,
+                                   data[i].descriptionActivity,
+                                   data[i].appointmentDate,
+                                   data[i].codeAppointment
+
+                                ] ).draw( false );
+
+                        }
+
+
+                    //alert(data);
+                    //console.log(data);
+                }, //End of AJAX Success function
+
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+
+            });
+
+        }
+
+    $.validator.addMethod('customphone', function (value, element) {
+    return this.optional(element) || /^\d{9}$/.test(value);
+    }, "Ingrese Número de Teléfono Válido");
+
+     $.validator.addMethod('dniCheck', function (value, element) {
+    return this.optional(element) || /^\d{8}$/.test(value);
+    }, "DNI no válido");
+
+
+
+    $(document).on('change', '#cbxServicio', function (event) {
+
+        var vCodeServiceEntity = $('#cbxServicio').val();
+        $("#calendar").remove();
+        $("#calendarContainer").append("<div id='calendar'></div>");
+        //CargaActivityxId(0, 0);
+
+        CargaCentroAtencion(vCodeServiceEntity);
+    });
+
+    $(document).on('change', '#cbxCentroAtencion', function (event) {
+
+        var vCodeServiceEntity = $('#cbxServicio').val();
+        var vCodeAttentionCenter = $('#cbxCentroAtencion').val();
+
+        $("#calendar").remove();
+        $("#calendarContainer").append("<div id='calendar'></div>");
+        CargaActivityxId(vCodeAttentionCenter, vCodeServiceEntity);
+
+
+    });
+
+     function deleteRow(btn) {
+        var table = $('#dtService').DataTable();
+        var row = btn.parentNode.parentNode;
+         //row.parentNode.removeChild(row);
+        // row.parentNode.remove(row);
+        // row.parentNode.draw(row);
+         var row_cell = row._DT_CellIndex;
+         var row_row = row_cell.row;
+         var row_col = row_cell.column;
+         var x = 'sd';
+
+
+         
+         var oAppointmentEntity =[];
+            var table = $('#dtService').DataTable();
+            var filas = table.data().length;
+
+             var key = 'Datos_Ciudadano';
+                var item = JSON.parse(localStorage.getItem(key));
+         var rowmodel = {
+                "CodeAppointment":table.cell(table.row(row_row).node(), 9).data(),
+                "Dni": item.vDni,
+                "FirstName": item.vName,
+                "FirstLastName": item.vApePaterno,
+                "SecondLastName": item.vApeMaterno,
+                "Email": item.vCorreo,
+                "Telephone": item.vTelefono,
+
+                "CodeActivity": table.cell(table.row(row_row).node(), 0).data(),
+                "CodeServiceEntity": table.cell(table.row(row_row).node(), 1).data(),
+                "CodeAttentionCenter": table.cell(table.row(row_row).node(), 3).data(),
+                "CodeSchedule": table.cell(table.row(row_row).node(), 5).data(),
+                "AppointmentDate": table.cell(table.row(row_row).node(), 6).data(),
+                "CodeChannelTypeAttention": 1,
+                };
+                oAppointmentEntity.push(rowmodel)
+         //alert(JSON.stringify(oAppointmentEntity));
+         if (oAppointmentEntity[0].CodeAppointment > 0) {
+             //elminar cita
+
+             fnGlobales.msg.confirm("¿Esta es una cita ya reservada, está seguro de eliminar la cita?", function () {
+                   var dato = {
+                CodeAppointment: oAppointmentEntity[0].CodeAppointment
+            };
+                 $.ajax({
+                    type: "POST",
+                    url: "@Model.Parametros.WebApiUrl.AppointmentService/DeleteAppointment",
+                    data: JSON.stringify(dato),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+
+                                obtenerCitaCiudadano();
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+
+
+         }
+         else {
+             table.row(row_row).remove();
+             row.parentNode.remove(row);
+             table.draw();
+         }
+
+
+    }
+
+    function CargaServicio() {
+         $.ajax({
+                type: "GET",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetAllService",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                  //Entidad
+                    //cbxCentroAtencion
+                    
+                    $("#cbxServicio").empty();
+                    $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                       //SErviceAttentionCenter con servicio activado para citas
+                       $("#cbxServicio").append("<option value=" + data[i].codeServiceEntity + ">" + data[i].descriptionService + "</option>");
+                   }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+    };
+
+    function CargaCentroAtencion(vCodeServiceEntity) {
+        var dato = { CodeServiceEntity:vCodeServiceEntity };
+         $.ajax({
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetAttentionCenterId",
+                data: dato,
+                type: 'GET',
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                success: function (data) {
+                  //Entidad
+                    //cbxCentroAtencion
+                    $("#cbxCentroAtencion").empty();
+                    $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#cbxCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].descriptionAttentionCenter + "</option>");
+                   }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+         });
+
+    };
+
+    function CargaActivityxId(vCodeAttentionCenter, vCodeServiceEntity) {
+        //Entidad
+         //cbxCentroAtencion
+        $('#imgloading').show();
+        var init = function () {
+
+            obtenerProgramacionCita();
+        }
+
+
+
+        var obtenerProgramacionCita = function () {
+            var prueba3 = { CodeAttentionCenter: vCodeAttentionCenter, CodeServiceEntity: vCodeServiceEntity };
+            var prueba1 = JSON.stringify(prueba3);
+            $.ajax({
+                type: "POST",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetActivityId",
+                data: prueba1,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    DataToEventList(data);
+                    loadCalendar(eventList);
+                    $('#imgloading').hide();
+                    //alert(data);
+                    //console.log(data);
+                }, //End of AJAX Success function
+
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+
+            });
+
+        }
+
+        var DataToEventList = function (dataSoruce) {
+            eventList = [];
+            $.each(dataSoruce, function (i, item) {
+                
+                //eventlist
+                var eventModel = {
+                    id: item.codeActivity,
+                    codeschedule: item.codeSchedule,
+                    codeactivity: item.codeActivity,
+                    activityDate: item.activityDate,
+                    codeservice: item.codeService,
+                    codeServAttenCenter: item.codeServAttenCenter,
+                    codeattentioncenter: item.codeAttentionCenter,
+                    codeAppointment:item.codeAppointment,
+                    title: item.descriptionActivity,
+                    start: Date.parse( item.startTime, "yyyy-mm-dd hh:mm:ss"),
+                    end: Date.parse( item.endTime, "yyyy-mm-dd hh:mm:ss"),
+                    quota: item.quota,
+                    disponible: item.available,
+                    color: (item.available === true) ? '#005E8A' : '#D63232'
+                }
+
+                eventList.push(eventModel);
+            });
+
+        }
+
+        var loadCalendar = function () {
+
+            var today = new Date();
+           // alert(today.getDay());
+            var calendarEl = document.getElementById('calendar');
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+                theme: true,
+                themeSystem: 'bootstrap',
+                header: {
+                   // left: 'prev,next today',
+                     left: 'prev,next',
+                    center: 'title',
+                    right:'prev,next'
+                    //,
+                    //right: 'timeGridWeek,timeGridDay'
+                },
+                firstDay: today.getDay(),
+                defaultView: 'timeGridWeek',
+                defaultDate: new Date(),
+                locale: 'es',
+                buttonIcons: true, // show the prev/next text
+                weekNumbers: true,
+                navLinks: true, // can click day/week names to navigate views
+                selectable: false,
+                selectMirror: true,
+                allDaySlot: false,
+                height: 500,
+                minTime: '08:00:00',
+                maxTime: '20:00:00',
+                eventClick: function (info) {
+
+                    if (info.event.extendedProps.disponible === true) {
+
+                        //alert('Event: ' + info.event.title);
+                        var newDate = FullCalendar.formatDate(info.event.start, {
+                            day: 'numeric',
+                            month: 'numeric',
+                            year: 'numeric',
+                            locale: 'es-PE'
+                        });
+
+
+                        citaSelecionada = {
+                            CodeActivity: info.event.id
+                        };
+
+                        var table = $('#dtService').DataTable();
+                        var filas = table.data().length;
+                        var i;
+                        for (i = 0;i <= filas; i++) {
+                            var idactivity = table.cell(table.row(i).node(), 0).data();
+                            var idservice = table.cell(table.row(i).node(), 1).data();
+                            var dateactivity = table.cell(table.row(i).node(), 8).data();
+                            if (idactivity == info.event.id) {
+                                //alert(table.cell(table.row(i).node(), 0).data());
+                                fnGlobales.msg.existe("No puede agregar cita a la misma hora", function () { });
+                                return false;
+                            }
+
+                            if (dateactivity == info.event.extendedProps.activityDate && idservice == info.event.extendedProps.codeservice) {
+                                //alert(dateactivity);
+                                fnGlobales.msg.existe("No puede agregar cita en el mismo dia", function () { });
+                                return false;
+                            }
+                        }
+
+                        table.row.add([
+                               info.event.id,
+                               $("#cbxServicio option:selected").val(),
+                               $("#cbxServicio option:selected").text(),
+                               $("#cbxCentroAtencion option:selected").val(),
+                               $("#cbxCentroAtencion option:selected").text(),
+                               info.event.extendedProps.codeschedule,
+                               newDate,
+                               info.event.title,
+                               info.event.extendedProps.activityDate,
+                               info.event.extendedProps.codeAppointment,
+
+                            ] ).draw( false );
+                          fnGlobales.msg.success("trámite seleccionado, Recuerde hacer click en Reservar para confirmar su cita", function () {
+
+                            });
+                    }
+                },
+                eventRender: function (info) {
+
+                    var jqElement = $(info.el);
+                    jqElement.find(".fc-time").remove();
+                    var fc_title = jqElement.find(".fc-title")
+
+                    fc_title.css({
+                        'font-size': '13px',
+                        //'height': '50px',
+                        'color': '#FFFFFF'
+                    });
+                    if (info.event.extendedProps.disponible === true) {
+                        jqElement.css('cursor', 'pointer');
+                    } else {
+                        fc_title.prepend("<i class='glyphicon glyphicon-user'></i>");
+                    }
+                    jqElement.tooltip(
+                        {
+                            //title: "Cupo: " + info.event.extendedProps.quota,
+                            title: info.event.title,
+                            modelo: '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+                        }
+                    );
+
+                },
+
+                editable: false,
+                eventLimit: true, // allow "more" link when too many events
+                events: eventList
+            });
+
+            calendar.render();
+        }
+        init();
+
+
+    };
+
+    function cargaVacio() {
+            var oHtml = "";
+            for (var i = 0; i < 5; i++) {
+                oHtml += "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;";
+            }
+            $("#dtDatos").html(oHtml);
+        }
+
+    function Limpiar() {
+
+        $("#cbxServicio").empty();
+        $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+        $("#cbxCentroAtencion").empty();
+        $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+
+        CargaServicio();
+    };
+
+    function LimpiarCalendar() {
+        $("#calendar").remove();
+        $("#calendarContainer").append("<div id='calendar'></div>");
+        CargaActivityxId(0, 0);
+
+    };
+
+    var onloadCallback = function () {
+        //grecaptcha.render('divcaptch', {
+        //    'sitekey': '6LcmzrcUAAAAAIjwm8c9Mrpc1qD4eEK51AR-37tE',
+        //    'callback': function (response) {
+        //        $('#txtCaptcha').val('t');
+        //        vCaptcha = response;
+        //        if (response == "" || response == undefined || response.length == 0)
+        //        {
+        //            $('#btnReservarCita').prop('disabled', true);
+        //            return false;
+        //        }
+        //        else
+        //        {
+                    $('#btnReservarCita').prop('disabled', false);
+        //        }
+        //    },
+        //    'expired-callback' :function (response){
+        //        grecaptcha.reset();
+        //        $('#btnReservarCita').prop('disabled', true);
+        //    },
+        //})
+    }
+
+
+
+</script>

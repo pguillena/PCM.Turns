@@ -1,0 +1,375 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema Integrado de Gestión de Turnos</title>
+
+    <link rel="stylesheet" href="~/css/fontawesome.min.css" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    @*<link href="~/lib/bootstrap4/css/bootstrap.css" rel="stylesheet" />*@
+    <link href="~/lib/bootstrap-4.3.1-dist/css/bootstrap.css" rel="stylesheet" />
+    @*<link href="~/lib/bootstrap4/css/bootstrap-grid.css" rel="stylesheet" />*@
+    <link href="~/lib/bootstrap-4.3.1-dist/css/bootstrap-grid.css" rel="stylesheet" />
+    @*<link href="~/lib/bootstrap4/css/bootstrap-reboot.css" rel="stylesheet" />*@
+    <link href="~/lib/bootstrap-4.3.1-dist/css/bootstrap-reboot.css" rel="stylesheet" />
+    <link href="~/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    @*<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">*@
+    @*<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">*@
+
+    <link href="~/lib/bootstrap-4.3.1-dist/css/bootstrap-datepicker.standalone.min.css" rel="stylesheet" />
+    <link href='~/lib/fullcalendar/core/main.css' rel='stylesheet' />
+    @*<link href='~/lib/fullcalendar/bootstrap/main.css' rel='stylesheet' />*@
+    <link href='~/lib/fullcalendar/timegrid/main.css' rel='stylesheet' />
+    <link href='~/lib/fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <link href='~/lib/fullcalendar/list/main.css' rel='stylesheet' />
+    @*<link href="~/lib/bootstrap4/css/select2.css" rel="stylesheet" />*@
+    <link href="~/lib/bootstrap-4.3.1-dist/css/select2.css" rel="stylesheet" />
+    <link href="~/css/Turns.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    @*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+    @*<script src="~/lib/bootstrap4/js/bootstrap.js"></script>*@
+    <script src="~/js/site.js"></script>
+    <script src='~/lib/fullcalendar/core/main.js'></script>
+    <script src='~/lib/fullcalendar/interaction/main.js'></script>
+    <script src='~/lib/fullcalendar/bootstrap/main.js'></script>
+    <script src='~/lib/fullcalendar/daygrid/main.js'></script>
+    <script src='~/lib/fullcalendar/timegrid/main.js'></script>
+    <script src='~/lib/fullcalendar/list/main.js'></script>
+    <link href="~/lib/sweetalert2/sweetalert2.css" rel="stylesheet" />
+    <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    @*<script src="~/js/dataTables.bootstrap4.min.js"></script>*@
+    <script src="~/lib/bootstrap-4.3.1-dist/js/bootstrap.js"></script>
+    <script src='~/lib/fullcalendar/core/locales-all.js'></script>
+    <script src='~/lib/fullcalendar/moment/main.js'></script>
+    <script src="~/js/Globales.js"></script>
+    @*<script src="~/lib/bootstrap4/js/select2.js"></script>*@
+    <script src="~/lib/bootstrap-4.3.1-dist/js/select2.js"></script>
+    <script src="~/lib/jquery/dist/bootstrap-datepicker.min.js"></script>
+
+    @*<link rel="stylesheet" href="~/css/lreclamaciones.css" />*@
+
+    
+    <script>
+        (function ($) {
+            $.get = function (key) {
+                key = key.replace(/[\[]/, '\\[');
+                key = key.replace(/[\]]/, '\\]');
+                var pattern = "[\\?&]" + key + "=([^&#]*)";
+                var regex = new RegExp(pattern);
+                var url = unescape(window.location.href);
+                var results = regex.exec(url);
+                if (results === null) {
+                    return null;
+                } else {
+                    return results[1];
+                }
+            }
+        })(jQuery);
+
+        $(document).ready(function () {
+            if (sessionStorage.getItem("SessionMenu") != null) {
+                cargarMenu(sessionStorage.getItem("SessionMenu"));
+                //console.log(sessionStorage.getItem("SessionMenu"), "dsdisjdosid");
+            }
+            else {           
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.120.205:81/api/access/searchPermissionByApplicationAndUser",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + $.get("id")
+                    },
+                    data: { applicationCode: 4 },
+                    success: function (resultado) {
+                        sessionStorage.setItem("SessionMenu", resultado);
+                        cargarMenu(resultado);
+                        // console.log(JSON.parse(resultado));                   
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                        //console.log($.get("id"));
+                    }
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.120.205:81/api/access/searchRoleByApplicationAndUser",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + $.get("id")
+                    },
+                    data: { applicationCode: 4 },
+                    success: function (resultado) {
+                        //var datos = JSON.parse(resultado);
+                        //console.log(datos);  
+                        //var usuario= datos.data[0].User;
+                        //var PersonId= datos.data[0].PersonId; 
+                         sessionStorage.setItem("SessionRoles", resultado);
+                        //CargarSession(PersonId,usuario);
+
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+
+            }
+        });       
+
+        var listModule = new Array();   
+
+        function cargarMenu(item) {
+        $("#lblUsuario").text(JSON.parse(item).userName);
+        //$("#listMenu").val(resultado);
+        //listPermission = JSON.parse(localStorage.getItem('listPermission'));
+        listPermission = JSON.parse(item).data;
+        //console.log(JSON.parse(item).userName);
+        var listPath = new Array();
+        var firstModule = listPermission[0];
+        for (let k = 0; k < listPermission.length; k++) {
+            var permissionPathItem = listPermission[k];
+            if (permissionPathItem.ModuleId == firstModule.ModuleId) {
+                var exitsPath = false;
+                if (listPath.length > 0) {
+                    for (let l = 0; l < listPath.length; l++) {
+                        var pathItem = listPath[l];
+                        if (permissionPathItem.PathId == pathItem.PathId) {
+                            exitsPath = true;
+                            break;
+                        }
+                    }
+                    if (!exitsPath) {
+                        listPath.push(permissionPathItem);
+                    }
+                } else {
+                    listPath.push(permissionPathItem);
+                }
+            }
+        }
+        firstModule.listPath = listPath;
+        listModule.push(firstModule)
+
+        for (let i = 0; i < listPermission.length; i++) {
+            var exitsModule = false;
+            var permissionItem = listPermission[i];
+            for (let j = 0; j < listModule.length; j++) {
+                var moduleItem = listModule[j];
+                if (permissionItem.ModuleId == moduleItem.ModuleId) {
+                    exitsModule = true;
+                    break;
+                }
+            }
+            if (!exitsModule) {
+                var listPath = new Array();
+                for (let k = 0; k < listPermission.length; k++) {
+                    var permissionPathItem = listPermission[k];
+                    if (permissionPathItem.ModuleId == permissionItem.ModuleId) {
+                        var exitsPath = false;
+                        if (listPath.length > 0) {
+                            for (let l = 0; l < listPath.length; l++) {
+                                var pathItem = listPath[l];
+                                if (permissionPathItem.PathId == pathItem.PathId) {
+                                    exitsPath = true;
+                                    break;
+                                }
+                            }
+                            if (!exitsPath) {
+                                listPath.push(permissionPathItem);
+                            }
+                        } else {
+                            listPath.push(permissionPathItem);
+                        }
+                    }
+                }
+                permissionItem.listPath = listPath;
+                listModule.push(permissionItem);
+            }
+        }
+        //  console.log(permissionItem);
+
+        $('#navbarNavDropdown_').empty();
+        html = "<ul class='navbar-nav col-sm-12'>";
+        //console.log(listModule)
+        for (var i = 0; i < listModule.length; i++) {
+            html += "<li class='nav-item dropdown'><a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fas fa-cog fa-2x'></i> &nbsp;" + listModule[i].ModuleName + "&nbsp;</a >";
+
+            html += "<div class='dropdown-menu' aria-labelledby='idMantenimiento'>";
+            for (var j = 0; j < listModule[i].listPath.length; j++) {
+                html += "<a class='sub-nav-link' href=" + listModule[i].listPath[j].PathUrl + ">" + listModule[i].listPath[j].PathName + "</a>";
+            }
+            html += "</div></li>";
+        }
+        html += "</ul></div></nav> ";
+        $('#navbarNavDropdown_').append(html);
+        }
+
+        function CerrarSession() {
+            sessionStorage.clear();
+            window.location.href = "http://192.168.120.205";
+        }
+        function CargarSession(_PersonId,_Usuario) {
+             $.ajax({
+                    type: "GET",
+                    url: "/Administration/Administration/CargaData",
+                    data: { PersonId: _PersonId, Usuario: _Usuario },
+                 success: function (resultado) {
+                     console.log(resultado);
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+        }
+
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="header__content container flex">
+            <div class="logo">
+                <a href="../Administration/Index">
+                    <img src="~/images/logo_escudo.svg" class="logo__escudo" alt="Escudo Peruano">
+                    <img src="~/images/logo_gobpe.svg" class="logo__gobpe" alt="gob.pe">
+                    <img src="~/images/logo_texto.svg" class="logo__texto" alt="Plataforma digital única del Estado Peruano">
+                </a>
+            </div>
+            @* <div class="wrap-ingresar"><a href="#"><button class="btn btn-danger">Ingresar <i class="fas fa-sign-in-alt"></i></button></a></div>*@
+            <div class="wrap-ingresar2 align-middle">
+                <nav class="navbar navbar-expand-lg" role="navigation">
+                    <div class="container">
+                        <div class="collapse navbar-collapse" id="exCollapsingNavbar">
+                            <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
+                                <li class="nav-item dropdown show">
+                                    <a class="text-white text-decoration-none" data-toggle="dropdown" href="#" aria-expanded="true">
+                                        <i class="fas fa-user"></i> <label id="lblUsuario">Usuario</label> <i class="fas fa-caret-down"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right p-4" style="width: 100px!important;">
+                                        @*<div class="media-body text-center">
+                                                <p class="font-weight-bold">JORDAN DIONICIO CRUZ TARAZONA</p>
+                                                <p>DNI: 42457982</p>
+                                            </div>*@
+                                        @*<div class="dropdown-divider"></div>*@
+                                        @*<div class="d-flex justify-content-between">*@
+                                        @*<button class="btn btn-gris mr-2 btn-modal" data-toggle="modal" data-target="#modalClave">Cambiar clave</button>*@
+                                        <a onclick="CerrarSession()">Cerra sessión</a>
+                                        @*</div>*@
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+    </header>
+
+    @*<partial name="_CookieConsentPartial" />*@
+    <section class="col-sm-12 main-content--oscuro pt-5">
+        <input id="listMenu" type="hidden" />
+        <div class="content-wrapper">
+            <div class="container card slim-navbar">
+                <nav class="dropdown navbar navbar-expand-lg navbar-light bg-light ">
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown_" name="navbarNavDropdown_">
+
+                    </div>
+                </nav>
+                @**@
+                  @*
+                <nav class="dropdown navbar navbar-expand-lg navbar-light bg-light ">
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav col-sm-12">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-cog fa-2x"></i> &nbsp;Administrador &nbsp;
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="idMantenimiento">
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "AttentionCenter", new { Area = "Administration" })">Centro de Atención</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Entity", new { Area = "Administration" })">Entidades</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Service", new { Area = "Administration" })">Servicios</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "EntidadxServicio", new { Area = "Administration" })">Servicios por Entidad</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "EntityxCenterAttention", new { Area = "Administration" })">Entidad por centro de Atención</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "CenterAttentionxService", new { Area = "Administration" })">Servicios por Centro de Atención</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "BannerxZone", new { Area = "Administration" })">Banner por Zona</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Window", new { Area = "Administration" })">Ventanilla</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Banner", new { Area = "Administration" })">Banner</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Zone", new { Area = "Administration" })">Zona</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "VideoxZone", new { Area = "Administration" })">Video por Zona</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "TicketType", new { Area = "Administration" })">Tipo de Ticket</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Video", new { Area = "Administration" })">Video</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "AttentionCenter", new { Area = "Administration" })">Centro de Atención por Entidad</a>
+
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="idAtencion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-handshake fa-2x"></i> &nbsp;Atención &nbsp;
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="idAtencion">
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Attention", new { Area = "Attention" })">Atención</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Index", "Ticket", new { Area = "Ticket" })">Ticket</a>
+                                    <a class="sub-nav-link" href="@Url.Action("List", "Ticket", new { Area = "Ticket" })">Ticket Abandono</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Display1", "Display", new { Area = "Display" })">Display</a>
+
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="idCitas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-headset fa-2x"></i> &nbsp;Citas &nbsp;
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="idCitas">
+                                    <a class="sub-nav-link" href="@Url.Action("ReservationPeople", "Appointment", new { Area = "Appointment" })">Reserva de Citas</a>
+                                    <a class="sub-nav-link" href="@Url.Action("ConfigurationReservationType", "Appointment", new { Area = "Appointment" })">Configuración de Citas y Cupos</a>
+                                    <a class="sub-nav-link" href="@Url.Action("ConfigureScheduleService", "Appointment", new { Area = "Appointment" })">Programación de Citas</a>
+                                    <a class="sub-nav-link" href="@Url.Action("ConfigureScheduleException", "Appointment", new { Area = "Appointment" })">Configuración de Horario de Citas por Servicio</a>
+                                    <a class="sub-nav-link" href="@Url.Action("Appointmentscheduling", "Appointment", new { Area = "Appointment" })">prueba</a>
+                                    <a class="sub-nav-link" href="@Url.Action("ReportNumberAppointment", "Appointment", new { Area = "Appointment" })">Reporte de Citas</a>
+
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-toolbox fa-2x"></i> &nbsp;Reportes &nbsp;
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="sub-nav-link" href="@Url.Action("ReportNumberAppointment", "Appointment", new { Area = "Appointment" })">Reporte Nro Citas</a>
+                                    <a class="sub-nav-link" href="@Url.Action("ReportAppointment", "Appointment", new { Area = "Appointment" })">Reporte de Citas por Ciudadano</a>
+
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>*@
+                @**@
+                <br />
+                @RenderBody()
+            </div>
+        </div>
+    </section>
+    <footer class="text-left">
+        <div class="container info-footer">
+            FOOTER
+        </div>
+    </footer>
+
+    @*<environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap4/js/bootstrap.js"></script>
+            <script src="~/js/site.js"></script>
+        </environment>*@
+
+    <script>
+        $('#navtabAtencion a').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+        })
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

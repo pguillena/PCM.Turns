@@ -1,0 +1,675 @@
+﻿@model Turns.Web.Models.ParameterModel;
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutRegistro.cshtml";
+    
+}
+
+<link href="~/js/paginate/jquery.paginate.css" rel="stylesheet" />
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+<script src="~/js/paginate/jquery.paginate.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+@*<link href="~/css/Modal.css" rel="stylesheet" />*@
+
+<script type="text/javascript">
+    var tipoTokeCode =0;
+    $(document).ready(function () {
+
+
+        if (sessionStorage.getItem("SessionRoles") == null) {
+            window.location.href = "http://192.168.120.205";
+        }
+        var usuario = sessionStorage.getItem("SessionRoles");        
+        //console.log(JSON.parse(usuario));
+        $("#_PersonId").val(JSON.parse(usuario).data[0].PersonId);
+        $("#_UserName").val(JSON.parse(usuario).userName);
+
+
+
+        $('#nroDoc').hide();
+        $('#txtBuscarServicios').hide();
+        $('#datospersona1').html("@ViewBag.nvNombreCompleto");
+        $('#datospersona2').val("@ViewBag.nvNombreCompleto");
+        $('#nroDoc').val("@ViewBag.nvNumDocumento");
+        $('#tipoDoc').val("@ViewBag.nvTipoDoc");
+        $('#direccion').val("@ViewBag.nvDireccion");
+        $('#estadoCivil').val("@ViewBag.nvEstadoCivil");
+
+        Clasificador.listar(-1,-1);
+        $("#miselect").change(function () {
+            var identi = parseInt($('#miselect').val());
+            if (parseInt(identi) !=1) {
+                //$("#cbxServicio").attr('disabled', false);
+                $('#txtBuscarServicios').show();
+                $('#txtBuscarEntidad').hide();
+                $('#SearchService').val("");
+                Clasificador.listar(-1,-1);
+            } else {
+                $('#txtBuscarEntidad').show();
+                $('#txtBuscarServicios').hide();
+                $('#SearchEntidad').val("");
+                Clasificador.listar(-1,-1);
+                //$("#cbxServicio").val("-1");
+                //$("#cbxServicio").attr('disabled', true);
+            }
+        });
+
+        /************************************/
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44315/api/AutocompleteTipoTicket",
+            url: "@Model.Parametros.WebApiUrl.TicketTypeService/AutocompleteTipoTicket",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#divTipoTicket').empty();
+                var html = "";
+                $('#divTipoTicket').append(html);
+                html = "<ul id='divRadioButton'>";
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].isPreferential == 0) {
+                        setValorTipoTicket(data[i].codeTicketType);
+                        html += ' <li><div class="form-check"><input type="radio" class="form-check-input"  onclick="setValorTipoTicket(' + data[i].codeTicketType + ');"  name="materialExampleRadios" checked="checked"><label class="form-check-label" for="materialUnchecked">' + data[i].description + '</label></div></li>';
+                        //html += ' <div class="form-check"><input type="radio" class="form-check-input" id="materialUnchecked" name="materialExampleRadios" checked="checked"><label class="form-check-label" for="materialUnchecked">' + data[i].description + '</label></div>';
+                    }
+                    //else {
+                    //    html += ' <li><div class="form-check"><input type="radio" class="form-check-input"  onclick="setValorTipoTicket(' + data[i].codeTicketType + ');"  name="materialExampleRadios"><label class="form-check-label" for="materialUnchecked">' + data[i].description + '</label></div></li>';
+                    //}
+                }
+                html += "</ul>";
+                $('#divTipoTicket').append(html);
+
+                $('#divTipoTicketPreferencial').empty();
+                var html = "";
+                $('#divTipoTicketPreferencial').append(html);
+                html = "<ul id='divRadioButton'><li class='btn btn-secondary' data-toggle='collapse' aria-expanded='false' href='#collapseExample' role='button' aria-controls='collapseExample'>Preferencial</li>";
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].isPreferential != 0) {
+                        html += ' <li class="collapse" id="collapseExample"><div class="form-check"><input type="radio" class="form-check-input"  onclick="setValorTipoTicket(' + data[i].codeTicketType + ');"  name="materialExampleRadios"><label class="form-check-label" for="materialUnchecked">' + data[i].description + '</label></div></li>';
+                        //html += ' <div class="form-check"><input type="radio" class="form-check-input" id="materialUnchecked" name="materialExampleRadios" checked="checked"><label class="form-check-label" for="materialUnchecked">' + data[i].description + '</label></div>';
+                    }
+                    //else {
+                    //    html += ' <li><div class="form-check"><input type="radio" class="form-check-input"  onclick="setValorTipoTicket(' + data[i].codeTicketType + ');"  name="materialExampleRadios"><label class="form-check-label" for="materialUnchecked">' + data[i].description + '</label></div></li>';
+                    //}
+                }
+                html += "</ul>";
+                $('#divTipoTicketPreferencial').append(html);
+            }
+        });
+
+
+
+        /************************************/
+        $("#SearchEntidad").autocomplete({
+
+            source: function (request, response) {
+                $.ajax({
+                    //url: "https://localhost:44340/api/AutocompleteEntidad",
+                    url: "@Model.Parametros.WebApiUrl.EntitybyService/AutocompleteEntidad",
+                    data: { pName_startsWith: $("#SearchEntidad").val(), pMaxRows: 8 },
+                    type: "GET",
+                    autoFill: true,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        if (result.length > 0) {
+                            //console.log(result[0]);
+                            response($.map(result, function (item) {
+                                return {
+                                    label: item.valor,
+                                    value: item.valor,
+                                    Id: item.id
+                                }
+                            }));
+                        }
+                    }
+                });
+            }
+            //,
+            //minLength: 5
+            //delay: 100
+        });
+
+        $('input[type=text]').on('keypress', function(e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                Clasificador.listar(-1,1);
+            }
+        });
+
+
+
+        /****COMPLETAR EL AUTOCOMPLETADO******** */
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44340/api/ListEntityService",
+            url: "@Model.Parametros.WebApiUrl.EntitybyService/ListEntityService",  
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var result = [];
+                for (var i = 0; i < data.length; i++) {
+                    result.push({ id: data[i].id, codeService: data[i].codeService, codeEntity: data[0].codeEntity, label: data[i].nameDescription + " - " + data[i].nameTypeService, category: data[i].description });
+                }
+                //var data = [
+                //      { id:1,label: "Revalidación de Licencias de Conducir.", category: "MINISTERIO DE TRANSPORTE Y COMUNICACIONES" },
+                //      { id:2,label: "Duplicado de Licencia de Conducir.    ", category: "MINISTERIO DE TRANSPORTE Y COMUNICACIONES" },
+                //      { id:3,label: "Expedición de Licencia de Conducir.", category: "MINISTERIO DE TRANSPORTE Y COMUNICACIONES" },
+                //      { id:4,label: "Recategorización de Licencia de Conducir.", category: "MINISTERIO DE TRANSPORTE Y COMUNICACIONES" },
+                //      { id:5,label: "Pago de servicios", category: "BANCO DE LA NACION" },
+                //      { id:6,label: "Duplicado de DNI", category: "RENIEC" },
+                //      { id:7,label: "Rectificacion de domicilio", category: "RENIEC" },
+                //      { id:8,label: "Rectificación de estado civil", category: "RENIEC" },
+                //      { id:9,label: "Certificado de Antecedentes Policiales Digitales", category: "MININTER" }
+                //];
+                if (data.length>0) {
+                    data = result;
+                    $.widget( "custom.catcomplete", $.ui.autocomplete, {
+                        _create: function() {
+                        this._super();
+                        this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+                        },
+                        _renderMenu: function( ul, items ) {
+                            var that = this,
+                            currentCategory = "";
+                            $.each( items, function( index, item ) {
+                                var li;
+                                if (item.category != currentCategory) {
+                                    ul.append("<b>" + item.category + "</b>");
+                                    currentCategory = item.category;
+                                }
+                                li = that._renderItemData( ul, item );
+                                    if ( item.category ) {
+                                        li.attr("aria-label", item.category + " : " + item.label);
+                                        //li.attr("onclick", "AddService('" + item.id + "','" + item.label + "');");
+                                        li.attr("onclick", "Clasificador.listar(" + parseInt(item.codeService) + ",-1);");
+                                    }
+                            });
+                        }
+                    });
+
+                    $( "#SearchService" ).catcomplete({
+                        delay: 0,
+                        source: data
+                    });
+                }
+            }
+        });
+
+        $('#btnGeneraTicket').hide();
+        //$('#myModalTicket').hide();
+        //$('#btnGeneraTicket').click(function () {
+        //    $('#myModalTicket').show();
+        //    swal({
+        //        title: 'Tipo de Ticket',
+        //        text: 'Mensaje de texto',
+        //        showConfirmButton: false,
+        //        html: $('#myModalTicket').html()
+        //    });
+        //});
+
+
+        $('#SearchService').click(function () {
+                $("#SearchService").val('');
+        });
+    });
+
+    Clasificador = {
+        listar: function (identificador,valor) {
+             /*ENTIDADES*/
+            var dato = {
+                strField: 'RowOrder',
+                strOrder: 'DESC',
+                strPagDesde:1 ,//(table.data('pagesize') * (page) - table.data('pagesize') + 1),
+                strPagHasta: 12, // (table.data('pagesize') * (page))
+                strIdDescripcion: -1,
+                strIdComboActivo: '1',
+                CodeService: identificador,
+                CodeEntity:valor
+            };
+
+            $.ajax({
+                //url: "https://localhost:44340/api/ListFilter",
+                url: "@Model.Parametros.WebApiUrl.EntitybyService/ListFilter",  
+                //url: "https://localhost:44301/api/Entity",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                success: function (data) {
+                    $('#divEntidades').empty();
+                    var html = "";
+                    $('#divEntidades').append(html);
+                    html = "<ul id='divPaginateServices'><li>";
+                    for (var i = 0; i < data.length; i++) {
+                        //html+='<button class="btn-ServiceActive" data-toggle="modal" data-target="#myModal"><img src="/Uploads/Logo/'+data[i].urlLogo+'" width="100" />'+data[i].description+'</button>';
+                        var urlLogo;
+                        if (data[i].urlLogo == null) {
+                            urlLogo = "services-icon.png"
+                        }
+                        else {
+                            urlLogo = data[i].urlLogo
+                        }
+
+                        html += '<button  id="btn' + data[i].codeEntity + '" class="btn-Service" data-toggle="modal" data-target="#exampleModal" onclick="Service(' + "'" + data[i].codeEntity + "'" + ',' + "'" + data[i].description + "'" + ');" ><img src="/Uploads/Logo/' + urlLogo + '" width="100" />' + data[i].description + '</button>';
+                        //html += '<button id="btn' + data[i].codeEntity + '" class="btn-Service" data-toggle="modal" data-target="#myModal" onclick="AddService(' + "'" + data[i].codeEntity + "'" + ',' + "'" + data[i].description + "'" + ');" ><img src="/Uploads/Logo/' + urlLogo + '" width="100" />' + data[i].description + '</button>';
+
+                        if (i > 0 && (i + 1) % 5 == 0) {
+                            html += "</li><li>";
+                        }
+                    }
+                    html += "</li></ul>";
+                    //console.log('html'+html);
+                    $('#divEntidades').append(html);
+                    //$('#divPaginateServices').paginate();
+
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        }
+    }
+
+
+    function setValorTipoTicket(code) {
+        tipoTokeCode = code;
+    }
+
+    function Service(CodeEntity, Entity) {
+    /****Mostrando la ventana  de los servicios***/
+        var lsServices1 = [];
+        $.ajax({
+            //url: "https://localhost:44340/api/ListarCurrentEntityService",
+            url: "@Model.Parametros.WebApiUrl.EntitybyService/ListarCurrentEntityService",
+            type: "GET",
+            data: { CodeEntity: CodeEntity },
+            dataType: "json",
+            success: function (data) {
+                if (data != null) {
+                    limpiarGrilla();
+                    if (data.length > 0) {
+                        var total = data.length;
+                        for (var j = 0; j < data.length; j++) {
+                            var fila = '<tr style="border:hidden" id="row' + (j + 1) + '"><td style="border: hidden;">' + total + '</td><td style="display:none">' + data[j].codeServiceEntity + '</td><td>' + data[j].description + '</td><td style="text-align:center; border: hidden;"><input type="checkbox" valorKey="' + data[j].codeServiceEntity + '" name="' + (j + 1) + '" id="' + (j + 1) + '"</input></td></tr>'; //esto seria lo que contendria la fila
+                            ///*fin*/
+                            $('#tblAgregacion tr:first').after(fila);
+                            $("#adicionados").text(""); //esta instruccion limpia el div adicioandos para que no se vayan acumulando
+                            var nFilas = $("#tblAgregacion tr").length;
+                            $("#adicionados").append(nFilas - 1);
+                            var total = total - 1;
+                            var row1 = {
+                                //'CodeEntity': parseInt(CodeEntity),
+                                'Entity': Entity,
+                                'CodeServiceEntity':  data[j].codeServiceEntity,
+                                'Description':data[j].description
+                            }
+                            lsServices1.push(row1);
+                            $('#listTicketService').val(JSON.stringify(lsServices1));
+                        }
+                    }
+                }
+            },
+            error: function (data) {
+                fnGlobales.error.show('mensajes', data.responseText);
+            }
+        });
+
+        /********/
+        //$('#SearchService').val(' ');
+        //$('#btn' + CodeEntity).removeClass("btn-Service");
+        //$('#btn' + CodeEntity).addClass("btn-ServiceActive");
+        //var lsServices = [];
+        //if ($('#listTicketService').val().length!=0) {
+        //    lsServices = JSON.parse($('#listTicketService').val());
+        //}
+        //var row = {
+        //    'CodeEntity': CodeEntity,
+        //    'Entity':Entity
+        //};
+        //lsServices.push(row);
+        //$('#listTicketService').val(JSON.stringify(lsServices));
+
+        //viewTicketServices();
+    }
+
+
+    function Agregar() {
+
+        var seleccion = [];
+        for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++)
+        {
+            var checkBox = document.getElementById(i);
+            if (checkBox.checked == true) {
+                var pk = parseInt($('#' + i).attr("valorKey"));//parseInt(document.getElementById('tblAgregacion').rows[i].cells[0].innerHTML);
+                var lista=JSON.parse($('#listTicketService').val());
+                for (var j = 0; j < lista.length; j++)
+                {
+                    if (lista[j].CodeServiceEntity == pk) {
+                        /////////////////
+                        //if ($('#listTicketServiceFinal').val().length != 0) {
+                        //    var hh = JSON.parse($('#listTicketServiceFinal').val());
+                        //    hh = hh.filter(x => x.CodeServiceEntity != pk);
+                        //    if (hh.length != 0) {
+                        //        var row2 = {
+                        //            //'CodeEntity': lista[j].CodeEntity,
+                        //            'Entity':hh[0].Entity,
+                        //            'CodeServiceEntity':  hh[0].CodeServiceEntity,
+                        //            'Description':hh[0].Description
+                        //        }
+                        //        seleccion.push(row2);
+                        //        $('#listTicketServiceFinal').val(JSON.stringify(seleccion));
+                        //    } else {
+                        //        seleccion = [];
+                        //        //var row2 = {
+                        //        //    //'CodeEntity': lista[j].CodeEntity,
+                        //        //    'Entity':'',
+                        //        //    'CodeServiceEntity':  0,
+                        //        //    'Description':''
+                        //        //}
+                        //        $('#listTicketServiceFinal').val(JSON.stringify(seleccion));
+                        //        seleccion.push();
+                        //        viewTicketServices(1)
+                        //    }
+
+                        //} else {
+                            /////////////////
+                            var row2 = {
+                                //'CodeEntity': lista[j].CodeEntity,
+                                'Entity': lista[j].Entity,
+                                'CodeServiceEntity':  lista[j].CodeServiceEntity,
+                                'Description':lista[j].Description
+                            }
+                            seleccion.push(row2);
+                        //}
+                    }
+                }
+            }
+        }
+
+
+        if (document.getElementById('tblAgregacion').rows.length!=1) {
+            if (seleccion.length> 0) {
+                $('#listTicketService').val(JSON.stringify(seleccion));
+                viewTicketServices(0);
+            } else {
+                  fnGlobales.msg.existe("Debe seleccionar un servicio", function () { });
+            }
+        } else {
+             fnGlobales.msg.existe("No existe servicios asociados a la entidad", function () { });
+        }
+    }
+
+    function limpiarGrilla() {
+        for (var i = 0; i < 10000; i++) {
+            $("#row" + i).remove();
+        }
+    }
+
+    function deleteService(CodeServiceEntity) {
+        //$('#btn' + CodeServiceEntity).removeClass("btn-ServiceActive");
+        //$('#btn' + CodeServiceEntity).addClass("btn-Service");
+        //var lsServices = [];
+        //var lsResult = [];
+        //$('#TicketServices').html("");
+        //lsServices = JSON.parse($('#listTicketService').val());
+        //for (var i = 0; i < lsServices.length; i++)
+        //{
+        //    if (lsServices[i].CodeServiceEntity != CodeServiceEntity) {
+        //        lsResult.push(lsServices[i]);
+        //    }
+        //}
+        //$('#listTicketService').val(JSON.stringify(lsResult));
+        //viewTicketServices()
+
+        //var lsResult = [];
+        var lsServices = [];
+        lsServices = JSON.parse($('#listTicketServiceFinal').val());
+        for (var i = 0; i < lsServices.length; i++)
+        {
+           var lis=lsServices.filter(word => word.CodeServiceEntity !=CodeServiceEntity);
+        }
+        //lsResult.push(lis);
+        $('#listTicketService').val(JSON.stringify(lis));
+        viewTicketServices(1);
+    }
+
+    //function deleteService(CodeEntity) {
+    //     $('#btn' + CodeEntity).removeClass("btn-ServiceActive");
+    //    $('#btn' + CodeEntity).addClass("btn-Service");
+    //    var lsServices = [];
+    //    var lsResult = [];
+    //    $('#TicketServices').html("");
+    //    lsServices = JSON.parse($('#listTicketService').val());
+    //    for (var i = 0; i < lsServices.length; i++)
+    //    {
+    //        if (lsServices[i].CodeEntity != CodeEntity) {
+    //            lsResult.push(lsServices[i]);
+    //        }
+    //    }
+    //    $('#listTicketService').val(JSON.stringify(lsResult));
+    //    viewTicketServices()
+    //}
+    var lsfinal = [];
+    function viewTicketServices(flag)
+    {
+        var lsServices = [];
+        if (flag != 0) {
+            lsfinal = [];
+        }
+        $('#TicketServices').html("");
+
+        lsServices = JSON.parse($('#listTicketService').val());
+        for (var i = 0; i < lsServices.length; i++)
+        {
+            //$('#TicketServices').append('<tr><td><i style="cursor:pointer;" onclick="deleteService(' + lsServices[i].CodeServiceEntity + ')" class="fas fa-trash-alt fa-2x"></i></td><td>' + lsServices[i].Entity + '-' + lsServices[i].Description + '</td></tr>');
+            var row3 = {
+                //'CodeEntity':lsServices[j].CodeEntity,
+                'Entity': lsServices[i].Entity,
+                'CodeServiceEntity': lsServices[i].CodeServiceEntity,
+                'Description': lsServices[i].Description
+            }
+            lsfinal.push(row3);
+        }
+
+        let set                 = new Set( lsfinal.map( JSON.stringify ) )
+        let arrSinDuplicaciones = Array.from( set ).map( JSON.parse );
+
+        for (var i = 0; i < arrSinDuplicaciones.length; i++) {
+            //$('#TicketServices').append('<tr><td><i style="cursor:pointer;" onclick="deleteService(' + arrSinDuplicaciones[i].CodeServiceEntity + ')" class="fas fa-trash-alt fa-2x"></i></td><td>' + arrSinDuplicaciones[i].Entity + '-' + arrSinDuplicaciones[i].Description + '</td></tr>');
+            $('#TicketServices').append('<tr><td><i style="cursor:pointer;" onclick="deleteService(' + arrSinDuplicaciones[i].CodeServiceEntity + ')" class="fas fa-trash-alt fa-2x"></i></td><td>'+ arrSinDuplicaciones[i].Entity + '-' + arrSinDuplicaciones[i].Description + '</td></tr>');
+        }
+
+        if (lsfinal.length > 0) {
+            $('#TicketServices').val(JSON.stringify(arrSinDuplicaciones));
+            $('#listTicketServiceFinal').val(JSON.stringify(arrSinDuplicaciones));
+            $('#listTicketService').val(JSON.stringify(arrSinDuplicaciones));
+            $('#btnGeneraTicket').show();
+        }
+
+        //var lsServices = [];
+        //$('#TicketServices').html("");
+        //lsServices = JSON.parse($('#listTicketService').val());
+        //for (var i = 0; i < lsServices.length; i++)
+        //{
+        //    $('#TicketServices').append('<tr><td><i style="cursor:pointer;" onclick="deleteService('+lsServices[i].CodeEntity+')" class="fas fa-trash-alt fa-2x"></i></td><td>'+lsServices[i].Entity+'</td></tr>');
+        //}
+        //if (lsServices.length > 0) {
+        //    $('#btnGeneraTicket').show();
+        //}
+    }
+
+    function registerTicket() {    
+
+        var dato = {
+            CodeTicketType: tipoTokeCode,
+            listaTicket: JSON.parse($('#listTicketService').val()),
+            NroDoc: $('#nroDoc').val(),
+            TipoDoc: $('#tipoDoc').val(),
+            NombreCompleto: $('#datospersona2').val(),
+            Direccion:$('#direccion').val(),
+            EstadoCivil: $('#estadoCivil').val(),
+            PersonId: parseInt($("#_PersonId").val()),
+            UserName:$("#_UserName").val()
+        };
+
+        $.ajax({
+            //url: "https://localhost:44321/api/SaveTicket",
+            url: "@Model.Parametros.WebApiUrl.TicketService/SaveTicket",
+            data: JSON.stringify(dato),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (resultado)
+            {
+                if (resultado.codeTicket > 0) {
+                    @*location.href = '@Url.Action("Ticket")'; //esto es interno se va tiqketera*@
+
+                    window.location.href = '@Url.Content("~/Ticket/Ticket/Ticket")?codeTicket=' + resultado.codeTicket;// + '&nro=' + data.success.nvNumDocumento;
+
+                    @*location.href = '@Url.Action("Contact","Ticket")';*@
+                } else {
+                      fnGlobales.msg.error("Hubo un error al realizar la operación", function () { });
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            }, //End of AJAX failure function
+            error: function (data) {
+                alert(data.responseText);
+            } //End of AJAX error function
+        });
+
+
+    }
+
+     function CloseModal() {
+        document.getElementById('openModal').style.display = 'none';
+        $('#txtTitulo').html("");
+    }
+
+
+</script>
+<input id="_PersonId" type="hidden">
+<input id="_UserName" type="hidden">
+<div class="content card mt-4 pb-5" style="height: 100%;">
+    <div class="card-header d-flex justify-content-center align-items-center bg-turnos mt-4">
+        <div><img src="~/images/logo_mac_small.png" style="margin-right: 25px;" /></div>
+        <div>Sistema Integrado de Gestión de Turnos</div>
+    </div>
+    <div id="datospersona1" name="datospersona1" style="font-size:1.5rem; margin: 0 auto; padding: 30px 0;"></div>
+    <div id="datospersona2" name="datospersona2" style="font-size:1.5rem; margin: 0 auto;"></div>
+    <div id="nroDoc" name="nroDoc" type="hidden"></div>
+    <div id="tipoDoc" name="tipoDoc" type="hidden"></div>
+    <div id="direccion" name="direccion" type="hidden"></div>
+    <div id="estadoCivil" name="estadoCivil" type="hidden"></div>
+    <div class="row">
+
+    </div>
+    <div class="row px-4">
+
+        <div class="col-sm-7">
+            <h3 class="subtitulo-turnos">Elige el servicio que deseas realizar</h3>
+            <div class="form-group row align-items-center">
+                <div class="col-md-2"><strong>Buscar:</strong></div>
+                <div class="col-md-10">
+                    <select class="form-control" id="miselect">
+                        @*<option value="0">Seleccione</option>*@
+                        <option value="1">Entidades</option>
+                        <option value="2">Servicios</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group md-form form-sm form-2 pl-0" id="txtBuscarServicios" name="txtBuscarServicios">
+                <input class="form-control my-0 py-1 red-border" type="text" id="SearchService" name="SearchService" placeholder="Search" aria-label="Servicios">
+                <div class="input-group-append">
+                    <span class="input-group-text red lighten-3" id="basic-text1">
+                        <i class="fas fa-search text-grey"
+                           aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="input-group md-form form-sm form-2 pl-0" id="txtBuscarEntidad" name="txtBuscarEntidad">
+                <input class="form-control my-0 py-1 red-border" type="text" id="SearchEntidad" name="SearchEntidad" placeholder="Search" aria-label="Entidad">
+                <div class="input-group-append">
+                    <span class="input-group-text red lighten-3" id="basic-text1">
+                        <i class="fas fa-search text-grey"
+                           aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
+            @*<div class="col-md-2"><strong>Descripción</strong></div>
+                <div class="col-md-4"><input class="form-control" id="idDescripcion" name="idDescripcion" /></div>*@
+            <div id="divEntidades">
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+        <input id="listTicketService" type="hidden" />
+        <input id="listTicketServiceFinal" type="hidden" />
+        <div class="col-sm-4">
+            <table class="table">
+                <thead class="subtitulo-turnos2">
+                    <tr><td colspan="2" style="background: #C7EFCF;"><b>Servicios Seleccionados</b></td></tr>
+                </thead>
+                <tbody id="TicketServices"></tbody>
+            </table>
+            <button id="btnGeneraTicket" name="btnGeneraTicket" type="button" class="btn btn-danger btn-lg btn-block" data-dismiss="modal" onclick="registerTicket()">Generar Ticket</button>
+            <div id="divTipoTicket" style="margin-top:10px;">
+            </div>
+            <div id="divTipoTicketPreferencial" style="margin-top:10px;">
+            </div>
+
+        </div>
+    </div>
+    @*<br />
+        <br />
+        <br />*@
+
+    @*<div class="row" >*@
+    @*<div class="col-sm-7" id="divServices">
+
+        </div>*@
+    @*<input id="listTicketService" type="hidden" />*@
+    @*<div class="col-sm-2">
+            <table class="table">
+                <thead style="background-color:gainsboro; text-align:center;">
+                    <tr><td colspan="2"><b>Servicios Seleccionados</b></td></tr>
+                </thead>
+                <tbody id="TicketServices"></tbody>
+            </table>
+            <button id="btnGeneraTicket" type="button" class="btn btn-danger btn-lg btn-block" data-dismiss="modal">Generar Ticket</button>
+        </div>*@
+    @*</div>*@
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title" id="exampleModalLabel">Servicios</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class=table-responsive>
+                    <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tblAgregacion">
+                        <tbody></tbody>
+                        <thead class="thead-dark ">
+                            <tr style="border:hidden">                       
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="Agregar()">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>

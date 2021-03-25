@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema Integrado de Gestión de Turnos</title>
+
+
+    <environment include="Development,Staging,Production">
+        <link rel="stylesheet" href="~/css/Turns.css" />
+        <link rel="stylesheet" href="~/css/fontawesome.min.css" />
+        @*<link rel="stylesheet" href="~/bootstrap/css/bootstrap.min.css" />*@
+        <link rel="stylesheet" href="~/lib/bootstrap4/css/bootstrap.min.css" />
+
+        @*<script src="~/lib/jquery/dist/jquery-3.3.1.min.js"></script>*@
+        <script src="~/lib/bootstrap4/js/popper.min.js"></script>
+
+        @*<script src="~/lib/jquery/dist/jquery-3.3.1.min.js"></script>*@
+        <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link href="~/lib/sweetalert2/sweetalert2.css" rel="stylesheet" />
+        <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+        <script src="~/js/Globales.js"></script>
+    </environment>
+    @*<environment exclude="Development,Staging,Production">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>*@
+</head>
+<body>
+    <header>
+        <div class="header__content container flex">
+            <div class="logo">
+                <a href="../Claim/Index">
+                    <img src="~/images/logo_escudo.svg" class="logo__escudo" alt="Escudo Peruano">
+                    <img src="~/images/logo_gobpe.svg" class="logo__gobpe" alt="gob.pe">
+                    <img src="~/images/logo_texto.svg" class="logo__texto" alt="Plataforma digital única del Estado Peruano">
+                </a>
+            </div>
+            @*<div class="wrap-ingresar"><a href="#"><button class="btn btn-danger">Ingresar <i class="fas fa-sign-in-alt"></i></button></a></div>*@
+        </div>
+    </header>
+
+    @*<partial name="_CookieConsentPartial" />*@
+    <section class="col-sx-12 main-content--oscuro">
+        <div class="content-wrapper">
+            <div class="container">
+                @RenderBody()
+            </div>
+        </div>
+    </section>
+    <footer class="text-left">
+        <div class="container info-footer">
+
+            FOOTER
+        </div>
+    </footer>
+
+    <environment include="Development,Staging,Production">
+        @*<script src="~/lib/jquery/dist/jquery.js"></script>*@
+        <script src="~/lib/bootstrap4/js/bootstrap.js"></script>
+        <script src="~/js/site.js"></script>
+    </environment>
+    @*   <environment exclude="Development,Staging,Production">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+            </script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>*@
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#txtdni').focus();
+    });
+</script>
+<input id="_PersonId" type="hidden">
+<input id="_UserName" type="hidden">
+
+<div class="card">
+    <div class="card-header text-center bg-danger">
+        Listado de Ticket en abandono
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2 border-card">
+            <div class="col-md-1"><strong>DNI</strong></div>
+            <div class="col-md-5"><input class="form-control" name="txtdni" id="txtdni" style="width:200px" /></div>
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+        <div class="col-md-12 mt-4 d-flex justify-content-center">
+            <button type="button" class="btn btn-success mr-1" onclick="Clasificador.listar(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+            <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+
+        </div>
+
+        @*<div class="col-md-12 mt-4 d-flex justify-content-center">
+                <button type="button" class="btn btn-outline-secondary mr-1"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+                @*<button class="btn-ServiceActive" data-toggle="modal" data-target="#myModal"><i class="fas fa-university fa-2x"></i><br>BANCO DE LA NACIÓN</button>
+                <button type="button" class="btn btn-outline-secondary mr-1" style="margin-left:3px;"><i class="fas fa-times-circle"></i>Limpiar</button>
+                @*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-outline-success" style="margin-left:3px;"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+            </div>*@
+        <hr class="hr-videos" />
+        <div class="row p-3">
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tablaAppointment" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.listar" data-paginator="paginator">
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th class="align-middle" width="10%">N°</th>
+                            <th class="align-middle" width="30%">Ciudadano</th>
+                            <th class="align-middle" width="20%">Entidad</th>
+                            <th class="align-middle" width="20%">Servicio</th>
+                            <th class="align-middle" width="10%">Reactivar</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+

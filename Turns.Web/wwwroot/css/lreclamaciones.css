@@ -1,0 +1,2163 @@
+/* //////////////////////////////////////////////////////////
+Libro de Reclamaciones Virtual
+Copyright 2019 Presidencia del Consejo de Ministros - PCM
+
+Colores principales:
+--------------------
+Rojo    -> BF0909
+Gris    -> 3C4145
+Turquesa -> 0CAFD0
+Celeste  -> C1EEF7
+
+/* FONTS CUSTOM ------------------
+--------------------------------*/
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../webfonts/montserrat-regular-webfont.woff2') format('woff2'), 
+         url('../webfonts/montserrat-regular-webfont.woff') format('woff');
+}
+
+/* RESET -----------------------
+------------------------------*/
+* {
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-decoration: none;
+    word-wrap: break-word;
+    list-style: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+html {
+	font-size: 1rem;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+html, body {
+	min-height: 100%;
+}
+
+span {
+	width: 100%;
+}
+
+nav, ul, li,h1,h2,h3,h4 {
+	margin: 0;
+	padding: 0;
+}
+
+a {
+    transition: color 0.15s ease-in-out, 
+        background-color 0.15s ease-in-out, 
+        border-color 0.15s ease-in-out, 
+        box-shadow 0.15s ease-in-out;
+}
+
+a.link-silver {
+    color: #3C4145!important;
+}
+
+.link-silver:hover {
+    text-decoration: none !important;
+}
+:focus {
+    outline: 0!important;
+}
+
+img {
+	vertical-align: middle;
+	max-width: 100%;
+	height: auto!important;
+}
+
+.custom-file-label::after {
+	content: "Examinar"!important;
+}
+
+.flex {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+#cke_rptaFinalCiudadano {
+    width: 100%;
+}
+
+.margin-width-auto {
+    margin: 0 auto;
+}
+
+.scroll-text {
+    overflow-y: scroll;
+}
+
+.modal-header .close {
+    opacity: .8;
+}
+
+.tooltip {
+    cursor: pointer;
+}
+
+.tooltip_templates {
+    display: none;
+}
+
+#tooltip_content {
+   
+}
+
+#tooltip_content .tooltip_estado_reclamo {
+    display: inline-block;
+    font-weight: normal;
+    width: 300px;
+}
+
+#tooltip_content .tooltip_estado_reclamo .tooltip-w-estado {
+    width: 100px;
+}
+
+.text-estado-registrado {
+    color: #BDC0C1;
+}
+
+.text-estado-derivado {
+    color: #D68F00;
+}
+
+.text-estado-atendido {
+    color: #28a745;
+}
+
+
+/* GENERALES ----------------------
+---------------------------------*/
+
+.link-silver a {
+    color: #3C4145;
+    cursor: pointer;
+}
+
+    .link-silver a:hover {
+        color: #3C4145;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+.link-red a {
+    color: #DC3545;
+    cursor: pointer;
+}
+
+.link-red a:hover {
+    color: #3C4145;
+    text-decoration: underline;
+}
+
+table.tabla-reclamos th {
+    background-color: #E72323;
+    border-color: #F98080;
+    color: #fff;
+}
+
+table.tabla-reclamos td, table.tabla-reclamos th {
+    padding: .65rem .75rem;
+}
+
+label.h-desc {
+    height: 90px;
+}
+
+/* OVERRIDES ---------------------
+--------------------------------*/
+
+.bg-rojo-claro {
+    background-color: #FCCACA !important;
+    color: #000 !important;
+    border-color: #FA9999 !important;
+}
+
+.bg-rojo {
+    background-color: #D60A0A !important;
+}
+
+.informacion {
+    color: #F98080;
+}
+
+.bg-info {
+	background-color: #0CAFD0!important;
+	color: #fff!important;
+	border-color: #0CAFD0!important;
+}
+
+.card {
+	margin-bottom: 1em;
+	border-radius: calc(.50rem - 1px) calc(.50rem - 1px)!important;
+	border: 0!important;
+}
+
+.card-header {
+	border-radius: calc(.50rem - 1px) calc(.50rem - 1px) 0 0!important;
+	font-weight: bold;
+}
+
+.alert {
+	width: 100%;
+}
+
+label {
+	font-weight: bold;
+}
+
+.fa-search, .fa-edit {
+	margin-bottom: .3em;
+}
+
+.modal-lg {
+    max-width: 60%!important;
+}
+
+.question {
+    color: #BF0909;
+    display: block;
+    font-weight: bold;
+}
+
+.table .thead-dark th {
+    background-color: #E72323 !important;
+    border-color: #F98080 !important;
+}
+
+.table td, .table th {
+    padding: .4rem !important;
+    font-size: .8rem !important;
+}
+
+.tabla-estado-reclamos td {
+    padding: 1rem !important;
+}
+
+.tabla-estado-reclamos {
+    font-size: .84rem;
+}
+
+.fa-2x {
+    font-size: 1.9rem!important; /*Tamanio icon fontawesome*/
+}
+
+.enlace-grid {
+    color: #7A7A7A;
+}
+
+.enlace-grid-red {
+    color: #E1474D;
+}
+
+.page-item.active .page-link {
+    color: #fff !important;
+    background-color: #BF0909 !important;
+    border-color: #BF0909 !important;
+}
+
+#tablaReclamo label {
+    font-size: .8rem;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: #f7f7f7 !important;
+}
+
+#tablaReclamo .btn-outline-secondary {
+    height: 50px;
+}
+
+#tablaReclamo .btn-secondary {
+    background-color: #7A7A7A !important;
+    border-color: #7A7A7A !important;
+}
+
+#tablaReclamo .btn-secondary:hover, #tablaReclamo .btn-secondary:focus, #tablaReclamo .btn-secondary:active, #tablaReclamo .btn-secondary.active {
+    color: #fff;
+    background-color: #BF0909 !important;
+    border-color: #BF0909 !important;
+}
+
+/* Datatables Overrides */
+div.dataTables_wrapper div.dataTables_length label, div.dataTables_wrapper div.dataTables_filter label, div.dataTables_wrapper div.dataTables_info, div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    font-size: .9rem;
+}
+
+/* FORM WIZARD -----------------
+------------------------------*/
+
+.tab-number {
+   
+}
+
+a:hover.btn-outline-secondary {
+    color: #fff !important;
+}
+
+h2.title-tab-wizard {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: .5em 0 1.6em;
+    padding-bottom: .5em;
+    border-bottom: 2px solid #BF0909;
+}
+
+.tab-wizard {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1em;
+}
+
+.input-group {
+    justify-content: flex-end;
+    margin-bottom: .5em !important;
+}
+
+.nav-tabs, .tab-content {
+    max-width: 100%;
+}
+
+.nav-tabs .nav-item a {
+    border-radius: 0;
+    color: #6c757d !important;
+    background-color: #fff;
+    border: none!important;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.nav-tabs .nav-item a:hover {
+    color: #fff !important;
+}
+
+    .nav-tabs .nav-item .active {
+        border-radius: 0;
+        background-color: #6c757d !important;
+        color: #fff !important;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border: none;
+    }
+
+.tab-content .tab-pane {
+        
+}
+
+input.form-controls {
+    display: block;
+    width: 100%;
+    padding: 1.2rem .9rem!important;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da!important;
+    border-radius: 3px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.texto-negro {
+    color: #000 !important;
+}
+
+.text-small {
+    font-size: .9rem;
+    padding-bottom: .3em;
+}
+
+.bg-gris {
+    background-color: #D6D9DC !important;
+    color: #000 !important;
+}
+
+.bg-gris-claro {
+    background-color: #E6E6E6 !important;
+}
+
+/* ESTADOS DEL RECLAMO -----------
+--------------------------------*/
+
+.progress {
+    background-color: #F2F2F2;
+}
+
+.bs-wizard {
+    border-bottom: solid 1px #e0e0e0;
+    padding: .625em;
+}
+
+    .bs-wizard > .bs-wizard-step {
+        padding: 0;
+        position: relative;
+    }
+
+        .bs-wizard > .bs-wizard-step + .bs-wizard-step {
+        }
+
+        .bs-wizard > .bs-wizard-step .bs-wizard-stepnum {
+            color: #595959;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .bs-wizard > .bs-wizard-step .bs-wizard-info {
+            font-size: .8rem;
+            padding-bottom: 1.2em;
+        }
+
+        .bs-wizard > .bs-wizard-step > .bs-wizard-dot {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            display: block;
+            background: #E3E6E8;
+            top: 45px;
+            left: 50%;
+            margin-top: -15px;
+            margin-left: -15px;
+            border-radius: 50%;
+        }
+
+.dot-completado {
+    background: #FCCACA !important;
+}
+
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot:after {
+    content: ' ';
+    width: 14px;
+    height: 14px;
+    border-radius: 50px;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
+.bs-wizard > .bs-wizard-step > .progress {
+    position: relative;
+    border-radius: 0px;
+    height: 6px;
+    box-shadow: none;
+    margin: 20px 0;
+}
+
+.bs-wizard > .bs-wizard-step > .progress > .progress-bar {
+    width: 0px;
+    box-shadow: none;
+}
+
+.bs-wizard > .bs-wizard-step.complete > .progress > .progress-bar {
+    width: 100%;
+}
+
+.bs-wizard > .bs-wizard-step.active > .progress > .progress-bar {
+    width: 50%;
+}
+
+.bs-wizard > .bs-wizard-step:first-child.active > .progress > .progress-bar {
+    width: 0%;
+}
+
+.bs-wizard > .bs-wizard-step:last-child.active > .progress > .progress-bar {
+    width: 100%;
+}
+
+.bs-wizard > .bs-wizard-step.disabled > .bs-wizard-dot {
+    background-color: #888;
+}
+
+    .bs-wizard > .bs-wizard-step.derivado > .bs-wizard-dot {
+        background-color: #FAC999;
+    }
+
+.bs-wizard > .bs-wizard-step.disabled > .bs-wizard-dot:after {
+    opacity: 0;
+}
+
+.bs-wizard > .bs-wizard-step:first-child > .progress {
+    left: 50%;
+    width: 50%;
+}
+
+.bs-wizard > .bs-wizard-step:last-child > .progress {
+    width: 50%;
+}
+
+.bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot {
+    pointer-events: none;
+}
+
+.bs-wizard-step button {
+    font-size: .75rem;
+}
+
+
+/* Estadíos Reclamos Final ----------- */
+
+.container-progresbar {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+    .container-progresbar .progresbar li {
+        float: left;
+        width: 30%;
+        position: relative;
+        text-align: center;
+    }
+
+        .container-progresbar .progresbar li:before {
+            content: "";
+            /*content: counter(step);
+            counter-increment: step;*/
+            width: 36px;
+            height: 36px;
+            /*border: 2px solid #bebebe;*/
+            display: block;
+            margin: 0 auto;
+            /*border-radius: 50%;*/
+            line-height: 15px;
+            background: url('../images/arrow-a.png') center center no-repeat;
+            color: #bebebe;
+            text-align: center;
+            font-weight: bold;
+        }
+
+    .container-progresbar .progresbar {
+        /*counter-reset: step;*/
+    }
+
+        .container-progresbar .progresbar li:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #bebebe;
+            top: 16px;
+            left: -50%;
+            z-index: -1;
+        }
+
+        .container-progresbar .progresbar li:first-child {
+            
+        }
+
+        .container-progresbar .progresbar li:first-child:after {
+            content: none;
+        }
+
+        .container-progresbar .progresbar li.first-check:before {
+            background: url('../images/arrow-h.png') center center no-repeat;
+        }
+
+        .container-progresbar .progresbar li.check:before {
+            background: url('../images/arrow-h.png') center center no-repeat;
+        }
+
+        .container-progresbar .progresbar li.check + li:after {
+            background: #FCCACA;
+        }
+
+        .container-progresbar .progresbar li.check + li:before {
+            background: url('../images/arrow-h.png') center center no-repeat;
+        }
+
+/* LINEA DE ESTADOS */
+
+.icon-arrow {
+    font-size: 1.4rem;
+}
+
+.h-progres .progress {
+    height: 4px;
+    background-color: #DDD;
+    padding: 0 10px;
+}
+
+
+/* APLICATIVO WEB --------------
+------------------------------*/
+
+/* -> HOME ---------------------
+------------------------------*/
+
+.cabecera {
+    background-color: #BF0909;
+}
+
+.cabecera-contenido {
+    height: 4.375em; /*70px*/
+}
+
+.logo a:hover {
+    text-decoration: none;
+}
+
+img.logo__escudo {
+    width: 2.875em /*46px*/;
+}
+
+img.logo__gobpe {
+	margin-left: .3em;
+	width: 5.625em;
+}
+
+img.logo__texto {
+	width: 14em;
+	padding-left: .9em;
+	margin-left: .7em;
+	border-left: 1px solid #fff;
+}
+
+.main-content, .main-content--oscuro {
+    background: url("../images/fondo_aplicativo.svg") #F2F2F2 bottom center no-repeat;
+    background-size: contain;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: calc(100vh - 302px);
+}
+
+.main-content--oscuro {
+    height: auto;
+	padding: 2em 0 2.4em;
+}
+
+/* Atenuar fondo aplicativo */
+.content-wrapper:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    opacity: .5;
+}
+
+h1.titulo-aplicativo {
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding: 2.8em 0 .6em;
+	font-size: 2.8rem;
+    font-weight: bold;
+}
+
+.titulo-bienvenida {
+    padding: 1em 0;
+    font-size: 2rem;
+}
+
+.desc-bienvenida {
+    padding: 1em 0;
+    font-size: 1.2rem;
+}
+
+.info-reclamo, .preguntas-frecuentes {
+    padding: 1em 0 0;
+}
+
+.info-footer ul li {
+    font-size: .9375rem;
+    padding: 0;
+}
+
+footer {
+	background-color: #3C4145;
+	color: #fff;
+	padding: 1.5em;
+}
+
+footer a, footer a:hover  {
+    color: #FFF!important;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.footer__icons {
+    font-size: 1.8rem;
+}
+
+.plus-icon {
+    font-size: 2rem;
+    line-height: 0;
+}
+
+/* -> LOGIN --------------------
+------------------------------*/
+.contenedor-login {
+    padding: 5em 0;
+}
+
+.contenedor-login .card {
+    margin: 0 auto;
+    padding: 1.6em 1em;
+    width: 28.125rem;
+}
+
+.contenedor-login button {
+    padding: 1.2em 1em;
+    width: 100%;
+    font-size: .9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: .2em 0 1em;
+}
+
+.form-login input {
+	padding: 1.4em 1em;
+	margin-bottom: 1em;
+}
+
+/* Olvido contraseña */
+
+.formOlvidoClave input[type="radio"] {
+    display: none;
+}
+
+.formOlvidoClave .opcionRestaurar {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.formOlvidoClave .opcionRestaurar .correo {
+    border-radius: 3px 0 0 3px;
+}
+
+.formOlvidoClave .opcionRestaurar .celular {
+    border-radius: 0 3px 3px 0;
+}
+
+.formOlvidoClave .label-radio {
+    background: rgba(73, 99, 107, .6);
+    color: #fff;
+    padding: 6px 10px;
+    text-align: center;
+    width: 49.5%;
+    cursor: pointer;
+}
+
+.formOlvidoClave input[type="radio"]:checked + .label-radio {
+    background: #49636B;
+    transition: color 0.15s ease-in-out, 
+        background-color 0.15s ease-in-out, 
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+}
+
+/* FORM RECLAMACIONES ----------
+------------------------------*/
+
+h1.titulo-hoja-reclamacion {
+	font-size: 1.2rem;
+	padding: .5em 0 0;
+	font-weight: bold;
+	margin: 0;
+}
+
+ul.motivos-reclamo li {
+	list-style: disc;
+}
+
+.cbo-motivos option {
+	padding: .4em 0;
+	word-wrap: break-word;
+}
+
+.logo-form {
+	text-align: left;
+}
+
+.logo-form img {
+	width: 70%;
+}
+
+.info-header-form {
+	text-align: left;
+}
+
+.info-header-form input[type=date] {
+    border: 0;
+}
+
+.titulo-form {
+	text-align: right;
+    font-size: .8rem;
+}
+
+.fecha-reclamo {
+	text-align: right;
+}
+
+.texto-rojo {
+    color: #BF0909;
+    font-weight: normal;
+    font-size: .82rem;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    color: #fff;
+    border-color: #BF0909 !important;
+    background-color: #BF0909 !important;
+}
+
+.confirmacion {
+    margin: 4em 0;
+    padding: 5em 2em;
+}
+
+.confirmacion p {
+   font-size: 1.2rem;
+}
+
+span.codigo-reclamo {
+    padding-top: .2em;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.confirmacion button {
+    margin-right: .5em;
+    margin-top: 1em;
+    width: 13.75em;
+    font-size: 1.2rem;
+}
+
+.confirmacion-tabla {
+    margin: 4em 0;
+    padding: 5em 1em;
+}
+
+#divOtraSede {
+    display: none;
+}
+
+/* BOTONERA --------------------
+------------------------------*/
+.botones-aplicativo {
+    width: 45em;
+    display: flex;
+    padding-top: 1em;
+    justify-content: space-between;
+    margin: 0 auto 4em;
+}
+
+button.btn-registro, button.btn-consulta {
+	width: 13em;
+	height: 9em;
+    padding: 1em;
+	color: #333333;
+	background-color: #ffffff;
+	border: 0;
+	outline: none;
+	-moz-box-shadow: 3px 3px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 6px #ccc;
+    box-shadow: 3px 3px 6px #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    font-family: 'montserrat', sans-serif;
+    font-size: 1rem;
+}
+
+a:hover button.btn-registro, a:hover button.btn-consulta {
+	border-top: 3px solid #BF0909;
+}
+
+.header__content .btn-danger {
+	background-image: linear-gradient(to top, #e1474d, #e85054, #ef585a, #f66061, #fd6868);
+	border-color: #FD6868;
+}
+
+.header__content .btn-danger:hover {
+	border-color: #F2F2F2;
+	border-width: .0625em;
+	transition: all 0.2s linear;
+}
+
+button.btn-gris {
+    background-color: #A2A8AE;
+    border: 1px solid #A2A8AE;
+    color: #fff;
+}
+
+button.btn-gris:hover {
+    background-color: #fff;
+    border: 1px solid #A2A8AE;
+    color: #727B83;
+    cursor: pointer;
+}
+
+.btn-gris-outline {
+    background-color: #fff !important;
+    border: 1px solid #A2A8AE !important;
+    color: #727B83 !important;
+}
+
+    .btn-gris-outline:hover {
+        background-color: #A2A8AE !important;
+        border: 1px solid #A2A8AE !important;
+        color: #fff !important;
+    }
+
+.alert-secondary {
+    color: #383d41;
+    background-color: #f2f2f2!important;
+    border-color: #d6d8db;
+}
+
+.btn-rojo {
+    color: #fff !important;
+    background-color: #E93A3A !important;
+    border-color: #E93A3A !important;
+}
+
+    .btn-rojo:hover {
+        color: #dc3545 !important;
+        background-color: #fff !important;
+        border-color: #dc3545 !important;
+    }
+
+.btn-rojo-outline {
+    color: #dc3545 !important;
+    background-color: #fff !important;
+    border-color: #dc3545 !important;
+}
+
+.btn-rojo-outline:hover {
+    color: #fff !important;
+    background-color: #E93A3A !important;
+    border-color: #E93A3A !important;
+}
+
+.btn-rojo-claro {
+    color: #fff !important;
+    background-color: #F86868 !important;
+    border-color: #F63737 !important;
+}
+
+.btn-rojo-claro:hover {
+    color: #fff !important;
+    text-decoration: none!important;
+}
+
+.btn-cabecera-atender {
+    color: #000 !important;
+    font-weight: bold;
+    font-size: 1rem !important;
+    background-color: #D6D9DC !important;
+}
+
+.titulo-motivos {
+    padding-right: 100px;
+}
+
+.motivos ul li {
+    list-style: circle;
+}
+
+.modal-header-boton {
+    padding: .45rem !important;
+}
+.btn-plomo {
+    background: #A2A8AE !important;
+}
+
+    .btn-plomo:hover {
+        color: #fff!important;
+        background: #A2A8AE !important;
+    }
+
+.btn-gris-oscuro {
+    background: #8C949B!important;
+}
+
+    .btn-gris-oscuro:hover {
+        color: #fff !important;
+        background: #7F8890!important;
+    }
+
+.btn-cabecera-responder {
+    color: #FFF !important;
+    font-weight: bold !important;
+    background-color: #8C949B !important;
+}
+
+button.btn-cabecera-vencidos {
+    color: #000;
+    font-weight: bold;
+    background-color: #FCCACA;
+}
+
+.fa, .fab, .fal, .far, .fas {
+    line-height: inherit !important;
+}
+
+.nav-link {
+   padding: .4rem 1rem!important;
+}
+
+.texto-sm {
+    font-size: .84rem;
+}
+
+.texto-nombre {
+    font-size: .72rem;
+}
+
+.dropdown-item:hover {
+    background: #879097 !important;
+    color: #FFF !important;
+}
+
+button.btn-rojo-oscuro {
+    color: #fff;
+    background-color: #D81818;
+    border-color: #D81818;
+}
+
+button.btn-rojo-oscuro:hover {
+    color: #fff;
+    background-color: #C11515;
+    border-color: #C11515;
+}
+
+.btn-info {
+	background-color: #0CAFD0!important;
+	color: #fff!important;
+	border-color: #0CAFD0!important;
+}
+
+.btn-info:hover {
+	background-color: #098199!important;
+	color: #fff!important;
+	border-color: #098199!important;
+}
+
+/* Checkbox */
+
+input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+/* ADMINISTRACION --------------------------
+------------------------------------------*/
+.bg-vencido, .bg-atender, .bg-responder, .bg-por-vencer {
+    color: #fff !important;
+}
+
+.bg-vencido-off {
+    background: #D3D8D9;
+}
+
+.bg-atender {
+    background: #ADB3B8;
+}
+
+.bg-por-vencer {
+    background: #F41010;
+}
+
+.bg-vencido {
+    background: #BF0909;
+}
+
+.bg-titulo-reclamo {
+    background: #E3E6E8 !important;
+    color: #000 !important;
+}
+
+.bg-responder {
+    background-color: #8C949B!important;
+}
+
+.shadow-bg {
+    -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,0.1), -1px 0 2px rgba(0,0,0,0.05);
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.1), -1px 0 2px rgba(0,0,0,0.05);
+}
+
+.admin-panel {
+    background-color: #F0F2F7 !important;
+    padding: 20px 15px!important;
+    color: #212529 !important;
+}
+
+.admin-panel a:hover {
+    text-decoration: none;
+}
+
+.item-panel:hover {
+    background-color: #FEFDE9;
+    text-decoration: none;
+}
+
+.icon-w-fa {
+    width:25px;
+}
+
+.sello-observado {
+    box-sizing: border-box;
+    border: 4px solid #E93A3A;
+    padding: 2px 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #D60A0A;
+}
+
+.fa-t1x {
+    font-size: 1.2rem;
+}
+
+.item-panel {
+    padding: 11px 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: .25rem;
+}
+
+.item-panel-vencidos-off {
+    background-color: #E1E3E5 !important;
+}
+
+.item-panel-atender {
+    background-color: #E1E3E5 !important;
+}
+
+.item-panel-reponder {
+    background-color: #E1E3E5 !important;
+}
+
+.item-panel .icon {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    min-width: 60px;
+    max-width: 60px;
+    color: #000;
+    font-size: 1rem;
+    border-radius: 50%;
+    margin-left: 15px;
+}
+
+    .item-panel strong {
+        font-size: .9rem;
+        color: #333;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .icon-atender {
+        color:#fff!important;
+    }
+
+.item-panel .small-text {
+    color: #777;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+h1.titulo-admin-panel {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    background-color: #D60A0A;
+    margin-bottom: 10px;
+}
+
+h1.titulo-admin-panel-atender {
+    background-color: #FBBBBB !important;
+    color: #000!important;
+}
+
+h1.titulo-admin-panel- {
+    background-color: #F48210 !important;
+}
+
+h1.titulo-admin-panel-pendiente2 {
+    background-color: #BE6309 !important;
+}
+
+textarea.text-descripcion-reclamo {
+    font-size: .8rem;
+}
+
+textarea.text-descripcion-reclamo-normal {
+    font-size: .9rem;
+}
+
+.text-pendiente {
+    color: #F48210;
+}
+
+h2.titulo-estadistico {
+    padding: 20px 0;
+    font-size: 1.35rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.text {
+    width: 80%;
+}
+
+.menu-acciones .pd-btn-acciones {
+    padding: 5.5px 22px;
+}
+
+.menu-acciones .dropdown-toggle::after {
+    display: none !important;
+}
+
+.link-reclamo a {
+    color: #000!important;
+}
+
+.arrow-paginacion {
+    font-size: .8rem;
+}
+
+.panel-reclamo {
+    padding: 1.25rem;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: .25rem;
+    font-size: .9rem !important;
+}
+
+.panel-reclamo label {
+    font-size: .84rem;
+}
+
+.panel-red-color {
+    border-top: 3px solid #E04D5C;
+}
+
+.panel-item-reclamo {
+    /*border-top: 3px solid #6C757D;*/
+}
+
+input .form-control, select.form-control {
+    font-size: .875rem;
+}
+
+textarea.form-control {
+    font-size: .8rem!important;
+}
+
+.form-control {
+    font-size: .9rem!important;
+}
+
+.fix-sidebar {
+    position: fixed;
+    z-index: 100;
+}
+
+.custom-checkbox {
+}
+
+.close {
+    color: #FFF!important;
+}
+
+.red-line {
+    display: block;
+    padding: 0 !important;
+    margin: 0 0 10px;
+    border-bottom: 1px solid #EF0B0B;
+}
+
+.navbar {
+    padding: 0!important;
+}
+
+.check-left-border {
+    border-left: 1px solid #ADB3B8;
+    margin-left: 30px;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+h4.titulo-modal-reclamo {
+    padding-bottom: .3em;
+    margin-bottom: 1.5em;
+    border-bottom: 1px solid #DDD;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.reclamo-duplicado .col-md-6 {
+    flex: 0 0 48%;
+}
+
+.reclamo-archivado .col-md-6 {
+    flex: 0 0 49%;
+}
+
+/* Form Consulta */
+.form-consulta input, .form-consulta textarea, .form-consulta select {
+    padding: .875em;
+    height: auto;
+    margin-bottom: .4em;
+    background-color: #f9f9f9;
+}
+
+.frm-reclamo span {
+    font-size: .92rem;
+}
+.frm-reclamo label {
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #DDD;
+    padding-left: 0;
+}
+
+/* Boton + info */
+button.btn.collapsed:before {
+    content: '+ info';
+    float: right;
+    font-weight: bold;
+    font-size: .85rem;
+    display: inline-block;
+    padding-top: 4px;
+}
+
+button.btn-collapsed:before {
+    content: '- info';
+    float: right;
+    font-weight: bold;
+    font-size: .9rem;
+    display: inline-block;
+    padding-top: 4px;
+}
+
+/* Boton filtro */
+button.btn.collapsed-filtro:before {
+    content: 'Filtro';
+    float: right;
+    font-weight: bold;
+    font-size: .8rem;
+    display: inline-block;
+    padding-top: 4px;
+}
+
+button.btn-collapsed-filtro:before {
+    content: 'Ocultar';
+    float: right;
+    font-weight: bold;
+    font-size: .82rem;
+    display: inline-block;
+    padding-top: 4px;
+}
+
+.icon-filter {
+    font-size: .75rem;
+}
+
+/* Tooltip color */
+.tooltip-inner {
+    background: #222!important;
+}
+
+.tooltip.top .tooltip-arrow {
+    border-top-color: #3C4145!important;
+}
+
+.dropdown-menu {
+    left: inherit !important;
+}
+
+/* Menu Multinivel */
+.dropdown-submenu {
+    position: relative;
+}
+
+    .dropdown-submenu > .dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -6px;
+        margin-left: -1px;
+        -webkit-border-radius: 0 6px 6px 6px;
+        -moz-border-radius: 0 6px 6px;
+        border-radius: 0 6px 6px 6px;
+    }
+
+    .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-submenu > a:after {
+        display: block;
+        content: " ";
+        float: right;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        border-width: 5px 0 5px 5px;
+        border-left-color: #ccc;
+        margin-top: 5px;
+        margin-right: -10px;
+    }
+
+    .dropdown-submenu:hover > a:after {
+        border-left-color: #fff;
+    }
+
+    .dropdown-submenu.pull-left {
+        float: none;
+    }
+
+        .dropdown-submenu.pull-left > .dropdown-menu {
+            left: -100%;
+            margin-left: 10px;
+            -webkit-border-radius: 6px 0 6px 6px;
+            -moz-border-radius: 6px 0 6px 6px;
+            border-radius: 6px 0 6px 6px;
+        }
+
+    .dropdown-submenu .dropdown-menu .dropdown-item a:hover {
+        color: #fff !important;
+    }
+
+.paginacion {
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.select-paginacion {
+    height: auto !important;
+    border: 0 !important;
+    font-size: .85rem!important;
+}
+
+.dropdown-toggle:hover {
+    color: #fff;
+}
+
+/* TABS PRINCIPAL */
+.tabs {
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+/*
+    .tabs .tab-pane {
+        
+    }
+
+    .tabs h3 {
+        
+    }
+
+    .tabs p {
+        
+    }
+
+    .tabs a {
+
+    }
+
+    .tabs li {
+       
+    }
+
+        .tabs li.active {
+            
+        }
+*/
+
+
+/*---- MENU SLIM -----------
+ -------------------------*/
+
+.slim-navbar {
+    margin-bottom: 8px;
+}
+
+.texto-blanco {
+    color:#fff!important;
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+.slim-navbar .nav-item {
+    flex: 1 1 0;
+}
+
+.slim-navbar .nav-link {
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: .7px;
+    font-weight: 500;
+    color: #3C4145 !important;
+    height: 46px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    /*border-right: 1px solid #D60A0A!important;*/
+    border-right-width: 0;
+    float: left;
+    width: 100%;
+}
+
+.activo {
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: .7px;
+    font-weight: 500;
+    color: #D60A0A !important;
+    height: 46px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right-width: 0;
+    float: left;
+    width: 100%;
+    background-color: #fff !important;
+}
+
+.activo:hover {
+    color: #D60A0A !important;
+    border-bottom: 4px solid #BF0909;
+    text-decoration: none;
+}
+
+.sub-nav-link {
+text-transform: uppercase;
+font-size: 13px;
+letter-spacing: .7px;
+font-weight: 500;
+color: #D60A0A !important;
+height: 46px;
+display: flex;
+align-items: center;
+border: 1px solid #dee2e6;
+border-right-width: 0;
+padding-left: 15px;
+padding-right: 15px;
+}
+
+.sub-nav-link:hover, .nav-link:hover {
+    color: #D60A0A !important;
+    border-bottom: 4px solid #BF0909 !important;
+    text-decoration: none;
+}
+
+.icono-menu {
+    font-size: 1rem;
+    padding-right: 10px;
+}
+
+/* --- MEDIA QUERIES -------------------- */
+/* -------------------------------------- */
+
+/* MOVILES (vertical) ----------------*/
+/* MEDIDAS: 16px = 1em / 320px = 20em */
+@media screen and (max-width: 20em) {
+    /* HOME -----------------------
+	-----------------------------*/
+    .header__content {
+		height: 100%;
+		padding: .5em;
+        text-align: center;
+	}
+
+	.header__content button {
+		width: 100%;
+		font-size: .8rem;
+	}
+
+	.logo {
+		text-align: center;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	img.logo__texto {
+		display: none;
+	}
+
+    .wrap-ingresar {
+        width: 60%;
+        margin: 0 auto;
+    }
+
+    .texto-ingresar {
+        text-align: center;
+        font-size: .8rem;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 0;
+        font-size: 2.2rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+	.botones-aplicativo {
+		width: 90%;
+		display: inherit;
+		font-size: 1rem;
+		word-wrap: break-word;
+        text-align: center;
+	}
+	
+	button.btn-registro, button.btn-consulta {
+		width: 70%;
+		height: 8em;
+		margin-bottom: 1em;
+		font-size: 1rem;
+	}
+
+    .btn-modal {
+        margin-top: 1em;
+    }
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+
+    /* LOGIN ----------------------
+	-----------------------------*/
+    .wrapper-frmSesion {
+        padding: 6em 1em;
+    }
+
+	.wrapper-frmSesion .card {
+		padding: 1.2em 0;
+		width: 100%;
+	}
+
+	.wrapper-frmSesion button {
+		padding: 1em;
+		font-size: .8rem;
+		margin-bottom: 1.2em;
+	}
+
+	.form-login input {
+		padding: 1.3em .8em;
+	}
+
+	/* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+
+	.logo-form img {
+		width: 100%;
+	}
+
+	.titulo-form {
+		padding: 1em 0 0;
+		text-align: center;
+		font-size: .2em!important;
+        font-weight: normal!important;
+	}
+
+	.info-header-form {
+		text-align: center;
+	}
+
+	h1.titulo-hoja-reclamacion {
+		padding: .4em 0 .3em;
+		font-size: 1.2em;
+	}
+
+	.fecha-reclamo {
+		text-align: center;
+	}
+
+    /* TIMELINE RECLAMOS -----------
+	------------------------------*/
+    .bs-wizard-step {
+        margin-bottom: 1.5em;
+    }
+
+    /*.progress, .progress-bar {
+        background-color: transparent !important;
+    }*/
+}
+
+/* MOVILES (Paisaje - Landscape) -------------------------*/
+/* MEDIDAS: 16px = 1em / 321px = 20.0625em - 480px = 30em */
+
+@media screen and (min-width: 20.0625em) and (max-width: 30em) {
+
+	/* HOME ---------------------------
+	---------------------------------*/
+
+	.header__content button {
+		width: 100%;
+		font-size: .9rem;
+	}
+
+	img.logo__texto {
+		display: none;
+	}
+
+    .logo, .wrap-ingresar {
+        text-align: center;
+        width: 48%;
+    }
+
+    .wrap-ingresar button {
+        width: 10em;
+    }
+
+    .texto-ingresar {
+        text-align: center;
+        font-size: .8rem;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 0;
+        font-size: 2.2rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+    .botones-aplicativo {
+        width: 90%;
+        display: inherit;
+        font-size: 1rem;
+        word-wrap: break-word;
+        text-align: center;
+    }
+
+    button.btn-registro, button.btn-consulta {
+        width: 11.25rem;
+        height: 100%;
+        margin: 0 1em 1em;
+        font-size: 1rem;
+    }
+
+    .btn-modal {
+        margin-top: 1em;
+    }
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+    .btn-click-aqui {
+        display: block;
+        padding-bottom: .8em;
+    }
+
+	/* LOGIN ----------------------
+	-----------------------------*/
+
+	.wrapper-frmSesion {
+		padding: 6em 1.2em;
+	}
+
+	.wrapper-frmSesion .card {
+		padding: 1.2em 0;
+		width: 100%;
+	}
+
+	.wrapper-frmSesion button {
+		padding: 1.1em 1em;
+		font-size: .9rem;
+		margin-bottom: 1.3em;
+	}
+
+	.form-login .form-control input {
+		padding: 1.3em .8em;
+	}
+
+	/* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+
+	.logo-form {
+		text-align: center;
+	}
+
+	.logo-form img {
+		width: 98%;
+	}
+
+	.titulo-form {
+		padding: 1em 0 0;
+		text-align: center;
+		font-size: 1.1em;
+	}
+
+	h1.titulo-hoja-reclamacion {
+		padding: .3em 0 .1em;
+		font-size: 1.4em;
+	}
+
+	.info-header-form {
+		text-align: center;
+	}
+
+	.fecha-reclamo {
+		text-align: center;
+	}
+
+    /* TIMELINE RECLAMOS -----------
+	------------------------------*/
+    .bs-wizard-step {
+        margin-bottom: 1.5em;
+    }
+
+    /*.progress, .progress-bar {
+        background-color: transparent !important;
+    }*/
+}
+
+/* TABLETS ---------------------------------------------- */
+/* MEDIDAS: 16px = 1em / 481px = 30.0625em - 768px = 48em */
+
+@media screen and (min-width: 30.0625em) and (max-width: 48em) {
+	
+	/* HOME ---------------------------
+	---------------------------------*/
+
+	.header__content button {
+		width: 100%;
+		font-size: 1rem;
+	}
+
+	img.logo__texto {
+		display: none;
+	}
+
+    .logo, .wrap-ingresar {
+        width: 50%;
+    }
+
+    .wrap-ingresar {
+        float: right;
+        text-align: right;
+    }
+
+    .wrap-ingresar button {
+        width: 10em;
+    }
+
+    .texto-ingresar {
+        font-size: .9rem;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 0;
+        font-size: 2.8rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+	.botones-aplicativo {
+		width: 50%;
+		display: inherit;
+		font-size: 1rem;
+	}
+	
+	button.btn-registro, button.btn-consulta {
+		width: 11.25rem;
+		height: 100%;
+		margin: 0 1em 1em;
+		font-size: 1rem;
+	}
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+    .reclamo-duplicado .col-md-6 {
+        flex: 0 0 100%;
+        margin-bottom: 1.5em;
+    }
+
+    .btn-click-aqui {
+        display: block;
+        padding-top: .8em;
+    }
+
+	/* LOGIN ----------------------
+	-----------------------------*/
+
+	.wrapper-frmSesion {
+		padding: 6em 1.5em;
+	}
+
+	.wrapper-frmSesion .card {
+		padding: 1.2em 0;
+		width: 21.875rem;
+	}
+
+	.wrapper-frmSesion button {
+		padding: 1.1em 1em;
+		font-size: .9rem;
+		margin-bottom: 1.3em;
+	}
+
+	.form-login .form-control input {
+		padding: 1.3em .8em;
+	}
+
+	/* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+
+	.logo-form {
+		text-align: left;
+	}
+
+	.logo-form img {
+		width: 95%;
+	}
+
+	.titulo-form {
+		padding: 1.5em 0 0;
+		text-align: center;
+	}
+
+	.info-header-form {
+		text-align: center;
+	}
+
+	h1.titulo-hoja-reclamacion {
+		padding: .5em 0 0;
+		font-size: 1.4em;
+	}
+
+	.fecha-reclamo {
+		text-align: center;
+	}
+
+    /* TIMELINE RECLAMOS -----------
+	------------------------------*/
+    .bs-wizard-step {
+        margin-bottom: 1.5em!important;
+    }
+
+    .progress, .progress-bar {
+        background-color: transparent!important;
+    }
+}
+
+/* DESKTOP --------------------------------------------------- */
+/* MEDIDAS: 16px = 1em / 768px = 48.0625em - 1326px = 82.875em */
+
+@media screen and (min-width: 48em) and (max-width: 75em) {
+
+	/* HOME ---------------------------
+	---------------------------------*/
+
+	.header__content button {
+		width: 100%;
+		font-size: 1rem;
+	}
+
+    img.logo__texto {
+        display: none;
+    }
+
+    .logo, .wrap-ingresar {
+        width: 50%;
+    }
+
+    .wrap-ingresar {
+        float: right;
+        text-align: right;
+    }
+
+    .wrap-ingresar button {
+        width: 10em;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 1em;
+        font-size: 2.8rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0 1em;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+	.botones-aplicativo {
+		width: 100%;
+		display: inherit;
+		font-size: 1rem;
+        text-align: center;
+	}
+	
+	button.btn-registro, button.btn-consulta {
+		width: 11.25rem;
+		height: auto;
+		margin: 0 1em 1em;
+		font-size: 1rem;
+	}
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+    .btn-click-aqui {
+        display: block;
+        padding-top: .8em;
+    }
+
+	/* LOGIN ----------------------
+	-----------------------------*/
+
+	.wrapper-frmSesion {
+		padding: 6em 1.5em;
+	}
+
+	.wrapper-frmSesion .card {
+		padding: 1.2em 0;
+		width: 26rem;
+	}
+
+	.wrapper-frmSesion button {
+		padding: 1.1em 1em;
+		font-size: .9rem;
+		margin-bottom: 1.3em;
+	}
+
+	.form-login .form-control input {
+		padding: 1.3em .8em;
+	}
+
+	/* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+	.logo-form {
+		text-align: left;
+	}
+
+	.logo-form img {
+		width: 80%;
+	}
+
+	.titulo-form {
+		padding: 0;
+		text-align: right;
+	}
+
+	h1.titulo-hoja-reclamacion {
+		padding: .5em 0;
+		font-size: 1.4em;
+	}
+
+	.fecha-reclamo {
+		text-align: right;
+	}
+
+	.info-header-form {
+		text-align: left;
+	}
+
+    /* TIMELINE RECLAMOS -----------
+	------------------------------*/
+    .bs-wizard-step {
+        margin-bottom: 1.5em !important;
+    }
+
+    /*.progress, .progress-bar {
+        background-color: transparent !important;
+    }*/
+
+}

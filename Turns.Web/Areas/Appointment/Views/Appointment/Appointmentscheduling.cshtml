@@ -1,0 +1,403 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<div class="card">
+    <div class="card-header text-center bg-danger">
+        Programación de Citas
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2">
+            <div class="col-md-2"><strong>Centro Mac</strong></div>
+            <div class="col-md-4"><select class="myselect2 form-control" id="cbxCentroAtencion"></select></div>
+
+            <div class="col-md-2"><strong>Servicio</strong></div>
+            <div class="col-md-4"><select class="myselect2 form-control" id="cbxServicio"></select></div>
+        </div>
+        <div class="row m-2">
+            <div class="col-md-2"><strong>Cupo</strong></div>
+            <div class="col-md-4"> <input type="number" id="txtQuota" class="form-control"></div>
+            <div class="col-md-2"><strong>Intervalo</strong></div>
+            <div class="col-md-4">
+                <select class="myselect2 form-control" id="cbxIntervalo">
+                    <option value="-1">--Seleccione--</option>
+                    <option value="1">30 Minutos</option>
+                    <option value="2">40 Minutos</option>
+                </select>
+            </div>
+        </div>
+        <div class="row m-2">
+            <div class="col-md-2"><strong>Fecha Inicio</strong></div>
+            <div class="col-md-4"> <input placeholder="Seleccione Fecha" type="text" id="datepicker" class="form-control datepicker"></div>
+
+            <div class="col-md-2"><strong>Fecha Fin</strong></div>
+            <div class="col-md-4"> <input placeholder="Seleccione Fecha" type="text" id="datepicker2" class="form-control datepicker"></div>
+        </div>
+
+    </div>
+
+</div>
+<div class="col-md-12 mt-4 d-flex justify-content-center">
+    <button id="btnProgramar" type="button" class="btn btn-outline-secondary mr-1"><i class="fas fa-search" style="margin-right:5px;"></i>Programar</button>
+    <button id="btnLimpiar" type="button" class="btn btn-outline-secondary mr-1" style="margin-left:3px;"><i class="fas fa-times-circle"></i>Limpiar</button>
+    <div></div>
+</div>
+<div class="col-md-12 mt-4 d-flex justify-content-center">
+    <div class="card" style="width:70rem;">
+        <div class="card-header text-center" style="height:2rem;font-size:10px;">
+            <h6>Actividades Programadas:</h6>
+        </div>
+
+        <div class="card-body" style="text-align:center">
+            <div id="calendarContainer">
+                <div id='calendar' class="fc fc-ltr fc-bootstrap"></div>
+            </div>
+            <div>
+                <label>Leyenda</label>
+                <button type="button" class="btn btn-success btn-sm" style="color:White; background-color:#33B531; margin:10px;">
+                    <i class="fas fa-baseball-ball"></i> Disponible
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" style="color:White; background-color:#D63232; margin:10px;">
+                    <i class="fas fa-baseball-ball"></i> Ocupado
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        Limpiar();
+        AutocompleteCentroAtencion();
+
+        CargaActivityxId(0, 0);
+
+          $('#datepicker').datepicker();
+           $('#datepicker2').datepicker();
+    });
+
+    $(document).on('change', '#cbxCentroAtencion', function (event) {
+        var vCodeAttentionCenter = $('#cbxCentroAtencion').val();
+        CargaServicexAttentionCenter(vCodeAttentionCenter);
+    });
+
+    $(document).on('change', '#cbxServicio', function (event) {
+        $("#calendar").remove();
+        $("#calendarContainer").append("<div id='calendar'></div>");
+        CargaActivityxId($('#cbxCentroAtencion').val(), $('#cbxServicio').val());
+
+    });
+
+
+    function AutocompleteCentroAtencion() {
+        $.ajax({
+            type: "GET",
+            url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxCentroAtencion").empty();
+                $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+        }
+
+    function CargaServicexAttentionCenter(vCodeAttentionCenter) {
+        var dato = { CodeAttentionCenter: vCodeAttentionCenter };
+         var prueba1 = JSON.stringify(dato);
+         $.ajax({
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/ListarServicexAttentionCenter",
+                data: prueba1,
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                success: function (data) {
+                  //Entidad
+                    //cbxCentroAtencion
+                    $("#cbxServicio").empty();
+                    $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#cbxServicio").append("<option value=" + data[i].codeService + ">" + data[i].descriptionService + "</option>");
+                   }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+         });
+
+    };
+
+
+    function CargaActivityxId(vCodeAttentionCenter, vCodeService) {
+        //Entidad
+         //cbxCentroAtencion
+
+        var init = function () {
+
+            obtenerProgramacionCita();
+        }
+
+        var obtenerProgramacionCita = function () {
+            var prueba3 = { CodeAttentionCenter: vCodeAttentionCenter, CodeService: vCodeService };
+            var prueba1 = JSON.stringify(prueba3);
+            $.ajax({
+                type: "POST",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetActivityId",
+                data: prueba1,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    DataToEventList(data);
+                    loadCalendar(eventList);
+                    //alert(data);
+                    //console.log(data);
+                }, //End of AJAX Success function
+
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+
+            });
+
+        }
+
+        var DataToEventList = function (dataSoruce) {
+            eventList = [];
+            $.each(dataSoruce, function (i, item) {
+
+                var eventModel = {
+                    id: item.codeActivity,
+                    codeschedule: item.codeSchedule,
+                    codeactivity: item.codeActivity,
+                    activityDate: item.activityDate,
+                    codeservice: item.codeService,
+                    codeattentioncenter: item.codeAttentionCenter,
+                    title: item.descriptionActivity,
+                    start: Date.parse( item.startTime, "yyyy-mm-dd hh:mm:ss"),
+                    end: Date.parse( item.endTime, "yyyy-mm-dd hh:mm:ss"),
+                    quota: item.quota,
+                    disponible: item.available,
+                    color: (item.available === true) ? '#33B531' : '#D63232'
+                }
+                eventList.push(eventModel);
+            });
+        }
+
+        var loadCalendar = function () {
+
+            var today = new Date();
+           // alert(today.getDay());
+            var calendarEl = document.getElementById('calendar');
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+                theme: true,
+                themeSystem: 'bootstrap',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay'
+                },
+                firstDay: today.getDay(),
+                defaultView: 'timeGridWeek',
+                defaultDate: new Date(),
+                locale: 'es',
+                buttonIcons: true, // show the prev/next text
+                weekNumbers: true,
+                navLinks: true, // can click day/week names to navigate views
+                selectable: false,
+                selectMirror: true,
+                allDaySlot: false,
+                height: 510,
+                minTime: '08:00:00',
+                maxTime: '20:00:00',
+                eventClick: function (info) {
+
+                    if (info.event.extendedProps.disponible === true) {
+
+                        //alert('Event: ' + info.event.title);
+                        var newDate = FullCalendar.formatDate(info.event.start, {
+                            day: 'numeric',
+                            month: 'numeric',
+                            year: 'numeric',
+                            locale: 'es-PE'
+                        });
+
+
+                        citaSelecionada = {
+                            CodeActivity: info.event.id
+                        };
+
+                    }
+                },
+                eventRender: function (info) {
+
+                    var jqElement = $(info.el);
+                    jqElement.find(".fc-time").remove();
+                    var fc_title = jqElement.find(".fc-title")
+
+                    fc_title.css({
+                        'font-size': '11px',
+                        'color': '#FFFFFF'
+                    });
+                    if (info.event.extendedProps.disponible === true) {
+                        jqElement.css('cursor', 'pointer');
+                    } else {
+                        fc_title.prepend("<i class='glyphicon glyphicon-user'></i>");
+                    }
+                    jqElement.tooltip(
+                        {
+                            title: "Cupo: " + info.event.extendedProps.quota,
+                            modelo: '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+                        }
+                    );
+
+                },
+
+                editable: false,
+                eventLimit: true, // allow "more" link when too many events
+                events: eventList
+            });
+
+            calendar.render();
+        }
+        init();
+
+
+    };
+
+     $("#btnProgramar").click(function () {
+
+         var getcbxCentroAtencion = $("#cbxCentroAtencion").val();
+         var getcbxServicio = $("#cbxServicio").val();
+         var gettxtQuota = $("#txtQuota").val();
+         var getcbxIntervalo = $("#cbxIntervalo").val();
+         var gettxtFechaInicio = $("#datepicker").val();
+         var gettxtFechaFin = $("#datepicker2").val();
+
+
+
+        if ($("#cbxCentroAtencion").val() == -1) {
+            fnGlobales.msg.error("Seleccione Combo Centro Mac", function () { });
+            return false;
+        }
+
+        if ($("#cbxServicio").val() == -1) {
+            fnGlobales.msg.error("Seleccione Combo Servicio", function () { });
+            return false;
+        }
+
+        if ($("#txtQuota").val() == '') {
+            fnGlobales.msg.error("Ingrese Cupo", function () { });
+            return false;
+         }
+
+        if ($("#cbxIntervalo").val() == -1) {
+            fnGlobales.msg.error("Seleccione Combo Intervalo", function () { });
+            return false;
+         }
+
+        if ($("#datepicker").val() == '') {
+            fnGlobales.msg.error("Ingrese Fecha Inicio", function () { });
+            return false;
+         }
+
+        if ($("#datepicker2").val() == '') {
+            fnGlobales.msg.error("Ingrese Fecha Fin", function () { });
+            return false;
+         }
+
+
+        if(($("#datepicker").val() > $("#datepicker2").val()))
+        {
+            fnGlobales.msg.error("La fecha de inicio no debe ser mayor a la fecha de fin", function () { });
+            return false;
+        }
+
+         var prueba3 = {
+             CodeAttentionCenter: getcbxCentroAtencion, CodeService: getcbxServicio, StartQuota: gettxtQuota,
+             Intervalo: getcbxIntervalo, FechaInicio: gettxtFechaInicio, FechaFin: gettxtFechaFin
+         };
+         var prueba1 = JSON.stringify(prueba3);
+
+        $.ajax({
+            url: "@Model.Parametros.WebApiUrl.AppointmentService/ProgramarCita",
+            data:prueba1,
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+
+                if (data[0].response > 0) {
+                    fnGlobales.msg.success("Programación Correcta", function () { });
+                    $("#calendar").remove();
+                    $("#calendarContainer").append("<div id='calendar'></div>");
+                    CargaActivityxId($('#cbxCentroAtencion').val(), $('#cbxServicio').val());
+                }
+                if (data[0].response == -1) {
+                    fnGlobales.msg.error("Ocurrio un Problema, Contacte con Soporte", function () { });
+                }
+                 if (data[0].response == -2) {
+                    fnGlobales.msg.error("La fecha final deber ser mayor o igual a la fecha inicial ", function () { });
+                }
+                if (data[0].response == -3) {
+                    fnGlobales.msg.error("No puede programar actividad en ese rango de fechas porque ya existen actividades programadas", function () { });
+                }
+
+            },
+            complete: function () {
+
+            },
+            failure: function (jqXHR, textStatus, errorThrown) {
+                console.error(response);
+                fnGlobales.msg.error("Ocurrió un Problema", function () { });
+            }
+        });
+
+        });
+
+        $("#btnLimpiar").click(function () {
+
+            Limpiar();
+           // LimpiarCalendar();
+
+        });
+
+    function Limpiar()
+        {
+        $("#cbxServicio").empty();
+        $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+        $("#txtQuota").val('');
+        $("#cbxIntervalo").empty();
+        $("#cbxIntervalo").append('<option value=-1>--Seleccione--</option>');
+        $("#cbxIntervalo").append('<option value=1>30 Minutos</option>');
+        $("#cbxIntervalo").append('<option value=2>40 Minutos</option>');
+        $("#datepicker").val('');
+        $("#datepicker2").val('');
+        }
+
+</script>

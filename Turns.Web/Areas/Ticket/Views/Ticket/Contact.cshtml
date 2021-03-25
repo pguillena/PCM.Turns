@@ -1,0 +1,183 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutRegistro.cshtml";
+}
+
+<link href="~/css/Modal.css" rel="stylesheet" />
+
+
+<script type="text/javascript">
+
+    $(document).ready(function ()
+    {
+        var sel = document.getElementById("ddlTipoDocumento");       
+        $("#bandera").val(0)
+        $("#datos_personales").hide();           
+        $('#imgLoading').hide();     
+        //$("#datos_personales").hide(true);
+        //$("#ResultadoDatosPersonales").hide(true);
+
+        $('#nroDocumento').focus();
+        //$('#ddlTipoDocumento').change(function(){
+        //        $('#nroDocumento').focus();
+        //});
+        $("#ddlTipoDocumento").change(function () {
+            if (parseInt($("#ddlTipoDocumento").val()) != 1) {
+                $("#nroDocumento").val("");
+                $("#apellido").val("");
+                $("#nombre").val("");
+                $("#datos_personales").show();
+                $("#teclado").hide();
+                $("#bandera").val(1)
+
+            } else {
+                $("#datos_personales").hide();
+                $("#teclado").show();
+            }
+        });   
+
+        $("#chxDoc").change(function () {
+            var checkBox = document.getElementById("chxDoc");
+            if (checkBox.checked == true) {               
+                $("#ddlTipoDocumento").append('<option value="4">OTROS</option>');
+            } else {
+                sel.remove(3);
+            }
+        }); 
+    });
+
+    function buscarPersona() {  
+        if ($("#bandera").val() == -1) {
+            @*$.ajax({
+                type: 'POST',
+                url: '@Url.Action("ObtenerDatos")',
+                data: nroDoc,
+                dataType: 'json',
+                success: function (data) {
+                }
+            });*@
+
+            window.location.href = '@Url.Content("~/Ticket/Ticket/Service")?datos=' + $('#apellido').val() + ',' + $('#nombre').val() + '&nro=' + $('#nroDocumento').val() + '&tipoDoc=' + parseInt($('#ddlTipoDocumento').val());
+        } else {
+            $('#datospersona').html("");    
+            $('#txtTitulo').html("");
+            document.getElementById('openModal').style.display = 'block';      
+             $('#imgLoading').show();
+             if ($("#ddlTipoDocumento").val() == 1) {
+                 var nroDoc = { nvNumDocumento: $("#nroDocumento").val() };
+                 $.ajax({
+                     type: 'POST',
+                     url: '@Url.Action("ObtenerDatos")',
+                     data: nroDoc,
+                     dataType: 'json',
+                     success: function (data) {
+                         $('#imgLoading').hide();
+                         switch (data.success.iCondicion) {
+
+                             case -1:
+                                 //$('#txtTitulo').text("Aviso");
+                                 //$('#datospersona').html(data.success.nvNombreCompleto);
+                                 $("#bandera").val(data.success.iCondicion);
+                                 $("#datos_personales").show();
+                                 $("#teclado").hide();                            
+                                 document.getElementById('openModal').style.display = 'none';
+                                 break;
+                             case 0:
+                                 $('#txtTitulo').text("Aviso");
+                                 $('#datospersona').html(data.success.nvNombreCompleto);
+                                 $("#ResultadoDatosPersonales").show();
+                                   document.getElementById('openModal').style.display = 'none';
+                                 break;
+                             case 1:
+                                 document.getElementById('openModal').style.display = 'none';
+                                 window.location.href = '@Url.Content("~/Ticket/Ticket/Service")?datos=' + data.success.nvNombreCompleto + '&nro=' + data.success.nvNumDocumento + '&tipoDoc=' + parseInt($('#ddlTipoDocumento').val()) + '&direccion=' + data.success.nvDireccion + '&estadoCivil=' + data.success.nvEstadoCivil;
+                                 break;
+                         }
+                     }
+                 });
+             } else {
+                 window.location.href = '@Url.Content("~/Ticket/Ticket/Service")?datos=' + $('#apellido').val() + ',' + $('#nombre').val() + '&nro=' + $('#nroDocumento').val() + '&tipoDoc=' + parseInt($('#ddlTipoDocumento').val());
+             } 
+        }        
+     };    
+     
+    function LimpiarDigitos() {
+        $("#nroDocumento").val('');
+     }
+
+    function digitar(number) {
+        var valBusqueda = $("#nroDocumento").val();
+        if (valBusqueda.length < 8) {
+            $("#nroDocumento").val(valBusqueda + number);
+        }
+     }
+
+</script>
+
+<div class="card mt-4 pt-3 pb-5">
+    <div class="card-header d-flex justify-content-center align-items-center bg-turnos mt-4">
+        <div><img src="~/images/logo_mac_small.png" style="margin-right: 25px;" /></div>
+        <div>Sistema Integrado de Gestión de Turnos</div>
+    </div>
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-5">
+            <h3 class="subtitulo-turnos mt-4">Ingresa tus Datos Personales</h3>
+
+            <div class="form-group" id="cbxDocumento">
+                <label for="exampleInputEmail1">Tipo de Documento</label>
+                <div class="d-flex justify-content-between align-items-center">
+                    <select class="custom-select mr-2" id="ddlTipoDocumento" name="ddlTipoDocumento">
+                        <option value="1">DNI</option>
+                        <option value="2">CARNET DE EXTRANJERÍA</option>
+                        <option value="3">PASAPORTE</option>
+                        @*<option value="4">OTROS</option>*@
+                    </select>
+                    <div><input type="checkbox" valorKey="" name="chxDoc" id="chxDoc" /></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Número de Documento</label>
+                <input class="form-control" id="nroDocumento" dirname="nroDocumento" aria-describedby="emailHelp" placeholder="Ingrese el número" maxlength="8" type="number" name="name">
+                <input id="result" name="result" type="hidden">
+
+            </div>
+           
+            <div id="teclado" name="teclado">
+                <button class="btn-Number" onclick="digitar(7)">7</button>
+                <button class="btn-Number" onclick="digitar(8)">8</button>
+                <button class="btn-Number" onclick="digitar(9)">9</button>
+                <button class="btn-Number" onclick="digitar(4)">4</button>
+                <button class="btn-Number" onclick="digitar(5)">5</button>
+                <button class="btn-Number" onclick="digitar(6)">6</button>
+                <button class="btn-Number" onclick="digitar(1)">1</button>
+                <button class="btn-Number" onclick="digitar(2)">2</button>
+                <button class="btn-Number" onclick="digitar(3)">3</button>
+                <button class="btn-Number" onclick="digitar(0)">0</button>
+                <button class="btn-Number2" onclick="LimpiarDigitos()" value="9">&nbsp;Borrar&nbsp;</button>
+            </div>
+
+            <div id="datos_personales" name="datos_personales" class="form-group">
+                <div id="bandera" name="bandera" type="hidden"></div>
+                <label for="exampleInputEmail1">Apellidos</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" aria-describedby="emailHelp" placeholder="">
+
+                <label for="exampleInputEmail1">Nombres</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" aria-describedby="emailHelp" placeholder="">
+            </div>
+            <div class="clearfix"></div>
+            <button class="btn btn-danger btn-block btn-lg mt-1" onclick="buscarPersona()">Continue</button>
+            <div id="openModal" class="modalDialog">
+                <div style="text-align:center">
+                    <a href="#close" title="Close" class="close" onclick="javascript:CloseModal();">X</a>
+                    <h2 id="txtTitulo" name="txtTitulo"></h2>
+                    <img src="/Images/loading.gif" id="imgLoading" name="imgLoading" />
+                    <div id="datospersona" name="datospersona" style="font-size:15pt;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row"> </div>
+</div>
+
+

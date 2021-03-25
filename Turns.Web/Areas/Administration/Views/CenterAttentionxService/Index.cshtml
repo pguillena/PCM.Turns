@@ -1,0 +1,452 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        LoadComboCentroAtencion();
+        ComboCentroAtencion();
+        Clasificador.Listar(1);
+        $("#cbxCentroAtencion").change(function () {
+            var IdCentroAtencion = parseInt($('#cbxCentroAtencion').val());
+            if (IdCentroAtencion > 0) {
+                $("#cbxEntidad").attr('disabled', false);
+                limpiarGrilla();
+                cargarComboEntidad(IdCentroAtencion);
+            } else {
+                $("#cbxEntidad").attr('disabled', true);
+                limpiarGrilla();
+            }
+        });
+
+        $('#cbxEntidad').change(function () {
+            var IdEntidad = parseInt($('#cbxEntidad').val());
+            if (IdEntidad > 0) {
+                cargarGrillaServicios(IdEntidad, parseInt($('#cbxCentroAtencion').val()));
+            } else {
+                limpiarGrilla();
+            }
+        });
+    });
+
+    Clasificador = {
+
+        Listar: function (page) {
+            table = $('#tblServiceAttentionCenter');
+            var dato = {
+                strField: 'CodeAttentionCenter',
+                strOrder: 'DESC',
+                strPagDesde: page,
+                strPagHasta: table.data('pagesize'),
+                strCbxCentroAtencion: $("#cbxCentroAtencio").val() == null ? -1 : $("#cbxCentroAtencio").val(),
+                strIdComboActivo: $("#miselect").val()
+            };
+            $.ajax({
+                //url: "https://localhost:44381/api/AttentionCenterxService",
+                url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AttentionCenter",  
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = $('#tblServiceAttentionCenter').children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tblServiceAttentionCenter tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tblServiceAttentionCenter');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeAttentionCenter);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.description);
+                rows += '<td style="width:120px;">';
+                rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeAttentionCenter, r.codeEntity);
+                rows += '</div>';
+                rows += '</td>';
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        },
+
+        editar: function (code_AttentionCenter) {
+            if (code_AttentionCenter != 0) {//boton editar
+                $("#cbxCentroAtencion").attr('disabled', true);
+                $("#cbxCentroAtencion").val(code_AttentionCenter);
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44381/api/ListCurrentEntity",
+                    url: "@Model.Parametros.WebApiUrl.ServicexCenterAttentionService/ListCurrentEntity", 
+                    data: { CodeAttentionCenter: code_AttentionCenter },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $("#cbxEntidad").empty();
+                            $("#cbxEntidad").append('<option value=-1>--Seleccione--</option>');
+                            for (var i = 0; i < data.length; i++) {
+                                $("#cbxEntidad").append("<option value=" + data[i].codeEntity + ">" + data[i].description + "</option>");
+                            }
+                            $("#cbxEntidad").val(codeEntiti);
+                        } else {
+                            $("#cbxEntidad").empty();
+                            $("#cbxEntidad").append('<option value=-1>--Seleccione--</option>');
+                        }
+                    },
+                    failure: function (data) {
+                        alert(data.responseText);
+                    },
+                    error: function (data) {
+                        alert(data.responseText);
+                    }
+                });
+                $("#cbxEntidad").attr('disabled', false);
+                cargarGrillaServicios(codeEntiti, code_AttentionCenter);
+
+            } else {//nuevo
+                $('#michk')[0].checked = false;
+                limpiarGrilla();
+                $("#cbxCentroAtencion").val(-1);
+                $("#cbxEntidad").empty();
+                $("#cbxEntidad").append('<option value=-1>--Seleccione--</option>');
+                $("#cbxCentroAtencion").attr('disabled', false);
+                $("#cbxEntidad").attr('disabled', true);
+            }
+        },
+
+        reset: function () {
+            $("#cbxCentroAtencio").val(-1)
+            $("#miselect").val("1");
+            Clasificador.Listar(1);
+        },
+
+        delete: function (code_AttentionCenter, CodeServiceEnti) {
+            fnGlobales.msg.confirm("Eliminar el registro", function () {
+                $.ajax({
+                    //url: "https://localhost:44381/api/DeleteAttentionCenterService",
+                    url: "@Model.Parametros.WebApiUrl.ServicexCenterAttentionService/DeleteAttentionCenterService", 
+                    data: JSON.stringify({ CodeServiceEntity: CodeServiceEnti, CodeAttentionCenter: code_AttentionCenter }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.CodeServAttenCenter) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.Listar(1);
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        }
+    }
+
+
+    function myFunction() {
+        var checkBox = document.getElementById("michk");
+        if (checkBox.checked == true) {
+            for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+                $('#' + i + '')[0].checked = true;
+            }
+        } else {
+            for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+                $('#' + i + '')[0].checked = false;
+            }
+        }
+    }
+
+    function cargarComboEntidad(IdCentroAtencion) {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44381/api/ListCurrentEntity",
+            url: "@Model.Parametros.WebApiUrl.ServicexCenterAttentionService/ListCurrentEntity", 
+            data: { CodeAttentionCenter: IdCentroAtencion },
+            //contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    $("#cbxEntidad").empty();
+                    $("#cbxEntidad").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#cbxEntidad").append("<option value=" + data[i].codeEntity + ">" + data[i].description + "</option>");
+                    }
+
+                } else {
+                    $("#cbxEntidad").empty();
+                    $("#cbxEntidad").append('<option value=-1>--Seleccione--</option>');
+                }
+                //$("#cbxEntidad").empty();
+                //$("#cbxEntidad").append('<option value=-1>--Seleccione--</option>');
+                //for (var i = 0; i < data.length; i++) {
+                //    $("#cbxEntidad").append("<option value=" + data[i].codeEntity + ">" + data[i].description + "</option>");
+                //}
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function cargarGrillaServicios(IdEntidad, code_AttentionCenter) {
+        limpiarGrilla();
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44381/api/ListService",
+            url: "@Model.Parametros.WebApiUrl.ServicexCenterAttentionService/ListService", 
+            data: { CodeEntity: IdEntidad, CodeAttentionCenter: code_AttentionCenter },
+            //contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    limpiarGrilla();
+                    for (var j = 0; j < data.length; j++) {
+                        var fila = '<tr id="row' + (j + 1) + '"><td style="display:none">' + data[j].codeServiceEntity + '</td><td style="display:none">' + data[j].codeServiceEntity + '</td><td>' + data[j].description + '</td><td style="text-align:center"><input type="checkbox" valorKey="' + data[j].codeServiceEntity + '" name="' + (j + 1) + '" id="' + (j + 1) + '"</input></td></tr>'; //esto seria lo que contendria la fila
+                        ///*fin*/
+                        $('#tblAgregacion tr:first').after(fila);
+                        $("#adicionados").text(""); //esta instruccion limpia el div adicioandos para que no se vayan acumulando
+                        var nFilas = $("#tblAgregacion tr").length;
+                        $("#adicionados").append(nFilas - 1);
+
+                    }
+                    for (var x = 1; x < document.getElementById('tblAgregacion').rows.length; x++) {
+                        $('#' + x + '')[0].checked = data[x - 1].active == "0" ? false : true;
+                    }
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function limpiarGrilla() {
+        for (var i = 0; i < 10000; i++) {
+            $("#row" + i).remove();
+        }
+    }
+
+    function LoadComboCentroAtencion() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+            url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxCentroAtencion").empty();
+                $("#cbxCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function Save() {
+        var seleccion = [];
+        if (parseInt($('#cbxCentroAtencion').val()) != -1) {
+            for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+                var checkBox = document.getElementById(i);
+                if (checkBox.checked == true) {
+                    var pk = parseInt($('#' + i).attr("valorKey"));//parseInt(document.getElementById('tblAgregacion').rows[i].cells[0].innerHTML);
+                    seleccion.push(pk);
+                }
+                //if ( $('#'+i+'')[0].checked) {
+                //    var pk = parseInt(document.getElementById('tblAgregacion').rows[i].cells[0].innerHTML);
+                //    seleccion.push(pk);
+                //}
+            }
+            if (seleccion.length >= 1) {
+                $.ajax({
+                    //url: "https://localhost:44381/api/SaveAttentionCenterService",
+                    url: "@Model.Parametros.WebApiUrl.ServicexCenterAttentionService/SaveAttentionCenterService", 
+                    data: JSON.stringify({ CodeAttentionCenter: parseInt($("#cbxCentroAtencion").val()), Lista: seleccion, CodeEntity: parseInt($("#cbxEntidad").val()) }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.codeServiceEntity) {
+                            case 0:
+                                fnGlobales.msg.existe("Ya existe registrada la Entidad", function () { });
+                                break;
+                            case -1:
+                                fnGlobales.msg.error("Hubo un error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.Listar(1);
+                                fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    failure: function (data) {
+                        alert(data.responseText);
+                    }, //End of AJAX failure function
+                    error: function (data) {
+                        alert(data.responseText);
+                    } //End of AJAX error function
+                });
+
+            } else {
+                fnGlobales.msg.error("Debe marcar al menos un servicio", function () { });
+            }
+        } else {
+            fnGlobales.msg.error("Debe seleccionar Centro de Atención", function () { });
+        }
+    }
+
+    function ComboCentroAtencion() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+            url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxCentroAtencio").empty();
+                $("#cbxCentroAtencio").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxCentroAtencio").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+
+</script>
+
+<div class="card mb-0">
+    <div class="card-header text-center bg-danger">
+        Búsqueda de Centro de Atención por Servicios
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2 border-card justify-content-center align-items-center">
+            <div class="col-md-2"><strong>Centro de Atención</strong></div>
+            @*<div class="col-md-4"><input class="form-control" id="idDescripcion" name="idDescripcion" /></div>*@
+            <div class="col-md-6"><select class="myselect2 form-control" id="cbxCentroAtencio"></select></div>
+
+            <div class="col-md-1"><strong>Estado</strong></div>
+            <div class="col-md-3">
+                <select class="form-control" id="miselect">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 d-flex justify-content-center">
+    <button type="button" class="btn btn-success mr-1" onclick="Clasificador.Listar(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+    <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+    <button type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal" onclick="Clasificador.editar(0) "><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+</div>
+<div class="col-md-12"><hr class="hr-videos mb-0" /></div>
+<div class="card mt-4 mb-0 mx-4">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tblServiceAttentionCenter" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.Listar" data-paginator="paginator">
+            <tbody></tbody>
+            <thead class="thead-dark ">
+                <tr>
+                    <th class="align-middle" style="display:none">codeEntity</th>
+                    <th class="align-middle" style="text-align:center;width:5%">N°</th>
+                    <th class="align-middle" style="text-align:center;width:90%">Centro de Atención</th>
+                    <th class="align-content-center text-center" colspan="1" style="width:5%">Acciones</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <div class="d-flex justify-content-center align-items-center">
+                            @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                            <div style="font-size:16px; padding-left: 15px;"></div>
+                            <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div class="modal " id="myModal">
+    <div class="modal-dialog  modal-dialog-centered" style="max-width:800px !important">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Registro Centro Atención por servicios</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="padding: 2em 1em;">
+                    <div class="row col-md-12" style="padding-bottom:20px;">
+                        <div class="col-md-2"><strong>Centro de Atención:</strong></div>
+                        <div class="col-md-3"><select class="myselect2 form-control" style="width:450px;" id="cbxCentroAtencion" name="cbxCentroAtencion"></select></div>
+                    </div>
+                    <div class="row col-md-12" style="padding-bottom:20px;">
+                        <div class="col-md-2"><strong>Entidad:</strong></div>
+                        <div class="col-md-8"><select class="form-control myselect2" style="width:450px;" id="cbxEntidad" name="cbxEntidad"></select></div>
+                        @*<button type="button" class="btn btn-outline-secondary mr-1" style="margin-left:5px;" onclick="AgregarServicio1()">Agregar</button>*@
+                    </div>
+                    <div class="row p-3">
+                        <div class=table-responsive>
+                            <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tblAgregacion">
+                                <tbody></tbody>
+                                <thead class="thead-dark ">
+                                    <tr>
+                                        <th class="align-middle" style="display:none" id="idsDeclarados">CodServicio</th>
+                                        <th class="align-middle" style="text-align:center;width:98%">servicios</th>
+                                        @*<th class="align-content-center text-center" colspan="1" style="width:12%">Acciones</th>*@
+                                        <th style="text-align:center"><input type="checkbox" id="michk" name="michk" onclick="myFunction()" /></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Save()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+            </div>
+        </div>
+    </div>
+</div>

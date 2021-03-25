@@ -1,0 +1,324 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Citas";
+    Layout = "~/Views/Shared/_LayoutAppointment.cshtml";
+}
+
+
+<div class="row" style="justify-content:center; ">
+    <div class="card">
+        <div class="card-header text-center bg-danger">
+            Reserva de Citas
+        </div>
+        <div class="card-body">
+            <div class="row" style="justify-content:center;">
+                <form id="basic-form" class="align-content-xl-stretch" validate="true">
+                    <div class="card" style="width: 50rem;">
+                        <div class="card-header text-center" style="height:2rem; font-size:10px;">
+                            <h6>Datos del Ciudadano</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" style="align-items:center;">
+
+                                @*<div class="form-group">
+                                        <label>Tipo Documento:</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <select id="cbxTipoDocumento" class="form-control"></select>
+                                    </div>*@
+                                <div>
+                                    <label class="control-label" for="slcTipoDocumento" style="text-align:left;margin-left:70px">Tipo de Documento:</label>
+                                </div>
+                                <div>
+                                    <select class="form-control" id="slcTipoDocumento" style="text-align:left;">
+                                        <option>D.N.I</option>
+                                        <option>CARNET DE EXTRANJERÍA</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="control-label" for="txtNumDocumento" style="text-align:left;margin-left:70px">Número de Documento:</label>
+                                </div>
+                                <div>
+                                    <input class="form-control" id="txtNumDocumento"   style="text-align:left;" name="input_dni" placeholder="Ingrese Dni" type="number" required />
+                                </div>
+                                <div>
+                                    <a id="idBuscar" onclick="buscarPersona();">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+
+
+                                </div>
+                                <div>
+                                    <label class="control-label" for="txtName" style="text-align:left;margin-left:70px">Nombres:</label>
+                                </div>
+                                <div>
+                                    <input class="form-control" id="txtName" style="text-align:left;" name="name" placeholder="Ingrese Nombres" type="text" required />
+                                </div>
+                                <div>
+                                    <label class="control-label" for="txtApePaterno" style="text-align:left;margin-left:70px">Apellido Paterno:</label>
+                                </div>
+                                <div>
+                                    <input class="form-control" id="txtApePaterno" style="text-align:left;" name="apepat" placeholder="Ingrese Apellido Paterno" type="text" required />
+                                </div>
+                                <div>
+                                    <label class="control-label" for="txtApeMaterno" style="text-align:left;margin-left:70px">Apellido Materno:</label>
+                                </div>
+                                <div>
+                                    <input class="form-control" id="txtApeMaterno" style="text-align:left;" name="apemat" placeholder="Ingrese Apellido Materno" type="text" required />
+                                </div>
+                                <div>
+                                    <label class="control-label" for="txtCorreo" style="text-align:left;margin-left:70px">Correo:</label>
+                                </div>
+                                <div>
+                                    <input class="form-control" id="txtCorreo" style="text-align:left;" type="email" name="email" placeholder="Ingrese Correo" />
+                                </div>
+                                <div>
+                                    <label class="control-label" for="txtTelefono" style="text-align:left;margin-left:70px">Teléfono Móvil:</label>
+                                </div>
+                                <div>
+                                    <input class="form-control" id="txtTelefono" style="text-align:left;" maxlength="9" type="number"  placeholder="Ingrese Teléfono" required />
+                                    @*<input class="form-control" id="txtTelefono" style="text-align:left;" maxlength="9" type="number" name="input_telf" placeholder="Ingrese Teléfono" required />*@
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="card" style="width: 50rem; ">
+                        <div class="card-body align-items-center d-flex justify-content-center">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                    <div class="btn-group" style="text-align:center">
+                                        <button id="btnContinuar" type="button" class="btn btn-primary btn-lg" style="width:200px">Continuar</button>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                    <div class="btn-group" style="text-align:center">
+                                        <button id="btnLimpiar" type="button" class="btn btn-primary btn-lg" style="width:200px">Limpiar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var citaSelecionada = {};
+    var vCaptcha = "";
+
+    $(document).ready(function () {
+
+        //$("#txtNumDocumento").show();
+
+        //$("#txtCe").hide();
+
+        $("#txtNumDocumento").keyup(function () {
+            if ($("#txtNumDocumento").val().length > 7) {
+                buscarPersona();
+            }
+          
+        });
+
+        $("#btnLimpiar").click(function () {
+
+            Limpiar();
+
+        });
+
+        $("#btnContinuar").click(function () {
+
+            var Dni = $("#txtNumDocumento").val();
+            var Name = $("#txtName").val();
+            var ApePaterno = $("#txtApePaterno").val();
+            var ApeMaterno = $("#txtApeMaterno").val();
+            var Correo = $("#txtCorreo").val();
+            var Telefono = $("#txtTelefono").val();
+
+            var key = 'Datos_Ciudadano';
+            var myObj = { vDni: Dni, vName:Name, vApePaterno: ApePaterno, vApeMaterno: ApeMaterno, vCorreo: Correo, vTelefono: Telefono };
+            localStorage.setItem(key, JSON.stringify(myObj));
+
+            var iuy = $("#basic-form").valid();
+            if ($("#basic-form").valid()) {
+                //if (Dni == "") {
+                //fnGlobales.msg.error("Ingrese Dni", function () { });
+                //return false;
+                //}
+                window.location.href = '@Url.Action("ReservationAppointment", "Appointment")';
+            }
+
+
+
+
+
+        });
+
+       // CargaTipoDocumento();
+
+         $("#basic-form").validate({
+            rules: {
+              name : {
+                required: true
+              },
+              apepat : {
+                required: true
+              },
+              apemat : {
+                required: true
+              },
+              fecha : {
+                required: true
+               },
+              hora : {
+                required: true
+              },
+              age: {
+                required: true,
+                number: true,
+                min: 18
+              },
+              email: {
+                email: true
+              },
+              weight: {
+                required: {
+                  depends: function(elem) {
+                    return $("#age").val() > 50
+                  }
+                },
+                number: true,
+                min: 0
+              },
+              input_telf: 'customphone',
+              input_dni: 'dniCheck'
+             },
+            messages : {
+                name: {
+                required: "Campo Requerido"
+                },
+                apepat: {
+                required: "Campo Requerido"
+                },
+                apemat: {
+                required: "Campo Requerido"
+                },
+                fecha: {
+                required: "Campo Requerido"
+                },
+                hora: {
+                required: "Campo Requerido"
+              },
+              age: {
+                required: "Campo Requerido",
+                number: "Please enter your age as a numerical value",
+                min: "You must be at least 18 years old"
+              },
+               email: {
+                required: "Campo Requerido",
+                email: "Ingrese Correo Electrónico Correcto"
+              },
+              weight: {
+                number: "Please enter your weight as a numerical value"
+                },
+              input_telf: {
+                 required: "Campo Requerido",
+                },
+              input_dni: {
+                 required: "Campo Requerido",
+                }
+            }
+
+        });
+
+    });
+
+
+
+    $.validator.addMethod('customphone', function (value, element) {
+    return this.optional(element) || /^\d{9}$/.test(value);
+    }, "Ingrese Número de Teléfono Válido");
+
+    $.validator.addMethod('dniCheck', function (value, element) {
+    return this.optional(element) || /^\d{8}$/.test(value);
+    }, "DNI no válido");
+
+
+
+    function buscarPersona() {
+        //var  = $("#nroDocumento").val();
+        var hh = { nvNumDocumento: $("#txtNumDocumento").val() };
+
+
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ObtenerDatos","Appointment")',
+                data:hh,
+                dataType: 'json',
+            success: function (data) {
+                if (data.success.nvNombre != null || data.success.nvNombre != "") {
+                    //$('#txtName').val(data.success.nvNombre);
+                    //$("#txtNumDocumento").val(data.success.nvNombre);
+                    $("#txtName").val(data.success.nvNombre);
+                    $("#txtApePaterno").val(data.success.nvApePaterno);
+                    $("#txtApeMaterno").val(data.success.nvApeMaterno);
+                    //$("#txtCorreo").val(data.success.nvNombre);
+                    //$("#txtTelefono").val(data.success.nvNombre);
+                } else {
+
+                    fnGlobales.msg.error("Ingrese Datos Completos", function () { });
+                    return false;
+
+                }
+
+
+            }
+            });
+
+
+    };
+
+    function CargaTipoDocumento() {
+         $.ajax({
+                type: "Get",
+                url: "https://localhost:44327/api/GetAllDocumentType",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#cbxTipoDocumento").empty();
+                    //$("#cbxTipoDocumento").append('<option value=-1>--Seleccione--</option>');
+                   for (var i = 0; i < data.length; i++) {
+                    $("#cbxTipoDocumento").append("<option value=" + data[i].codeDocumentType + ">" + data[i].descriptionDocumentType + "</option>");
+                   }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+    };
+
+
+    function Limpiar() {
+        $("#txtNumDocumento").val('');
+        $("#txtName").val('');
+        $("#txtApePaterno").val('');
+        $("#txtApeMaterno").val('');
+        $("#txtCorreo").val('');
+        $("#txtTelefono").val('');
+
+    };
+
+
+
+
+</script>

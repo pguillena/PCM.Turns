@@ -1,0 +1,2860 @@
+<%@ Page Title="Busqueda de Terminal Terrestre" Language="C#" MasterPageFile="~/Master/Principal1.Master" AutoEventWireup="true" CodeBehind="frmTerminalhoa.aspx.cs" Inherits="Sinarett.Web.Terminal.frmTerminalhoa" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <script src="../Scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
+    <script src="../Scripts/paging.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery.tmpl.min.js" type="text/javascript"></script>
+    <script src="../Scripts/json2.js" type="text/javascript"></script>
+    <script src="../Scripts/OrdenTabla.js" type="text/javascript"></script>
+    <link href="../Estilos/flick/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" type="text/css" />
+    <link href="../Estilos/estilos.css" rel="stylesheet" type="text/css" />
+    <style>
+        .celdas:hover
+        {
+            background-color: lightyellow;
+        }
+        .button a
+        {
+            background-color: #EBEBEB;
+            border: 1px solid #A0A0A0;
+            border-radius: 4px 4px 4px 4px;
+            display: inline-block;
+            font-size: 10px;
+            padding: 4px 6px 3px 6px;
+            color: black;
+            text-decoration: none;
+        }
+        .button a:hover
+        {
+            background-color: #BBBBBB;
+        }
+        .estiloCbo
+        {
+            border-right: #000000 1px solid;
+            border-top: #000000 1px solid;
+            border-left: #000000 1px solid;
+            border-bottom: #000000 1px solid;
+            font-family: Arial, Helvetica, sans-serif;
+	        font-size: 8pt;
+	        color: Black;
+        }
+        .auto-style1 {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            text-decoration: none;
+            height: 40px;
+        }
+        .auto-style2 {
+            height: 18px;
+            width: 60px;
+        }
+        .auto-style3 {
+            height: 23px;
+        }
+        .auto-style4 {
+            width: 15px;
+            height: 18px;
+        }
+        .auto-style5 {
+            width: 400px;
+            height: 18px;
+        }
+        .auto-style6 {
+            width: 250px;
+            height: 18px;
+        }
+        .auto-style8 {
+            width: 110px;
+            height: 18px;
+        }
+        .auto-style10 {
+            width: 720px;
+            height: 23px;
+        }
+        .auto-style11 {
+            width: 30px;
+            height: 23px;
+        }
+        .auto-style12 {
+            width: 3%;
+            height: 23px;
+        }
+        .auto-style13 {
+            width: 6px;
+        }
+        .auto-style20 {
+            border-spacing: 1px;
+            color: #0266b4;
+            text-align: left;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            text-decoration: none;
+            width: 130px;
+            border: 1pt solid #FFFFFF;
+            padding-left: 15px;
+            padding-right: 3px;
+            padding-top: 1px;
+            padding-bottom: 1px;
+            background-color: #F2F2F2;
+        }
+        .auto-style22 {
+            border-spacing: 1px;
+            color: #0266b4;
+            text-align: left;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            text-decoration: none;
+            width: 150px;
+            border: 1pt solid #FFFFFF;
+            padding-left: 15px;
+            padding-right: 3px;
+            padding-top: 1px;
+            padding-bottom: 1px;
+            background-color: #F2F2F2;
+            height: 29px;
+        }
+        .auto-style30 {
+            width: 30px;
+            height: 18px;
+        }
+        .auto-style31 {
+            width: 100px;
+            height: 18px;
+        }
+        .auto-style32 {
+            width: 120px;
+            height: 18px;
+        }
+        .auto-style33 {
+            width: 190px;
+            height: 18px;
+        }
+        .auto-style46 {
+            height: 25px;
+        }
+        .auto-style47 {
+            width: 11px;
+            height: 25px;
+        }
+        .auto-style50 {
+            width: 210px;
+        }
+        .auto-style54 {
+            height: 40px;
+        }
+        .auto-style65 {
+            width: 1%;
+        }
+        .auto-style68 {
+            width: 26%;
+        }
+        .auto-style69 {
+            width: 40px;
+            height: 20px;
+        }
+        .auto-style70 {
+            width: 80px;
+            height: 20px;
+        }
+        .auto-style71 {
+            width: 160px;
+            height: 20px;
+        }
+        .auto-style72 {
+            width: 100px;
+            height: 20px;
+        }
+        .auto-style73 {
+            width: 60px;
+            height: 20px;
+        }
+        .auto-style74 {
+            height: 15px;
+        }
+        .auto-style75 {
+            width: 16px;
+        }
+        .auto-style77 {
+            border-spacing: 1px;
+            color: #0266b4;
+            text-align: left;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            text-decoration: none;
+            height: 20px;
+            width: 39px;
+            border: 1pt solid #FFFFFF;
+            padding-left: 15px;
+            padding-right: 3px;
+            padding-top: 1px;
+            padding-bottom: 1px;
+            background-color: #F2F2F2;
+        }
+        .auto-style78 {
+            width: 70px;
+            height: 18px;
+        }
+        .auto-style79 {
+            width: 50px;
+            height: 18px;
+        }
+        .auto-style80 {
+            width: 20px;
+            height: 18px;
+        }
+        .auto-style81 {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            font-weight: bold;
+            text-align: left;
+            color: #0266b4;
+            text-transform: none;
+            height: 23px;
+            background: url('../Estilos/images/raya-izq.jpg') no-repeat 0px 20px;
+        }
+        .auto-style82 {
+            width: 6px;
+            height: 29px;
+        }
+        .auto-style83 {
+            height: 29px;
+        }
+        </style>
+    <script type="text/javascript" >
+        var objTr;
+        var oPaginador = null;
+        var oRows = 15;
+        var oIndex = 10;
+        var ctlDialog = 0;     
+        var cVacioPrimero = 0;
+        var str_distritoDif = 0;
+        var objComparar = [];
+        var strvalidaOpeFila = 0;
+        var n1 = 0;
+
+        $(document).ready(function () {
+            
+            $("#ibtnExcel").hide(); 
+            document.getElementById("divOperadorDatos").style.display = 'none';
+            
+            $("#trRazonSocial").hide();
+            $("#trNombreApe1").hide();
+            $("#trNombreApe2").hide();
+            $('#txtUbiLocal').attr("disabled",true);
+
+            if (navigator.userAgent.indexOf('Chrome') != -1) {
+                $("#optBusquedaP").css("width", "525px");
+                $("#optBusquedaH").css("width", "524px");
+                $("#txtFiltro").css("width", "355px");
+            } else {
+                $("#optBusquedaP").css("width", "522px");
+                $("#optBusquedaH").css("width", "521px");
+                $("#txtFiltro").css("width", "350px");
+            }
+            $("#ibtnterminalhoa").bind("click", nuevoRegistro);
+             $("#ibtnOperador").bind("click", nuevoOperador);          
+            $("#principal6").attr('checked', true);
+            bloqueo(true);
+            $("#lblBusTitulo").text("Todos");
+            $("#txtFiltro").val("").focus();
+            $("#hdUbi").val("");
+
+            $("#DialogUbigeo").dialog({
+                autoOpen: false,
+                resizable: false,
+                modal: true,
+                closeOnEscape: true,
+                width: 500,
+                draggable: true,
+                title: "UBIGEO",
+                open: function (type, data) {
+                    $(this).parent().appendTo("form");
+                },
+                close: function (type, data) {
+                    bloqueo(true);
+                }
+            });
+            $("#DialogUbigeo").on("dialogbeforeclose", function (event, ui) {
+                if (ctlDialog == 1) {
+                    return false;
+                }
+
+            });
+
+             $("#divDialogDistritos").dialog({
+                autoOpen: false,
+                resizable: false,
+                modal: true,
+                closeOnEscape: true,
+                width: 700,
+                draggable: true,
+                title: "BUSQUEDA DE DISTRITO",
+                open: function (type, data) {
+                    $(this).parent().appendTo("form");
+                }
+            });
+
+
+            $("#ibtnBusDistrito").click(function () {
+                  
+                    str_distritoDif = 5;                
+
+                ctlDialog = 1;
+                $("#dis_paginacion").empty();
+                $("#dis_paginacion").hide();
+                $("#dtgDistritoDatos").empty();
+                $("#dtgDistritoDatos").hide();
+                $("#dtgDistritoVacio").show();
+                $("#divDialogDistritos").dialog("open");
+                $("#txtDistFiltro").val("").focus();
+                $("#txtDistFiltro").select();
+
+
+
+            });
+
+
+            $("#txtDistFiltro").keypress(function (e) {
+                if (e.which == 13) {
+                    cargaDistrito(1, dPaginador.tamPagina);
+                }
+            });
+
+            $("#btnCancelar").click(function () {
+                cVacioPrimero = 0;
+                $("#divRegistroterminalhoa").dialog("close");
+                
+            });
+
+            $("#btnGuardar").click(function () {
+
+                if (objTerminalHOA.objAccionTerminalHOA == 1) {
+                    validarDatosRegTerminal();
+                }
+                else if (objTerminalHOA.objAccionTerminalHOA == 2) {
+                    validarDatosActTerminal();
+                }
+                
+            });
+
+             $("#btnSi").click(function () {
+
+                if (objTerminalHOA.objAccionTerminalHOA == 1) {                  
+                    RegistrarTerminal();
+                }
+                else if (objTerminalHOA.objAccionTerminalHOA == 2) {
+                    ActualizarTerminal();
+                }
+                
+            });
+
+            $("#btnNo").click(function () {
+                $("#pnlBotones").show();
+                $("#pnlConfirmSiNo").hide();
+            })
+
+             $("#btnCancelarAgregar").click(function () {
+                $("#divOperadorDatos").dialog("close");
+              
+            });
+
+            $("#btnGrabarOperador").click(function () {
+               ValidarDatosOperador()
+              
+            });
+
+;
+
+             $("#btnBuscarDocumento").click(function () {
+                if ($.trim($("#txtNumDocumento").val()) == "") {                     
+                    alert("Ingrese Numero de Documento");
+                    $("#txtNumDocumento").focus();
+                    return false;
+                 }                                  
+                 $("#trBotonesOperador").hide();
+
+                if  ($("#cboTipoDocumento option:selected").val() == 0) {                  
+                     alert("Seleccione Tipo de Documento.");
+                        return false;
+                }
+
+                traerDatos();
+            });
+
+             $("#btnLimpiar").bind("click", LimpiarOperador);
+
+            $("#cboTipoDocumento").change(function(){
+                var op = $("#cboTipoDocumento option:selected").val();
+                $("#txtNumDocumento").val('');
+                $("#txtNombres").val('');
+                $("#txtApePaterno").val('');
+                $("#txtApeMaterno").val('');
+                $("#txtRazonSocial").val('');
+                $("#lblMensajeSunat").text("");
+                $("#div_loaderOperador").hide();
+
+                if (op == 0) {
+                    $("#trRazonSocial").hide();
+                    $("#trNombreApe1").show();
+                    $("#trNombreApe2").show();
+                    $("#txtNumDocumento").focus();
+                }
+
+                if (op == 1) {
+                    $("#trRazonSocial").hide();
+                    $("#trNombreApe1").show();
+                    $("#trNombreApe2").show();
+                    $("#txtNumDocumento").focus();
+                }
+                 if (op == 2) {
+                    $("#trRazonSocial").hide();
+                    $("#trNombreApe1").show();
+                    $("#trNombreApe2").show();
+                    $("#txtNumDocumento").focus();
+                }
+                 if (op == 37) {
+                    $("#trRazonSocial").show();
+                    $("#trNombreApe1").hide();
+                    $("#trNombreApe2").hide();
+                    $("#txtNumDocumento").focus();
+                }
+            });
+            
+
+          
+            oPaginador = new Paginador({
+                content: "paginacion",
+                rows: oRows,
+                numindexes: oIndex,
+                action: "indice"
+            });
+            dPaginador = new Paginador({
+                content: "dis_paginacion",
+                rows: oRows,
+                numindexes: oIndex,
+                action: "dis_indice"
+            });
+            $("#txtFiltro").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    str_distritoDif = 2;
+                    $("#btnBuscar").click();
+                    return false;btnBuscar
+                }
+            });
+             $("#txtNumDocumento").keypress(function (e) {
+                 if (e.keyCode == 13) {
+
+                     $("#btnBuscarDocumento").click();
+                     return false;
+                 }
+                 });
+
+             $("#txtDistFiltro").keypress(function (e) {
+                if (e.which == 13) {
+                    cargaDistrito(1, dPaginador.tamPagina);
+                }
+            });
+            $("input:radio[name=filtroPrincipal]").click(function () {
+                $("#lblBusTitulo").text($(this).attr("etiqueda"));
+                $("#hdUbi").val("");
+                $("#txtFiltro").removeAttr("disabled");
+                $("#btnBuscar").removeAttr("disabled");
+                $("#txtFiltro").val("").focus();
+            });
+            $("#principal1").click(function () {
+                $("#txtFiltro").attr("maxlength", 11);
+            });
+            $("#principal2").click(function () {
+                $("#txtFiltro").attr("maxlength", 50);
+            });
+            $("#principal3").click(function () {
+                $("#txtFiltro").attr("maxlength", 50);
+            });
+            $("#principal4").click(function () {
+                $("#txtFiltro").attr("maxlength", 50);
+            });
+            $("#principal5").click(function () {                  
+                str_distritoDif = 2;
+                $("#txtFiltro").attr("maxlength", 100);
+                $("#hdUbi").val("");
+                $("#txtFiltro").val("");
+                $("#btnBusDistrito").hide();
+                $("#cboDpto option:eq(0)").attr("selected", "selected");
+                $("#DialogUbigeo").dialog("open");
+                $("#ubigeo1").click();
+                $("#cboProv").attr("disabled", "disabled");
+                $("#cboDist").attr("disabled", "disabled");
+                $("#txtFiltro").attr("disabled", "disabled");
+                $("#btnBuscar").attr("disabled", "disabled");
+                getDepartamento();
+                
+            });
+            $("#principal6").click(function () {
+                $("#hdUbi").val("");
+                $("#txtFiltro").val("");
+                $("#txtFiltro").attr("maxlength", 100);
+                $("#txtFiltro").attr("disabled", "disabled");
+                bloqueo(true);
+                GetDatos(1, oRows);
+            });
+            $("#btnBuscar").click(function () {  
+               
+               if ($.trim($("#txtFiltro").val()) == "") {
+                    alert("No ha ingresado el filtro de busqueda.");
+                    return false;
+                }
+                if ($("input:radio[name=filtroPrincipal]:checked").val() == 3 || $("input:radio[name=filtroPrincipal]:checked").val() == 5 || $("input:radio[name=filtroPrincipal]:checked").val() == 6)
+                {
+                    $("#dtgResult2").hide();
+                    $("#div_loader").show();               
+                    cargaVacio();
+                    GetDatos(1, oRows);
+                    bloqueo(true);
+                }
+                else {
+                    alert("Seleccionar el Tipo de Búsqueda")
+                    //return false;
+                    }
+            });
+
+             $("#ibtnDistBuscar").click(function () {
+                if ($.trim($("#txtDistFiltro").val()).length > 2) {
+                    cargaDistrito(1, dPaginador.tamPagina);
+                } else {
+                    alert("El texto ingresado debe contener mas de 3 caracteres.");
+                    $("#txtDistFiltro").focus().select();
+                    return false;
+                }
+            });
+           
+            $("#paginacion").hide();
+
+            $("#ubigeo1").click(function () {
+                $("#btnBusDistrito").hide();
+                $("#cboProv").empty();
+                $("#cboDist").empty();
+                $("<option value='00'>- TODOS -</option>").appendTo("#cboProv");
+                $("<option value='00'>- TODOS -</option>").appendTo("#cboDist");
+                $("#cboDpto option:eq(0)").attr("selected", "selected");
+                $("#cboProv").attr("disabled", "disabled");
+                $("#cboDist").attr("disabled", "disabled");
+            });
+            $("#ubigeo2").click(function () {
+                $("#btnBusDistrito").hide();
+                $("#cboDist").empty();
+                $("<option value='00'>- TODOS -</option>").appendTo("#cboDist");
+                $("#cboProv").removeAttr("disabled");
+                $("#cboDist").attr("disabled", "disabled");
+                if ($("#cboDpto option:selected").val() != "00") {
+                    getProvincias($("#cboDpto option:selected").val());
+                }
+            });
+            $("#ubigeo3").click(function () {
+                $("#cboProv").removeAttr("disabled");
+                $("#cboDist").removeAttr("disabled");
+                $("#btnBusDistrito").show();
+                if ($("#cboDpto option:selected").val() != "00") {
+                    getProvincias($("#cboDpto option:selected").val());
+                }
+                if ($("#cboProv option:selected").val() != "00") {
+                    getDistritos($("#cboDpto option:selected").val(), $("#cboProv option:selected").val());
+                }
+            });
+
+            $("#cboDpto").change(function () {
+                if ($("#ubigeo2").is(":checked") || $("#ubigeo3").is(":checked")) {
+                    if ($("#cboDpto option:selected").val() == "00") {
+                        $("#cboProv").empty();
+                        $("#cboDist").empty();
+                        $("<option value='00'>- TODOS -</option>").appendTo("#cboProv");
+                        $("<option value='00'>- TODOS -</option>").appendTo("#cboDist");
+                    } else {
+                        getProvincias($("#cboDpto option:selected").val());
+                    }
+                }
+            });
+            $("#cboProv").change(function () {
+                if ($("#ubigeo3").is(":checked")) {
+                    if ($("#cboProv option:selected").val() == "00") {
+                        $("#cboDist").empty();
+                        $("<option value='00'>- TODOS -</option>").appendTo("#cboDist");
+                    } else {
+                        getDistritos($("#cboDpto option:selected").val(), $("#cboProv option:selected").val());
+                    }
+                }
+            });
+
+             $("#divRegistroterminalhoa").dialog({
+                autoOpen: false,
+                resizable: false,
+                modal: true,
+                closeOnEscape: true,
+                width: 780,
+                draggable: true,
+                title: "REGISTRO DE INFRAESTRUCTURA COMPLEMENTARIA DECLARADA POR TRANSPORTISTA",
+                open: function (type, data) { $(this).parent().appendTo("form"); },
+                 close: function () {
+                            $('#pnlBotones').hide();
+                            $('#pnlConfirmSiNo').hide();
+                            $('#pnlConfirmOK').show();                     
+                            GetDatos(1, oRows); }
+            });
+
+             $("#divRegistroterminalhoa").on("dialogclose", function (event, ui) {
+                $(objTr).css("background-color", "#FFFFFF");
+                $(objTr).on("mouseover", function () {
+                    $(this).css("background-color", "lightyellow");
+                });
+                $(objTr).on("mouseleave", function () {
+                    $(this).css("background-color", "#FFFFFF");
+                });
+            });
+
+            $("#divOperadorDatos").dialog({
+                autoOpen: false,
+                resizable: false,
+                modal: true,
+                closeOnEscape: true,
+                width: 780,
+                draggable: true,
+                title: "REGISTRO DE INFRAESTRUCTURA COMPLEMENTARIA DECLARADA POR TRANSPORTISTA",
+                open: function (type, data) {
+                    $(this).parent().appendTo("form");
+                }
+            });           
+
+            $("#btnPasar").bind("click", pasarUbigeo);
+
+            $("#btnNuevo").bind("click", limpiar);
+
+            $("#btnCancelar").click(function () {
+                $("#divRegistroterminalhoa").dialog("close");
+                $("#pnlBotones").hide();
+            });
+
+            $("#btnAgregar").click(function () {
+
+                if ($("#cboTipoDocumento option:selected").val() == 1) {
+                    if (!ValidaDniOperador($.trim($("#txtNumDocumento").val()))) {
+                        return false;
+                    }
+                }
+                else if ($("#cboTipoDocumento option:selected").val() == 2) {
+                    if (!ValidaCeOperador($.trim($("#txtNumDocumento").val()))) {
+                        return false;
+                    }
+                }
+                else if ($("#cboTipoDocumento option:selected").val() == 37) {
+                    if (!ValidaRucOperador($.trim($("#txtNumDocumento").val()))) {
+                        return false;
+                    }
+                }
+
+
+                if ($("#cboTipoDocumento option:selected").val() == 0) {
+                    alert("Seleccione Tipo de Documento.");
+                    return false;
+
+                }
+                else if ((($.trim($("#txtNombres").val()) == "") || ($.trim($("#txtApePaterno").val()) == ""))
+                    //|| ($.trim($("#txtApeMaterno").val()) == ""))
+                    && ($("#cboTipoDocumento option:selected").val() == 1)) {
+                    alert("ingrese datos completos del Operador.");
+                    return false;
+                }
+                else if ((($.trim($("#txtNombres").val()) == "") || ($.trim($("#txtApePaterno").val()) == ""))
+                    //|| ($.trim($("#txtApeMaterno").val()) == ""))
+                    && ($("#cboTipoDocumento option:selected").val() == 2)) {
+                    alert("ingrese datos completos del Operador.");
+                    return false;
+                }
+                else if (((($.trim($("#txtRazonSocial").val()) == "")) && ($("#cboTipoDocumento option:selected").val() == 37))) {
+                    alert("ingrese datos completos del Operador.");
+                    return false;
+                }
+                else {
+
+                    if (cVacioPrimero != 0) {
+
+                        var thArray = new Array();
+
+                        var tableReg = document.getElementById('dtgArrendador');
+                        var escala = "0";
+                        for (var i = 1; i < tableReg.rows.length; i++) {
+                            cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+
+                            thArray[i - 1] = parseInt(cellsOfRow[0].innerHTML);
+                            strvalidaOpeFila = getMaxOfArray(thArray);
+                        }
+                        n1 = $("#dtgArrendadorDatos tr").length;
+
+                    }
+
+
+
+
+                    if (cVacioPrimero == 0) {
+                        $('table#dtgArrendador tr#agr1').remove();
+                        n1 = $("#dtgArrendadorDatos tr").length;
+                        cVacioPrimero = 1;
+
+                        strvalidaOpeFila = n1;
+
+                    }
+                    var n2 = strvalidaOpeFila + 1;
+
+                    var idRow = "agr" + n2;
+                    if (n1 < 3) {
+                        var oStrHtml = "";
+                        var strValNombres = $.trim($("#txtNombres").val());                        
+                        var strValApePaterno = $.trim($("#txtApePaterno").val());
+                        var strValApeMaterno = $.trim($("#txtApeMaterno").val());            
+                        var strValRazonSocial = $.trim($("#txtRazonSocial").val())    
+                        
+                       
+                        if ( strValNombres.indexOf("|") >= 0 || strValNombres.indexOf("Æ") >= 0 || strValNombres.indexOf("Œ") >= 0) {
+                            alert("Caracter no permitido en el campo Nombres");
+                            return false;
+                        }
+
+                        if ( strValApePaterno.indexOf("|") >= 0 || strValApePaterno.indexOf("Æ") >= 0 || strValApePaterno.indexOf("Œ") >= 0) {
+                            alert("Caracter no permitido en el campo Apellido Paterno");
+                            return false;
+                        }
+                       
+                        if ( strValApeMaterno.indexOf("|") >= 0 || strValApeMaterno.indexOf("Æ") >= 0 || strValApeMaterno.indexOf("Œ") >= 0) {
+                            alert("Caracter no permitido en el campo Apellido Materno");
+                            return false;
+                        }
+                        
+                        if ( strValRazonSocial.indexOf("|") >= 0 || strValRazonSocial.indexOf("Æ") >= 0 || strValRazonSocial.indexOf("Œ") >= 0) {
+                            alert('Caracter no permitido en el campo Razon Social')
+                            return false;
+                        }                      
+
+                        if ($.trim($("#txtApeMaterno").val()) == "") {
+                            strValApeMaterno = "";
+                        }
+                        else {
+                            strValApeMaterno = "|" + $.trim($("#txtApeMaterno").val());
+                        }
+
+
+                        
+
+                        var codTipoDocumento,TipoDocumento, NumDocumento;
+                        var tableReg2= document.getElementById('dtgArrendador');
+                        var escala = "0";
+                        for (var i = 1; i < tableReg2.rows.length; i++) {                            
+                            cellsOfRow = tableReg2.rows[i].getElementsByTagName('td');
+
+                            codTipoDocumento = parseInt(cellsOfRow[2].innerHTML);
+                            TipoDocumento = cellsOfRow[3].innerHTML;
+                            NumDocumento = cellsOfRow[4].innerHTML;
+                            var txtNumDocumento = $("#txtNumDocumento").val();
+                            var cboTipoDocumento = parseInt($("#cboTipoDocumento option:selected").val());
+
+
+                            if (codTipoDocumento == cboTipoDocumento && NumDocumento == txtNumDocumento)
+                            {
+                                alert('El Operador con ' + $("#cboTipoDocumento option:selected").text() + ': ' + $("#txtNumDocumento").val() + ' - fue registrado');
+                                return false;
+                            }
+
+
+
+                        }      
+                        
+
+                        if ($("#cboTipoDocumento option:selected").val() == 1)
+                        {       
+                            var oNewTrHTML = "<tr class='celdas' id='" + idRow + "' style='height:18px;'>" +
+                                     "  <td style='text-align:center;'>" + n2 + "</td>" +
+                                    "  <td style='text-align:center; display:none;'>" + "CODOPE5847" + "</td>" +
+                                    "  <td style='text-align:center; display:none;'>" + $("#cboTipoDocumento option:selected").val() + "</td>" +
+                                    "  <td style='text-align:center;'>" + $("#cboTipoDocumento option:selected").text() + "</td>" +
+                                    "  <td style='text-align:left;'>" + $.trim($("#txtNumDocumento").val())+ "</td>" +
+                                    "  <td style='text-align:left;'>" + $.trim($("#txtNombres").val()) + "|" + $.trim($("#txtApePaterno").val())+ strValApeMaterno +"</td>" +
+                                    "  <td style='width: 30px; height: 20px;' align='center'>" +
+                                    "      <a id='ibtnEditaEmp' href='" + " javascript:DelOperador(\"" + idRow + "\",\"" + 0 + "\");'>" +
+                                    "          <img src='../Images/btnDelete.gif' alt='Lista de locales' style='width: 14px; height: 16px; border: 0;' /></a>" +
+                                    "  </td>" +   
+                                    "</tr>";
+                            oStrHtml = oStrHtml + oNewTrHTML;
+                            $("#dtgArrendador").append(oStrHtml);
+                            alert('El operador fue agregado correctamente');
+                            
+                        }   
+                        else if ($("#cboTipoDocumento option:selected").val() == 2)
+                        {
+                                var oNewTrHTML = "<tr class='celdas' id='"+ idRow +"' style='height:18px;'>" +
+                                    "  <td style='text-align:center;'>" + n2 + "</td>" +
+                                    "  <td style='text-align:center; display:none;'>" + "CODOPE5847" + "</td>" +
+                                    "  <td style='text-align:center; display:none;'>" + $("#cboTipoDocumento option:selected").val() + "</td>" +
+                                    "  <td style='text-align:center;'>" + $("#cboTipoDocumento option:selected").text() + "</td>" +
+                                    "  <td style='text-align:left;'>" + $.trim($("#txtNumDocumento").val())+ "</td>" +
+                                    "  <td style='text-align:left;'>" + $.trim($("#txtNombres").val()) + "|" + $.trim($("#txtApePaterno").val())+ strValApeMaterno +"</td>" +
+                                    "  <td style='width: 30px; height: 20px;' align='center'>" +
+                                    //"      <a id='ibtnEditaEmp' href='" + " javascript:DelOperador(\"" + idRow + "\");'>" +
+                                    "      <a id='ibtnEditaEmp' href='" + " javascript:DelOperador(\"" + idRow + "\",\"" + 0 + "\");'>" +
+                                    "          <img src='../Images/btnDelete.gif' alt='Lista de locales' style='width: 14px; height: 16px; border: 0;' /></a>" +
+                                    "  </td>" +   
+                                    "</tr>";
+                                oStrHtml = oStrHtml + oNewTrHTML;
+                                // $("#dtgArrendadorDatos").html(oStrHtml); 
+                                $("#dtgArrendador").append(oStrHtml);
+                             //   $("#divOperadorDatos").dialog("close");
+                            alert('El operador fue agregado correctamente');
+                        }   
+                        else if ($("#cboTipoDocumento option:selected").val() == 37)
+                        {
+                                var oNewTrHTML = "<tr class='celdas' id='"+ idRow +"' style='height:18px;'>" +
+                                    "  <td style='text-align:center;'>" + n2 + "</td>" +
+                                    "  <td style='text-align:center; display:none;'>" + "CODOPE5847" + "</td>" +
+                                    "  <td style='text-align:center; display:none;'>" + $("#cboTipoDocumento option:selected").val() + "</td>" +
+                                    "  <td style='text-align:center;'>" + $("#cboTipoDocumento option:selected").text() + "</td>" +
+                                    "  <td style='text-align:left;'>" + $.trim($("#txtNumDocumento").val())+ "</td>" +
+                                    "  <td style='text-align:left;'>" + $.trim($("#txtRazonSocial").val()) +"</td>" +
+                                    "  <td style='width: 30px; height: 20px;' align='center'>" +
+                                    //"      <a id='ibtnEditaEmp' href='" + " javascript:DelOperador(\"" + idRow + "\");'>" +
+                                    "      <a id='ibtnEditaEmp' href='" + " javascript:DelOperador(\"" + idRow + "\",\"" + 0 + "\");'>" +
+                                    "          <img src='../Images/btnDelete.gif' alt='Lista de locales' style='width: 14px; height: 16px; border: 0;' /></a>" +
+                                    "  </td>" +   
+                                    "</tr>";
+                                oStrHtml = oStrHtml + oNewTrHTML;
+                            $("#dtgArrendador").append(oStrHtml);
+                            alert('El operador fue agregado correctamente');
+                         } 
+                    }
+                    else {
+                        alert("Excede registros que se pueden cargar.");
+                    }
+                }
+            });
+
+            GetDatos(1, oRows);
+   
+        });
+
+        obj = {
+            cont: 0,
+            numTramo: "", 
+            codigoUbicacion: "", 
+            stridRuta_: "", 
+            cadenaTramo: "",
+            celdasBlancas: "1",
+            proceso: "", 
+            numFilaListaTramo: 0,
+            codigoFilasOculto: 0,
+            cadenaInicial: "", 
+            indice: 0
+        }
+
+        objTerminalHOA = {
+            objAccionTerminalHOA: 0,
+            objOperadorValor: 0
+        }
+
+ //---------------------Inicio Carga de Combos---------------------//
+
+        function getMaxOfArray(numArray) {
+        return Math.max.apply(null, numArray);
+        }
+
+        function CargaCombosTotal(TipoCrud) {
+                $.ajax({
+                    type: "POST",
+                    url: "frmTerminalhoa.aspx/GetCombosTotal",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        var objJSON = jQuery.parseJSON(response.d);
+                        if (response.d != null) {
+                            var oStrRedirect = objJSON.REDIRECCION;
+                            if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                                if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {
+                                    paramLstTpDoc = objJSON.LSTTIPODOC;
+                                    paramLstTipoTrt = objJSON.LSTTIPOTRT;
+                                    paramLstLoInDp = objJSON.LSTLOINDP;
+                                    paramLstLocalNuMaKm = objJSON.LSTLOCALNUMAKM;
+                                    paramLstTipoVia = objJSON.LSTTIPOVIA;
+                                    paramLstCCPP = objJSON.LSTCCPP;
+
+                                                              
+                                    if (paramLstTpDoc.length > 0) {
+                                        $("#cboTipoDocHOA").empty();
+                                        $("<option value='0'>- SELECCIONE -</option>").appendTo("#cboTipoDocHOA");
+                                    for (var i = 0; i <= paramLstTpDoc.length - 1; i++)
+                                        $("<option value='" + paramLstTpDoc[i].StrIdTipoDocumento + "'>" + paramLstTpDoc[i].StrTipoDocumento + "</option>").appendTo($("#cboTipoDocHOA"));
+                                    }
+                                    if (paramLstTipoTrt.length > 0) {
+                                        $("#cboTipodeTerminal").empty();
+                                        $("<option value='-1'>- SELECCIONE -</option>").appendTo("#cboTipodeTerminal");
+                                    for (var i = 0; i <= paramLstTipoTrt.length - 1; i++)
+                                     $("<option value='" + paramLstTipoTrt[i].int_idtpterminal + "'>" + paramLstTipoTrt[i].str_dstpterminal + "</option>").appendTo($("#cboTipodeTerminal"));
+                                    }
+                                    if (paramLstLoInDp.length > 0) {
+                                        $("#cboLoteIntDpto").empty();
+                                        $("<option value='-1'>- SELECCIONE -</option>").appendTo("#cboLoteIntDpto");
+                                    for (var i = 0; i <= paramLstLoInDp.length - 1; i++)
+                                        $("<option value='" + paramLstLoInDp[i].str_idloindp + "'>" + paramLstLoInDp[i].str_dsloindp + "</option>").appendTo($("#cboLoteIntDpto"));
+                                    }
+                                    if (paramLstLocalNuMaKm.length > 0) {
+                                        $("#cboNuMaKm").empty();
+                                        $("<option value='-1'>- SELECCIONE -</option>").appendTo("#cboNuMaKm");
+                                    for (var i = 0; i <= paramLstLocalNuMaKm.length - 1; i++)
+                                        $("<option value='" + paramLstLocalNuMaKm[i].str_idnumakm + "'>" + paramLstLocalNuMaKm[i].str_dsnumakm + "</option>").appendTo($("#cboNuMaKm"));
+                                    }
+                                    if (paramLstTipoVia.length > 0) {
+                                        $("#cboTipoVia").empty();
+                                        $("<option value='-1'>- SELECCIONE -</option>").appendTo("#cboTipoVia");
+                                    for (var i = 0; i <= paramLstTipoVia.length - 1; i++)
+                                        $("<option value='" + paramLstTipoVia[i].PARAM + "'>" + paramLstTipoVia[i].DESCRIPCION_MTC + "</option>").appendTo($("#cboTipoVia"));
+                                    }
+                                    if (paramLstCCPP.length > 0) {
+                                        $("#cboCCPP").empty();
+                                        $("<option value='0'>- SELECCIONE -</option>").appendTo("#cboCCPP");
+                                    for (var i = 0; i <= paramLstCCPP.length - 1; i++)
+                                        $("<option value='" + paramLstCCPP[i].PARAM + "'>" + paramLstCCPP[i].DESCRIPCION_MTC + "</option>").appendTo($("#cboCCPP"));
+                                    }
+                                    var id_ModAuto = 0;
+
+                                    if (TipoCrud == 1) {
+                                        $("#cboTipoDocHOA option[value=0]").attr('selected', 'selected');
+                                        $("#cboTipodeTerminal option[value=-1]").attr('selected', 'selected');
+                                        $("#cboLoteIntDpto option[value=-1]").attr('selected', 'selected');
+                                        $("#cboNuMaKm option[value=-1]").attr('selected', 'selected');
+                                        $("#cboTipoVia option[value=-1]").attr('selected', 'selected'); 
+                                        $("#cboCCPP option[value=-1]").attr('selected', 'selected');
+
+                                        $("#cboModalidadAutorizada option[value=" + id_ModAuto + "]").attr("selected", true);
+                                        $("#pnlBotones").show();
+
+                                    }
+                                    else
+                                    {
+                                        $("#cboTipoDocHOA option[value=" + objComparar[14] + "]").attr("selected", true);
+                                        $("#cboTipodeTerminal option[value=" + objComparar[5] + "]").attr("selected", true);
+                                        $("#cboLoteIntDpto option[value=" + objComparar[4] + "]").attr("selected", true);
+                                        $("#cboNuMaKm option[value=" + objComparar[3] + "]").attr("selected", true);
+                                        $("#cboTipoVia option[value=" + objComparar[1] + "]").attr("selected", true);
+                                        $("#cboCCPP option[value=" + objComparar[2] + "]").attr("selected", true);
+
+                                        $("#cboModalidadAutorizada option[value=" + objComparar[6] + "]").attr("selected", true);
+                                        $("#pnlBotones").show();
+                                    }
+                                
+                                
+                              
+                                    
+                                } else {
+                                    alert(objJSON.EXP);
+                                  
+                                }
+                            }
+                            else {
+                                window.location.href = oStrRedirect;
+                              
+                            }
+                        } else {
+                            alert("No se encontro informción referente al tipo de terminal, verifique.");
+                            $("<option value='0'>Sin Datos</option>").appendTo($("#cboTipoTerLocal"));
+                           
+                        }
+                    }
+                });
+            }
+
+        function cargaModalidadAutorizada() {
+            $("<option value='0'>- SELECCIONE -</option>").appendTo($("#cboModalidadAutorizada"));
+            $("<option value='1'>INDECOPI</option>").appendTo("#cboModalidadAutorizada");
+            $("<option value='2'>GOBIERNO REGIONAL</option>").appendTo("#cboModalidadAutorizada");
+
+        }      
+    
+        function cargaTipoDocumento() {
+                $.ajax({
+                    type: "POST",
+                    url: "frmTerminalhoa.aspx/GetTipoDoc",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        var objJSON = jQuery.parseJSON(response.d);
+                        if (response.d != null) {
+                            var oStrRedirect = objJSON.REDIRECCION;
+                            if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                                if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {
+                                    paramLstTpDoc = objJSON.LSTTIPODOC;
+                                    if (paramLstTpDoc.length > 0) {
+                                        $("#cboTipoDocumento").empty();
+                                        $("<option value='0'>- SELECCIONE -</option>").appendTo("#cboTipoDocumento");
+                                    for (var i = 0; i <= paramLstTpDoc.length - 1; i++)
+                                        $("<option value='" + paramLstTpDoc[i].StrIdTipoDocumento + "'>" + paramLstTpDoc[i].StrTipoDocumento + "</option>").appendTo($("#cboTipoDocumento"));
+                                    }
+                                } else {
+                                    alert(objJSON.EXP);
+                                  
+                                }
+                            }
+                            else {
+                                window.location.href = oStrRedirect;
+                             
+                            }
+                        } else {
+                            alert("No se encontro informción referente al tipo de terminal, verifique.");
+                            $("<option value='0'>Sin Datos</option>").appendTo($("#cboTipoTerLocal"));
+                           
+                        }
+                    }
+                });
+        }       
+
+        function CargarDatosRuc() {
+            if (!ValidaRucOperador($.trim($("#txtNumDocumento").val()))) {
+                $("#div_loaderOperador").hide();
+                return false;
+            }
+
+            var params = '{"ose":"' + $("#txtNumDocumento").val() + '"}';
+
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/GetDatosRuc",
+                data: params,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            ostr = objJSON.EXP;
+                            if (ostr == null || ostr == "null" || ostr == "") {
+                                cargarDatosEmpresa(objJSON.DATA, objJSON.MENSAJE, objJSON);
+                                $("#div_loaderOperador").hide();
+                                $("#trBotonesOperador").show();
+                                $("#trRazonSocial").show();
+                            } else { alert(ostr); }
+                        }
+                        else
+                            window.location.href = oStrRedirect;
+                     
+                    }
+                }
+            });
+
+
+            
+        }
+
+        function CargarDatosReniec() {
+            if (!ValidaDniOperador($.trim($("#txtNumDocumento").val()))) {
+                $("#div_loaderOperador").hide();
+                $("#trBotonesOperador").show();               
+                return false;
+            }
+
+            var params = '{"ose":"' + $("#txtNumDocumento").val() + '"}';
+
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/GetDatosDni",
+                data: params,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            ostr = objJSON.EXP;
+                            if (ostr == null || ostr == "null" || ostr == "") {
+                                cargarDatosPersona(objJSON.DATA, objJSON.MENSAJE, objJSON);                             
+                                    $("#div_loaderOperador").hide();      
+                                    $("#trBotonesOperador").show();
+                                    $("#trNombreApe1").show()
+                                    $("#trNombreApe2").show();
+                            } else { alert(ostr); }
+                        }
+                        else
+                            window.location.href = oStrRedirect;          
+                    }
+                }
+            });             
+        }
+
+        function CargarDatosCE() {   
+             if (!ValidaCeOperador($.trim($("#txtNumDocumento").val()))) {                    
+                $("#div_loaderOperador").hide();
+                $("#trBotonesOperador").show();
+                return false;
+            }
+
+            var params = '{"ose":"' + $("#txtNumDocumento").val() + '"}';
+
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/GetDatosCE",
+                data: params,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            ostr = objJSON.EXP;
+                            if (ostr == null || ostr == "null" || ostr == "") {
+                                cargarDatosPersona(objJSON.DATA, objJSON.MENSAJE, objJSON);                             
+                                    $("#div_loaderOperador").hide();      
+                                    $("#trBotonesOperador").show();
+                                    $("#trNombreApe1").show()
+                                    $("#trNombreApe2").show();
+                            } else { alert(ostr); }
+                        }
+                        else
+                            window.location.href = oStrRedirect;          
+                    }
+                }
+            });             
+        }
+
+        
+
+ //------------------Fin---------Carga de Combos
+              
+        function validarDatosRegTerminal() {          
+
+            var vdtOperador = $("#dtgArrendadorDatos tr").length; 
+
+            $('#dtgArrendadorDatos tr').each(function() {             
+                if ($(this).find("td:first").length > 0) {
+                    objTerminalHOA.objOperadorValor = $(this).find("td").eq(0).html();
+                }
+            }); 
+
+            if ($("#txtUbiLocal").val() == "") {
+                alert('Ingrese Ubicación del Local');
+                return false;
+            }
+             if ($("#cboTipoVia option:selected").val()== -1) {
+                alert('Seleccione un Tipo de Vía')
+                return false;
+            }
+            if ($("#txtNombreVia").val()=="") {
+                alert('Ingrese Nombre de Vïa')
+                return false;
+            }
+             if ($("#cboCCPP option:selected").val() == -1) {
+                 alert('Seleccione el Centro Poblado');
+                return false;
+            }
+             if ($("#txtNombreCCPP").val()=="") {
+                alert('Ingrese Nombre de Centro Poblado')
+                return false;
+            }
+            if ($("#cboNuMaKm option:selected").val() == -1) {
+                 alert('Seleccione Lote/Int/Dpto');
+                return false;
+            }
+             if ($("#txtNumNroMZKm").val()=="") {
+                alert('Ingrese Número de Lote/Int/Dpto')
+                 return false;                 
+            }
+             if ($("#cboLoteIntDpto").val()=="") {
+                alert('Ingrese Número de Nro/Mz/Km')
+                 return false;              
+            }
+            if ($("#txtNumLoteIntDpto").val()=="") {
+                alert('Ingrese Número de Lote/Int/Dpto')
+                 return false;                 
+            }
+
+             if ($("#txtReferencia").val()=="") {
+                alert('Ingrese Referencia')
+                return false;
+            }
+             if ($("#cboTipodeTerminal option:selected").val() == -1) {
+                 alert('Seleccione Tipo de Terminal');
+                return false;
+            }
+            if ($("#cboModalidadAutorizada option:selected").val() == 0) {
+                alert('Seleccione Modalidad Autorizada');
+                return false;
+            }
+
+            if ($("#cboTipoDocHOA option:selected").val() == 0) {
+                 alert('Seleccione Tipo Documento Terminal');
+                return false;
+            }
+
+             if ($("#txtNumDocHOA").val()=="") {
+                alert('Ingrese Número de Documento Terminal')
+                return false;
+            }
+
+             if (objTerminalHOA.objOperadorValor == '') {
+                 alert('Ingrese Operador');
+                return false;
+            }
+
+            $('#pnlBotones').hide();
+            $('#pnlConfirmSiNo').show();
+            $('#pnlConfirmOK').hide();
+            $("#lblconfirm").text("¿Seguro que desea continuar con esta operación?");
+
+        }
+
+        function RegistrarTerminal() {     
+            var DatosOperador = ValidarDatosOperador();
+
+            var DatosTerminalHOA = {};
+            DatosTerminalHOA.UbiLocal = $('input#hdUbi').val();
+            DatosTerminalHOA.DirLocal = $("#txtDirLocal").val();
+            DatosTerminalHOA.TipoVia = $("#cboTipoVia option:selected").val();
+            DatosTerminalHOA.NombreVia = $("#txtNombreVia").val();
+            DatosTerminalHOA.CCPP = $("#cboCCPP option:selected").val();
+            DatosTerminalHOA.NombreCCPP = $("#txtNombreCCPP").val();
+            DatosTerminalHOA.NuMaKm = $("#cboNuMaKm option:selected").val();
+            DatosTerminalHOA.NumNroMZKm = $("#txtNumNroMZKm").val();
+            DatosTerminalHOA.LoteIntDpto = $("#cboLoteIntDpto option:selected").val();
+            DatosTerminalHOA.NumLoteIntDpto = $("#txtNumLoteIntDpto").val();
+            DatosTerminalHOA.Referencia = $("#txtReferencia").val();
+            DatosTerminalHOA.TipodeTerminal = $("#cboTipodeTerminal option:selected").val();
+            DatosTerminalHOA.ModalidadAutorizada = $("#cboModalidadAutorizada option:selected").val();
+            DatosTerminalHOA.str_nrodocumentoTerm = $("#txtNumDocHOA").val();
+            DatosTerminalHOA.idtpdocumentoTerm = $("#cboTipoDocHOA option:selected").val();
+
+          
+                   
+           
+            var params = {"Operador" : DatosOperador ,"TerminalHOA" : DatosTerminalHOA};
+            var postData = JSON.stringify(params);   
+                       
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/RegistrarTerminalHOA",
+                contentType: "application/json; charset=utf-8",
+                data: postData,
+                dataType: "json",
+            success: function (response) {
+                var objJSON = jQuery.parseJSON(response.d);
+                if (response.d != null) {
+                    var oStrRedirect = objJSON.REDIRECCION;
+                    if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                        par = objJSON.STRESTADOVALIDACION;
+                        if (par == "1") {
+                            $('#pnlBotones').hide();
+                            $('#pnlConfirmSiNo').hide();
+                            $('#pnlConfirmOK').show();                             
+                            alert(objJSON.MENSAJE)
+                            $("#divRegistroterminalhoa").dialog("close");
+                            GetDatos(1, oRows);
+                        } else {  
+                            alert(objJSON.MENSAJE);                           
+                        }
+                    }
+                    else {
+                        window.location.href = oStrRedirect;
+                    }
+                }
+            }
+            });
+        };
+
+        function validarDatosActTerminal() {   
+            
+            var DatosOperador = ValidarDatosOperador();
+            var vdtOperador = $("#dtgArrendadorDatos tr").length;   
+
+             if ($("#txtUbiLocal").val() == "") {
+                alert('Ingrese Ubicación del Local');
+                return false;
+            }
+             if ($("#cboTipoVia option:selected").val()== -1) {
+                alert('Seleccione un Tipo de Vía')
+                return false;
+            }
+            if ($("#txtNombreVia").val()=="") {
+                alert('Ingrese Nombre de Vïa')
+                return false;
+            }
+             if ($("#cboCCPP option:selected").val() == -1) {
+                 alert('Seleccione el Centro Poblado');
+                return false;
+            }
+             if ($("#txtNombreCCPP").val()=="") {
+                alert('Ingrese Nombre de Centro Poblado')
+                return false;
+            }
+            if ($("#cboNuMaKm option:selected").val() == -1) {
+                 alert('Seleccione Lote/Int/Dpto');
+                return false;
+            }
+             if ($("#txtNumNroMZKm").val()=="") {
+                alert('Ingrese Número de Lote/Int/Dpto')
+                 return false;                 
+            }
+             if ($("#cboLoteIntDpto").val()=="") {
+                alert('Ingrese Número de Nro/Mz/Km')
+                 return false;              
+            }
+            if ($("#txtNumLoteIntDpto").val()=="") {
+                alert('Ingrese Número de Lote/Int/Dpto')
+                 return false;                 
+            }
+
+             if ($("#txtReferencia").val()=="") {
+                alert('Ingrese Referencia')
+                return false;
+            }
+             if ($("#cboTipodeTerminal option:selected").val() == -1) {
+                 alert('Seleccione Tipo de Terminal');
+                return false;
+            }
+               if ($("#cboModalidadAutorizada option:selected").val() == 0) {
+                 alert('Seleccione Modalidad Autorizada');
+                return false;
+            }
+
+             if ($("#cboTipoDocHOA option:selected").val() == 0) {
+                 alert('Seleccione Tipo Documento Terminal');
+                return false;
+            }
+
+             if ($("#txtNumDocHOA").val()=="") {
+                alert('Ingrese Número de Documento Terminal')
+                return false;
+            }
+
+             if (vdtOperador == 0) {
+                 alert('Ingrese Operador');
+                return false;
+            }
+
+
+            if ($("#txtUbiLocal").val() == objComparar[0] && $("#cboTipoVia option:selected").val() == objComparar[1]
+                && $("#cboCCPP option:selected").val() == objComparar[2] && $("#cboNuMaKm option:selected").val() == objComparar[3]
+                && $("#cboLoteIntDpto option:selected").val() == objComparar[4] && $("#cboTipodeTerminal option:selected").val() == objComparar[5]
+                && $("#cboModalidadAutorizada option:selected").val() == objComparar[6] && $("#txtNombreVia").val() == objComparar[7]
+                && $("#txtNombreCCPP").val() == objComparar[8] && $("#txtNumNroMZKm").val() == objComparar[9] && $("#txtNumLoteIntDpto").val() == objComparar[10]
+                && $("#txtReferencia").val() == objComparar[11] && $("#txtDirLocal").val() == objComparar[12]
+                && DatosOperador == objComparar[13])
+            {
+
+                alert('Los datos a actualizar son los mismos que los datos de inicio');
+                return false;
+            }                
+
+            $('#pnlBotones').hide();
+            $('#pnlConfirmSiNo').show();
+            $('#pnlConfirmOK').hide();
+            $("#lblconfirm").text("¿Seguro que desea continuar con esta operación?");
+
+        }
+
+        function ActualizarTerminal() {          
+
+            var DatosOperador = ValidarDatosOperador();                  
+
+                var DatosTerminalHOA = {};
+                DatosTerminalHOA.UbiLocal = $('input#hdUbi').val();
+                DatosTerminalHOA.int_idlocalterminal = $('input#hdIdLocalTerminal').val();
+                DatosTerminalHOA.DirLocal = $("#txtDirLocal").val();
+                DatosTerminalHOA.TipoVia = $("#cboTipoVia option:selected").val();
+                DatosTerminalHOA.NombreVia = $("#txtNombreVia").val();
+                DatosTerminalHOA.CCPP = $("#cboCCPP option:selected").val();
+                DatosTerminalHOA.NombreCCPP = $("#txtNombreCCPP").val();
+                DatosTerminalHOA.NuMaKm = $("#cboNuMaKm option:selected").val();
+                DatosTerminalHOA.NumNroMZKm = $("#txtNumNroMZKm").val();
+                DatosTerminalHOA.LoteIntDpto = $("#cboLoteIntDpto option:selected").val();
+                DatosTerminalHOA.NumLoteIntDpto = $("#txtNumLoteIntDpto").val();
+                DatosTerminalHOA.Referencia = $("#txtReferencia").val();
+                DatosTerminalHOA.TipodeTerminal = $("#cboTipodeTerminal option:selected").val();
+                DatosTerminalHOA.ModalidadAutorizada = $("#cboModalidadAutorizada option:selected").val();
+
+                DatosTerminalHOA.idtpdocumentoTerm = $("#cboTipoDocHOA option:selected").val();
+                DatosTerminalHOA.str_nrodocumentoTerm = $("#txtNumDocHOA").val();
+
+            var DatosOpeValFila = DatosOperador.split("Œ");
+
+            if (DatosOpeValFila.length > 3)
+            {
+               
+                $('#pnlBotones').show();
+                $('#pnlConfirmSiNo').hide();
+                $('#pnlConfirmOK').hide();
+                alert("Carácter Extraño no Permitido");
+                return false;
+            }
+
+            for (var i = 0; i <= DatosOpeValFila.length-1; i++) {
+                if (DatosOpeValFila[i] != "") {
+                    var DatosOpeValColumna = DatosOpeValFila[i].split("Æ");
+                   
+                        if (DatosOpeValColumna.length > 5) {
+                            
+                            $('#pnlBotones').show();
+                            $('#pnlConfirmSiNo').hide();
+                            $('#pnlConfirmOK').hide();
+                            alert("Carácter Extraño no Permitido");
+                            return false;
+                        }
+                    
+
+                }
+            }
+            
+
+                var params = { "Operador": DatosOperador, "TerminalHOA": DatosTerminalHOA };
+                var postData = JSON.stringify(params);
+                //return false;
+                $.ajax({
+                    type: "POST",
+                    url: "frmTerminalhoa.aspx/ActualizarTerminalHOA",
+                    contentType: "application/json; charset=utf-8",
+                    data: postData,
+                    dataType: "json",
+                    success: function (response) {
+                        var objJSON = jQuery.parseJSON(response.d);
+                        if (response.d != null) {
+                            var oStrRedirect = objJSON.REDIRECCION;
+                            if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                                par = objJSON.STRESTADOVALIDACION;
+                                if (par == "1") {
+                                    $('#pnlBotones').hide();
+                                    $('#pnlConfirmSiNo').hide();
+                                    $('#pnlConfirmOK').show();
+                                   
+                                    alert(objJSON.MENSAJE);
+                                    $("#divRegistroterminalhoa").dialog("close");
+                                   
+                                    GetDatos(1, oRows);                         
+
+                                } else {
+                                    alert(objJSON.MENSAJE);    
+                                }
+                            }
+                            else {
+                                window.location.href = oStrRedirect;
+                            }
+                        }
+                    }
+                });            
+        };           
+
+        function ValidarDatosOperador() {
+            var texto = GetDatosListaOperador();
+            
+            if (texto == "") {                
+                return false;
+            }           
+            return texto;
+        }
+            
+        function GetDatosListaOperador() {
+            var textos = "";
+            if (obj.celdasBlancas == "1") {
+                var tableReg = document.getElementById('dtgArrendador');
+                var escala = "0";
+                for (var i = 1; i < tableReg.rows.length; i++) {
+                cellsOfRow = tableReg.rows[i].getElementsByTagName('td');              
+                if (textos == "")
+                    textos = cellsOfRow[1].innerHTML.toUpperCase() + "Æ" + cellsOfRow[2].innerHTML.toUpperCase() + "Æ" + cellsOfRow[3].innerHTML.toUpperCase() + "Æ" + cellsOfRow[4].innerHTML.toUpperCase() + "Æ" + cellsOfRow[5].innerHTML.toUpperCase();
+                else
+                    textos = textos + "Œ" + cellsOfRow[1].innerHTML.toUpperCase() + "Æ" + cellsOfRow[2].innerHTML.toUpperCase() + "Æ" + cellsOfRow[3].innerHTML.toUpperCase() + "Æ" + cellsOfRow[4].innerHTML.toUpperCase() + "Æ" + cellsOfRow[5].innerHTML.toUpperCase();
+                    escala = "0";
+                }
+            }
+        return textos;
+        }
+
+        function mayus(e) {
+            e.value = e.value.toUpperCase();
+
+             
+
+        }
+       
+        function limpiar() {
+            bloqueo(false);
+            cargaVacio()
+        }
+
+        function cargarDatosEmpresa(paramResults, paramMsn, paramDatos) {
+            if (paramResults == null || paramResults == "null" || paramResults == "")
+            {
+                $("#lblMensajeSunat").html(paramMsn);
+                setTimeout(function () { $("#lblMensajeSunat").text("") }, 7000);
+            }
+            else {
+                var oSize = paramResults.length;
+                if (oSize > 0) {               
+                    $("#lblMensajeSunat").text("");
+                    $("#txtRazonSocial").val(paramResults[0].StrRazonsocial);                  
+                }
+            }     
+        }
+
+        function cargarDatosPersona(paramResults, paramMsn, paramDatos) {
+            if (paramResults == null || paramResults == "null" || paramResults == "") {
+                $("#lblMensajeSunat").html(paramMsn);
+                setTimeout(function(){ $("#lblMensajeSunat").text("") }, 7000);
+                
+            }
+            else {
+                var oSize = paramResults.length;
+                if (oSize > 0) {
+                    //LimpiarTrmlHOA();
+                    $("#lblMensajeSunat").text("");
+                    $("#txtNombres").val(paramResults[0].str_Nombre);                  
+                    $("#txtApePaterno").val(paramResults[0].str_ApellidoPaterno);
+                    $("#txtApeMaterno").val(paramResults[0].str_ApellidoMaterno);
+                }
+            }     
+        }
+
+
+        function LimpiarTrmlHOA() {
+
+            $("#txtUbiLocal").val('');
+      
+            $("#txtNombreVia").val('');
+            $("#txtNombreCCPP").val('');
+            $("#txtNumNroMZKm").val('');
+            $("#txtNumLoteIntDpto").val('');
+            $("#txtReferencia").val('');
+            $("#txtDirLocal").val('');
+
+            // $("select#cboTipoVia").val('-1');  
+            //$("select#cboCCPP").val('-1');  
+            //$("select#cboNuMaKm").val('-1');  
+            //$("select#cboLoteIntDpto").val('-1');  
+            //$("select#cboTipoDocumento").val('0');  
+            //$("select#cboTipodeTerminal").val('-1');  
+            //$("select#cboModalidadAutorizada").val('0');  
+
+            
+        }
+
+         function LimpiarCombos() {
+            $("select#cboTipoVia").empty();
+            $("select#cboCCPP").empty();
+            $("select#cboNuMaKm").empty(); 
+            $("select#cboLoteIntDpto").empty(); 
+            $("select#cboTipoDocumento").empty();  
+            $("select#cboTipodeTerminal").empty(); 
+            $("select#cboModalidadAutorizada").empty(); 
+
+
+
+            
+        }
+
+        function LimpiarOperador() {
+
+         
+            $("select#cboTipoDocumento").val('0');   
+            $("#txtNumDocumento").val('');
+            $("#txtNombres").val('');
+            $("#txtApePaterno").val('');
+            $("#txtApeMaterno").val('');
+            $("#txtRazonSocial").val('');
+            $("#lblMensajeSunat").text("");
+        }
+
+        function traerDatos() {
+
+            var tipodocumento = $("#cboTipoDocumento option:selected").val()    
+            
+            $("#txtNombres").val('');
+            $("#txtApePaterno").val('');
+            $("#txtApeMaterno").val('');
+            $("#txtRazonSocial").val('');
+            $("#lblMensajeSunat").text("");          
+            $("#div_loaderOperador").show();
+
+            if (tipodocumento == 0) {
+
+                $("#div_loaderOperador").hide();
+                $("#trBotonesOperador").show();
+            }
+            
+            if (tipodocumento == 1) {
+                
+                $("#trRazonSocial").hide();
+                $("#trNombreApe1").hide();
+                $("#trNombreApe2").hide();
+                CargarDatosReniec();
+            }
+
+            else if (tipodocumento == 2) {                 
+               
+                $("#trRazonSocial").hide();
+                $("#trNombreApe1").hide();
+                $("#trNombreApe2").hide();
+                CargarDatosCE();                   
+               
+            }
+            else if (tipodocumento == 37) {                
+                $("#trRazonSocial").hide();
+                $("#trNombreApe1").hide();
+                $("#trNombreApe2").hide();
+                CargarDatosRuc();
+            }
+            else
+            {
+               alert("Seleccione Tipo de Documento");
+            }
+        }
+
+        function ValidaRuc(param) {
+            if ($.trim(param) == "") {
+                alert("Ingrese el Número de RUC.");
+                $("#txtFiltro").focus();
+               
+                return false;
+            }
+
+            if (!param.match('^([0-9]{11}$)')) {
+                alert("Ingrese un formato válido de RUC.");
+                $("#txtFiltro").focus();
+
+                return false;
+            }
+            return true;
+        }
+
+        function ValidaRucOperador(param) {
+            if ($.trim(param) == "") {               
+                alert("Ingrese el Número de RUC.");
+                $("#txtNumDocumento").focus();
+                $("#trRazonSocial").show();
+                $("#trNombreApe1").hide();
+                $("#trNombreApe2").hide();
+                return false;
+            }
+
+            if (!param.match('^([0-9]{11}$)')) {
+                alert("Ingrese un formato válido de RUC.");
+                //$("#txtNumDocumento").select();
+                $("#txtNumDocumento").focus();
+                $("#trRazonSocial").show();
+                $("#trNombreApe1").hide();
+                $("#trNombreApe2").hide();
+                return false;
+            }
+            return true;
+        }
+
+         function ValidaDniOperador(param) {
+            if ($.trim(param) == "") {
+                 alert("Ingrese el Número de DNI.");
+                $("#txtNumDocumento").focus();
+                $("#trRazonSocial").hide();
+                $("#trNombreApe1").show();
+                $("#trNombreApe2").show();
+                return false;
+            }
+
+            if (!param.match('^([0-9]{8}$)')) {
+                alert("Ingrese un formato válido de DNI.");
+                $("#txtNumDocumento").focus();
+                $("#trRazonSocial").hide();
+                $("#trNombreApe1").show();
+                $("#trNombreApe2").show();
+                return false;
+            }
+            return true;
+        }
+
+         function ValidaCeOperador(param) {
+            if ($.trim(param) == "") {
+                 alert("Ingrese el Número de C.E.");
+                $("#txtNumDocumento").focus();
+                $("#trRazonSocial").hide();
+                $("#trNombreApe1").show();
+                $("#trNombreApe2").show();
+                return false;
+            }
+
+            if (!param.match('^([0-9]{9}$)')) {
+                alert("Ingrese un formato válido de C.E.");
+                $("#txtNumDocumento").focus();
+                $("#trRazonSocial").hide();
+                $("#trNombreApe1").show();
+                $("#trNombreApe2").show();
+                return false;
+             }
+             return true;
+        }
+
+        function nuevoRegistro() {
+            cVacioPrimero = 0;   
+
+            $("#trDireccion").hide();   
+            $("#btnGuardar").val('Guardar');  
+            objTerminalHOA.objAccionTerminalHOA = 1;
+
+            $("#lblMensajeSunat").text('');
+            $("#txtNumDocumento").val('');
+            $("#txtNombres").val('');
+            $("#txtApePaterno").val('');
+            $("#txtApeMaterno").val('');
+            $("#txtRazonSocial").val('');
+            $("#txtNumDocHOA").val('');
+
+            LimpiarTrmlHOA();
+            LimpiarCombos();
+            CargarCombosTerminalReg();         
+            cargaModalidadAutorizada();
+            cargaVacioArrendador();
+            
+            $('#divRegistroterminalhoa').dialog('option', 'title', 'REGISTRO DE INFRAESTRUCTURA COMPLEMENTARIA DECLARADA POR TRANSPORTISTA');
+            $("#divRegistroterminalhoa").dialog("open");
+                                          
+        }
+       
+        function nuevoOperador() {
+            document.getElementById("divOperadorDatos").style.display = 'block'; 
+            $("#div_loaderOperador").hide();
+            cargaTipoDocumento()
+            $("select#cboTipoDocumento").val('0'); 
+
+            $("#trRazonSocial").hide();
+            $("#trNombreApe1").show();
+            $("#trNombreApe2").show();
+
+            $("#lblMensajeSunat").text('');
+            $("#txtNumDocumento").val('');
+            $("#txtNombres").val('');
+            $("#txtApePaterno").val('');
+            $("#txtApeMaterno").val('');
+            $("#txtRazonSocial").val('');
+            $('#divOperadorDatos').dialog('option', 'title', 'REGISTRO DE OPERADOR');
+            $("#divOperadorDatos").dialog("open");
+        }
+        
+         function bloqueo(pTipo) {
+            if (pTipo == true) {
+                $("#ddlEstado").removeAttr("disabled");
+                $('input:radio[name="filtroPrincipal"]').attr("disabled", "disabled");    
+                $("#txtFiltro").attr("disabled", "disabled")
+                $("#btnBuscar").hide();
+                $("#btnNuevo").show();
+            } else {               
+                //$("#<%=ibtnExportarExcel.ClientID %>").hide();
+                $("#ibtnExcel").hide();
+                $("#<%=hdstip.ClientID %>").val("");
+                $("#<%=hdsfil.ClientID %>").val("");
+                $("#<%=hdsubi.ClientID %>").val("");
+                $("#<%=hdsest.ClientID %>").val("");
+                $('input:radio[name="filtroPrincipal"]').removeAttr("disabled");
+                $('input:radio[name="filtroPrincipal"]').attr('checked', false);
+                $("#principal1").attr('checked', true);
+                $("#txtFiltro").removeAttr("disabled");
+                $("#txtFiltro").val("").focus();
+                $("#lblCantidad").html("Total de registros: <b>0</b>");
+                oPaginador.generarPaginacion({
+                    currentpage: 0,
+                    size: 0
+                });
+                $("#paginacion").hide();
+                $("#btnNuevo").hide();
+                $("#btnBuscar").show();
+                $("#lblCantidad").css("vertical-align", "text-bottom");
+            }
+            
+        }
+              
+
+        function pasarUbigeo() {
+            var msg1 = "";
+            var msg2 = "";
+            var msg3 = "";
+
+            if ($("#cboDpto option:selected").val() == "00") msg1 = " el departamento";
+            if ($("#cboProv option:selected").val() == "00") msg2 = " la provincia";
+            if ($("#cboDist option:selected").val() == "00") msg3 = " el distrito";
+
+            if ($("#ubigeo1").is(":checked") && msg1 != "") {
+                alert("Debe seleccionar" + msg1);
+                return false;
+            }
+            if ($("#ubigeo2").is(":checked") && (msg1 != "" || msg2 != "")) {
+                alert("Debe seleccionar" + msg1 + (msg1 != "" ? " y" : "") + msg2);
+                return false;
+            }
+            if ($("#ubigeo3").is(":checked") && (msg1 != "" || msg2 != "" || msg3 != "")) {
+                alert("Debe seleccionar" + msg1 + (msg1 != "" ? "," : "") + msg2 + (msg2 != "" ? " y" : "") + msg3);
+                return false;
+            }
+
+            
+            $("#txtFiltro").val($("#cboDpto option:selected").text() + " - " + $.trim($("#cboProv option:selected").text().replace("-", "").replace("-", "")) + " - " + $.trim($("#cboDist option:selected").text().replace("-", "").replace("-", "")));
+            $("#hdUbi").val($("#cboDpto option:selected").val() + $("#cboProv option:selected").val() + $("#cboDist option:selected").val());
+            
+            
+
+
+            $("#DialogUbigeo").dialog("close");
+            bloqueo(true);
+            GetDatos(1, oRows);
+
+        }
+
+        function selecDistrito(obj) {
+            var vDpto = "";
+            var vProv = "";
+            var vDist = "";
+            $("#dtgDistritoDatos tr").each(function () {
+                if (this.cells[1].id == obj) {
+                    vDpto = this.cells[5].innerHTML;
+                    vProv = this.cells[4].innerHTML;
+                    vDist = this.cells[2].innerHTML;
+                    $("#hdUbi").val(this.cells[2].id);
+                }
+            });
+            $("#txtUbiLocal").val(vDpto + " / " + vProv + " / " + vDist);
+            $("#divDialogDistritos").dialog("close");
+            $("#dtgDistritoVacio").show();
+            $("#dtgDistritoDatos").empty();
+            $("#dtgDistritoDatos").hide();
+            $("#lblTotalDistritos").html("Total de distritos: <b>(0)</b>)");
+            $("#dis_paginacion").hide();
+            $("#cboTipoTerLocal").select();
+            $("#cboTipoTerLocal").focus();
+        }        
+
+        function getDepartamento() {
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/GetDepartamento",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        if (objJSON.REDIRECCION != null && objJSON.REDIRECCION != "")
+                            window.location.href = objJSON.REDIRECCION;
+                        if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {
+                            paramDpto = objJSON.DATA;
+                            if (paramDpto.length > 0) {
+                                for (var i = 0; i <= paramDpto.length - 1; i++) {
+                                    if (paramDpto[i].strCdDpto != "00") {
+                                        $("<option value='" + paramDpto[i].strCdDpto + "'>" + paramDpto[i].strDsDpto + "</option>").appendTo("#cboDpto");
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            alert(objJSON.EXP);
+                        }
+                    }
+                }
+            });
+        };
+
+        function getProvincias(pDpto) {
+            if (pDpto == "00") {
+                return false;
+            }
+            var params = JSON.stringify({
+                dpto: pDpto
+            });
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/GetProvincias",
+                contentType: "application/json; charset=utf-8",
+                data: params,
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {
+                                var entProvincia = objJSON.DATA;
+                                if (entProvincia.length > 0) {
+                                    $("#cboProv").empty();
+                                    $("<option value='00'>- TODOS -</option>").appendTo("#cboProv");
+                                    for (var i = 0; i <= entProvincia.length - 1; i++) {
+                                        $("<option value='" + entProvincia[i].strCdProv + "'>" + entProvincia[i].strDsProv + "</option>").appendTo("#cboProv");
+                                    }
+                                }
+                            } else {
+                                alert(objJSON.EXP);
+                            }
+                        }
+                        else {
+                            window.location.href = oStrRedirect;
+                        }
+                    }
+                }
+            });
+        }
+
+        function getDistritos(pDpto, pProv) {
+            if (pDpto == "00" || pProv == "00") {
+                return false;
+            }
+            var params = JSON.stringify({
+                dpto: pDpto,
+                prov: pProv
+            });
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/GetDistritos",
+                contentType: "application/json; charset=utf-8",
+                data: params,
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {
+                                var entDistrito = objJSON.DATA;
+                                if (entDistrito.length > 0) {
+                                    $("#cboDist").empty();
+                                    $("<option value='00'>- TODOS -</option>").appendTo("#cboDist");
+                                    for (var i = 0; i <= entDistrito.length - 1; i++) {
+                                        $("<option value='" + entDistrito[i].strCdDist + "'>" + entDistrito[i].strDsDist + "</option>").appendTo("#cboDist");
+                                    }
+                                }
+                            } else {
+                                alert(objJSON.EXP);
+                            }
+                        }
+                        else {
+                            window.location.href = oStrRedirect;
+                        }
+                    }
+                }
+            });
+        }
+
+        
+        function GetDatos(pPag, pFil) {
+              $("#paginacion").hide();
+
+            $("#<%=hdstip.ClientID %>").val($("input:radio[name=filtroPrincipal]:checked").val());
+            $("#<%=hdsfil.ClientID %>").val($("#txtFiltro").val());
+            $("#<%=hdsubi.ClientID %>").val($("#hdUbi").val());
+            $("#<%=hdsest.ClientID %>").val($("#ddlEstado option:selected").val());
+
+            var w = $("input:radio[name=filtroPrincipal]:checked").val();
+            var x = $("#txtFiltro").val();
+            var y = $("#hdUbi").val();
+            var z = $("#ddlEstado option:selected").val();
+
+            //alert($("#hdUbi").val());
+            var params = JSON.stringify({
+                tip: $("input:radio[name=filtroPrincipal]:checked").val(),
+                fil: $("#txtFiltro").val(),
+                ubi: $("#hdUbi").val(),
+                est: "0",
+                pag: pPag,
+                row: pFil
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/GetDatos",
+                data: params,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {
+                                var entTerminal = objJSON.DATA;
+                                if (entTerminal.length == 0) {
+                                    $("#lblCantidad").html("Total de registros: <b>0</b>");
+                                    cargaVacio();
+                                } else {
+                                    var oStrHtml = "";
+                                    for (var i = 0; i < entTerminal.length; i++) {
+                                        var oNewTrHTML = "<tr class='celdas' style='height:18px;'>" +
+                                                         "  <td style='text-align:center;'>" + entTerminal[i].int_registro + "</td>" +
+                                                         "  <td style='text-align:left;'>" + entTerminal[i].str_direccion + "</td>" +
+                                                         "  <td style='text-align:left;'>" + entTerminal[i].str_operador + "</td>" +
+                                                         "  <td style='text-align:left;'>" + entTerminal[i].str_nrodocumento + "</td>" +
+                                                         //"  <td style='text-align:center;'>" + entTerminal[i].str_dstpterminal + "</td>" +
+                                                         "  <td style='text-align:center;'>" + entTerminal[i].str_modautoriza + "</td>" +
+                                                         "  <td style='text-align:center;'>" + entTerminal[i].str_dsestado + "</td>" +
+                                                         "  <td style='width: 30px; height: 20px;' align='center'>" +
+                                                         "      <a id='ibtnEditaEmp' href='" + " javascript:editEmpresaHOA(\"" + entTerminal[i].int_idlocalterminal + "\");'>" +                                                           
+                                                         "          <img src='../Images/btnEdit.gif' alt='Lista de locales' style='width: 14px; height: 16px; border: 0;' /></a>" +
+                                                         "  </td>" +   
+                                                         "</tr>";
+                                        oStrHtml = oStrHtml + oNewTrHTML;
+                                    }
+                                    $("#div_loader").hide();
+                                    $("#dtDatos").html(oStrHtml);
+                                    OrdenTabla_Inicializa();
+                                    if (objJSON.REGISTROSTOTAL > oRows) {
+                                        oPaginador.generarPaginacion({
+                                            currentpage: pPag,
+                                            size: objJSON.REGISTROSTOTAL
+
+
+                                        });
+                                        $("#paginacion").show();
+
+                                        if (pPag == "1") {
+                                            $("#lblCantidad").html("Registros del <b id='b1'>" + objJSON.REGISTROSDESDE + "</b> al <b id='b2'>" + objJSON.REGISTROSHASTA + "</b> (Total de registros: <b id='b3'>" + objJSON.REGISTROSTOTAL + "</b>)");
+                                        } else {
+                                            $("#b1").html(objJSON.REGISTROSDESDE);
+                                            $("#b2").html(objJSON.REGISTROSHASTA);
+                                            $("#b3").html(objJSON.REGISTROSTOTAL);
+                                        }
+                                    } else {
+                                        oPaginador.generarPaginacion({
+                                            currentpage: 0,
+                                            size: 0
+                                        });
+                                        $("#lblCantidad").html("Total de registros: <b>" + objJSON.REGISTROSTOTAL + "</b>");
+                                    }
+                                    //$("#<%=ibtnExportarExcel.ClientID %>").show();
+                                    $("#ibtnExcel").show();
+                                }
+                                $("#div_loader").hide();
+                            }
+                            else {
+                                alert(objJSON.EXP);
+                               
+                            }
+                        }
+                        else {
+                            window.location.href = oStrRedirect;
+                           
+                        }
+                    }
+                }
+            });
+        }
+
+       function DelOperador(idRow,CodTerminalOperador) {                  
+            var params = {"idTerminalOperador" : CodTerminalOperador};
+            var postData = JSON.stringify(params);   
+        if (!confirm("¿Desea Eliminar el Registro?")) {
+            
+        }   
+        else {        
+
+            $('table#dtgArrendador tr#' + idRow).remove();
+        }
+       }
+           
+              
+
+        function editEmpresaHOA(objId) {
+        //    alert(objId);
+             objTerminalHOA.objAccionTerminalHOA = 2;
+            var params = JSON.stringify({ ose: objId });
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/cargaEmpresaLocalHOA",
+                data: params,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {                                                                                             
+                                actDatosEmpresaHOA(objJSON.DATA[0], objJSON.MENSAJE);
+                            } else {
+                                alert(objJSON.EXP);                             
+                            }
+                        }
+                        else {
+                            window.location.href = oStrRedirect;                           
+                        }
+                    } else {
+                        alert("No se ha encontrado información. verifique.");
+                        
+                    }
+                }
+            });
+
+
+
+        }
+
+        function CargarCombosTerminalAct() {  
+            CargaCombosTotal(2);
+        }
+
+         function CargarCombosTerminalReg() {
+             CargaCombosTotal(1);
+        }
+
+        function actDatosEmpresaHOA(data, mensaje) {
+            LimpiarTrmlHOA();
+            LimpiarCombos(); 
+            
+            CargarCombosTerminalAct();
+            cargaModalidadAutorizada();
+            cargaVacioArrendador();          
+
+           
+
+            cVacioPrimero = 1;
+            $("#hdUbi").val(data.STR_CDUBIGEO);           
+            $("#hdIdLocalTerminal").val(data.INT_IDLOCALTERMINAL);
+            $("#txtUbiLocal").val(data.STR_DSUBIGEO);
+           
+
+            $("#txtNombreVia").val(data.STR_NOMVIA);
+            $("#txtNombreCCPP").val(data.STR_NOMCCPP);
+            $("#txtNumNroMZKm").val(data.STR_NUMMZKIL);
+            $("#txtNumLoteIntDpto").val(data.STR_INTLOTE);
+            $("#txtReferencia").val(data.STR_REFERENCIA);
+            $("#txtDirLocal").val(data.STR_DIRECCION);
+            $("#txtNumDocHOA").val(data.STR_NRODOCUMENTO);
+
+            objComparar[0] = data.STR_DSUBIGEO;
+            objComparar[1] = data.INT_IDTPVIA;
+            objComparar[2] = data.INT_IDCCPP;
+            objComparar[3] = data.INT_IDNUMAKM;
+            objComparar[4] = data.INT_IDLOINDP;
+            objComparar[5] = data.INT_IDTPTERMINAL;
+            objComparar[6] = data.STR_MODAUTORIZA;
+            objComparar[7] = data.STR_NOMVIA;
+            objComparar[8] = data.STR_NOMCCPP;
+            objComparar[9] = data.STR_NUMMZKIL;
+            objComparar[10] = data.STR_INTLOTE;
+            objComparar[11] = data.STR_REFERENCIA;
+            objComparar[12] = data.STR_DIRECCION;
+            objComparar[13] = data.STR_DATOSOPERADOR;
+            objComparar[14] = data.INT_IDTPDOCUMENTO;
+            objComparar[15] = data.STR_NRODOCUMENTO;
+            
+            var oStrHtml = "";
+            var vfilas = data.STR_DATOSOPERADOR.split("Œ");
+
+
+            $('table#dtgArrendador tr#agr1').remove();
+            $.each(vfilas, function(index, value) {               
+                var vcolumnas = value.split("Æ");
+                var Nro_registro = (index + 1);
+                var idRow = "agr" + (index + 1);
+                    var oNewTrHTML = "<tr class='celdas' id='" + idRow + "' style='height:18px;'>" +
+                        "  <td style='text-align:center;'>" + Nro_registro + "</td>" +
+                            "  <td style='text-align:center; display:none;'>" + vcolumnas[0] + "</td>" +
+                            "  <td style='text-align:center; display:none;'>" + vcolumnas[1] + "</td>" +
+                            "  <td style='text-align:center;'>" + vcolumnas[2] + "</td>" +
+                            "  <td style='text-align:left;'>" + vcolumnas[3] + "</td>" +
+                            "  <td style='text-align:left;'>" + vcolumnas[4] + "</td>" +
+                            "  <td style='width: 30px; height: 20px;' align='center'>" + 
+                        "      <a id='ibtnEditaEmp' href='" + " javascript:DelOperador(\"" + idRow + "\",\"" + vcolumnas[0] + "\");'>" +
+                            "          <img src='../Images/btnDelete.gif' alt='Lista de locales' style='width: 14px; height: 16px; border: 0;' /></a>" +
+                            "  </td>" +
+                            "</tr>";
+                    oStrHtml = oStrHtml + oNewTrHTML;                   
+
+               
+            });
+             $("#dtgArrendador").append(oStrHtml);
+       
+            $("#btnGuardar").val('Actualizar');               
+
+            $('#divRegistroterminalhoa').dialog('option', 'title', 'REGISTRO DE INFRAESTRUCTURA COMPLEMENTARIA DECLARADA POR TRANSPORTISTA');
+            $("#divRegistroterminalhoa").dialog("open");
+             
+        }
+
+       
+
+         function cargaDistrito(objPagina, objFilas) {
+          
+            var params = JSON.stringify({ intPag: objPagina, intFila: objFilas, ose1: $("#txtDistFiltro").val() });
+            $.ajax({
+                type: "POST",
+                url: "frmTerminalhoa.aspx/getBuscaDistrito",
+                data: params,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var objJSON = jQuery.parseJSON(response.d);
+                    if (response.d != null) {
+                        var oStrRedirect = objJSON.REDIRECCION;
+                        if (oStrRedirect == null || oStrRedirect == "null" || oStrRedirect == "") {
+                            if (objJSON.EXP == null || objJSON.EXP == "null" || objJSON.EXP == "") {
+                                if (objJSON.STRMENSAJE1 == null || objJSON.STRMENSAJE1 == "null" || objJSON.STRMENSAJE1 == "") {
+                                    var oStrHtml = "";
+                                    var entDistrito = objJSON.DATA;
+                                    for (var i = 0; i < entDistrito.length; i++) {
+                                        var oNewTrHTML = "<tr class='celdas' style='height:18px;'>" +
+                                                        "  <td style='width: 40px; height: 20px;' align='center'>" + entDistrito[i].strFilas + "</td>" +
+                                                        "  <td id='" + i + "' style='width: 80px; height: 20px' align='center'>" +
+                                                        "      <a href='#' onclick='javascript:selecDistrito(" + i + ");' class='prueba3' >Seleccione</a>" +
+                                                        "  </td>" +
+                                                        "  <td id='" + entDistrito[i].strCdDist + "' style='width: 160px; height: 20px;' align='center'>" + entDistrito[i].strDsDist + "</td>" +
+                                                        "  <td style='width: 100px; height: 20px;' align='center'>" + entDistrito[i].strEsPoblado + "</td>" +
+                                                        "  <td style='width: 160px; height: 20px;' align='center'>" + entDistrito[i].strDsProv + "</td>" +
+                                                        "  <td style='width: 160px; height: 20px;' align='center'>" + entDistrito[i].strDsDpto + "</td>" +
+                                                        "  <td style='width: 60px; height: 20px;' align='center'>" + entDistrito[i].strDsPais + "</td>" +
+                                                        "</tr>";
+
+                                        oStrHtml = oStrHtml + oNewTrHTML;
+                                    }
+
+                                    $("#dtgDistritoVacio").show();
+                                    $("#dtgDistritoDatos").empty();
+                                    $("#dtgDistritoDatos").hide();
+                                    $("#lblTotalDistritos").html("Total de distritos: <b>(0)</b>)");
+                                    $("#dis_paginacion").hide();
+
+                                    if (entDistrito.length > 0) {
+                                        $("#dtgDistritoVacio").hide();
+                                        $("#dtgDistritoDatos").html(oStrHtml);
+                                        $("#dtgDistritoDatos").show();
+                                        $("#lblTotalDistritos").html("Registros del <b>" + objJSON.REGISTROSDESDE + " al " + objJSON.REGISTROSHASTA + " (Total de distritos: <b>" + objJSON.REGISTROSTOTAL + "</b>)");
+                                        dPaginador.generarPaginacion({
+                                            currentpage: objPagina,
+                                            size: objJSON.REGISTROSTOTAL
+                                        });
+
+                                        if (objJSON.REGISTROSTOTAL > oIndex) {
+                                            $("#dis_paginacion").show();
+                                        }
+                                    }
+
+                                }
+                            } else {
+                                alert(objJSON.EXP);
+                            }
+                        }
+                        else {
+                            window.location.href = oStrRedirect;
+                        }
+                    } else {
+                        alert("No se ha encontrado información, verifique.");
+                    }
+                }
+            });
+        }     
+
+        function cargaVacio() {
+            var oHtml = "";
+            for (var i = 0; i < 3; i++) {
+                oHtml += "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+            }
+            $("#dtDatos").html(oHtml);
+        }
+
+        function cargaVacioArrendador() {
+            var oHtml = "";
+            for (var i = 0; i < 1; i++) {
+                //oHtml += "<tr class='celdas' id='agr1' style='height:18px;'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+                oHtml += "<tr class='celdas' id='agr1' style='height:18px;'><td></td><td></td><td></td><td></td><td></td></tr>";
+                
+            }
+            $("#dtgArrendadorDatos").html(oHtml);
+        }
+               
+
+        function ObtenerTramosCheck() {
+            var checkboxValues = "";
+            $("input:checkbox:checked").each(function () {
+            if (checkboxValues == "") checkboxValues += $.trim($(this).val());
+            else checkboxValues += "," + $.trim($(this).val());
+            });
+            return checkboxValues;
+        }
+
+        function indice(i) {
+            $("#div_loader").hide();
+            GetDatos($(i).attr("value"), oPaginador.tamPagina);
+        }
+
+
+
+        function dis_indice(i) {
+            cargaDistrito($(i).attr("value"), dPaginador.tamPagina);
+        }
+
+        function soloLetrasPatron(e) {
+        tecla = (document.all) ? e.keyCode : e.which;
+
+        //Tecla de retroceso para borrar, siempre la permite
+        if (tecla == 8) {
+        return true;
+        }
+
+        // Patron de entrada, en este caso solo acepta numeros y letras
+        //patron = /[A-Za-z0-9]/;
+        patron =/[A-Za-z\sáéíóú]/;
+        tecla_final = String.fromCharCode(tecla);
+        return patron.test(tecla_final);
+        }     
+
+        function limpiaNombres() {       
+            var val = document.getElementById("txtNombres").value;
+            var tam = val.length;
+            patron = /[A-Za-z\sáéíóú]/;
+            
+            for (i = 0; i < tam; i++) {
+                if (!patron.test(val[i])) {
+                    
+                    //document.getElementById("txtNombres").value = '';
+                     alert('Caracter no Permitido en el campo Nombres');
+                    return false;
+                }
+            }
+        }
+
+        function limpiaPaterno() {
+            var val = document.getElementById("txtApePaterno").value;
+            var tam = val.length;
+            patron = /[A-Za-z\sáéíóú]/;
+            
+            for (i = 0; i < tam; i++) {
+                if (!patron.test(val[i])) {
+                    
+                    //document.getElementById("txtApePaterno").value = '';
+                     alert('Caracter no Permitido en el campo Apellido Paterno');
+                    return false;
+                }
+            }
+           
+        }
+
+        function limpiaMaterno() {
+            var val = document.getElementById("txtApeMaterno").value;
+            var tam = val.length;
+            patron = /[A-Za-z\sáéíóú]/;
+            
+            for (i = 0; i < tam; i++) {
+                if (!patron.test(val[i])) {
+                    
+                    //document.getElementById("txtApeMaterno").value = '';
+                     alert('Caracter no Permitido en el campo Apellido Materno');
+                    return false;
+                }
+            }
+           
+        }
+
+         function limpiaRazonSocial() {
+            var val = document.getElementById("txtRazonSocial").value;
+            var tam = val.length;
+            for(i = 0; i < tam; i++) {
+                if (val[i] == '|' || val[i] == 'Æ' || val[i] == 'Œ') {
+                    //document.getElementById("txtRazonSocial").value = '';
+                    alert('Caracter no Permitido');
+                    return false;
+                }
+            }
+           
+        }
+
+         
+
+        
+    </script>
+    <div style="width:750px;">
+        <div id="divBusqueda" style="padding-bottom: 10px">
+            <table class="formulario" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td style="width: 83%; height:40px" align="right">
+                        <img src="../Images/ico-flecha-atras.gif" width="11" height="7"><b><a class="link-negro-rojo2" href="javascript:;" onclick='window.history.back();'>P&aacute;gina anterior</a></b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formulariotitulo2" colspan="4">BÚSQUEDA DE TERMINAL TERRESTRE</td>
+                </tr>    
+                <tr>
+                    <td class="auto-style1" style="text-align:left;  border-top: #BDBDBD 1px solid ">
+                        <div id="optBusquedaP" style="position: relative; height:26px; width:522px; border-right: #BDBDBD 1px solid; border-top: #BDBDBD 1px solid; border-left: #BDBDBD 1px solid; border-bottom: #BDBDBD 1px solid; float:left; background-color:lightyellow;">
+                            <div id="optBusquedaH" style="position: absolute; width: 521px; height: 15px; top: 5px;">                                
+                                <input id="principal3" type="radio" name="filtroPrincipal" value="3" etiqueda="Dirección" /><label for="principal3" >Dirección</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                
+                                <input id="principal5" type="radio" name="filtroPrincipal" value="5" etiqueda="Ubigeo" /><label for="principal5" >Ubigeo</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input id="principal6" type="radio" name="filtroPrincipal" value="6" etiqueda="Todos" /><label for="principal6" >Todos</label>
+                            </div>
+                        </div>
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" align="left" valign="middle" class="auto-style3" >
+                        <div id="lblBusqueda" class="labelNormal11" style="width: 120px; height:16px; float:left;">
+                            <span id="lblBusTitulo">Ruc</span>
+                        </div>
+                        <div style="float: left; padding: 0px 4px;">
+                            <input type="text" id="txtFiltro" style="width:350px;" class="azulino" />
+                        </div>
+                        &nbsp;<a id="btnBuscar" href="javascript:void(0);" ><img src="../Images/btnBuscar.gif" alt="buscar" border="0"  /></a>
+                        <a id="btnNuevo" href="javascript:void(0);" style="display:none;"><img src="../Images/nuevo.gif" alt="Nueva empresa" border="0" style="width:15px"/></a>
+                    </td>
+                </tr>
+            </table>    
+        </div>
+        <div id="divListado">
+            <table border="0" cellpadding="0" cellspacing="0" style="width:100%; height:22px; text-align:right;">
+                <tr>                    
+                    <td style="text-align:right;" class="auto-style10"><span id="lblCantidad" class="text-plomo3">Registros del <b id="b1">0</b> al <b id="b2">0</b> (Total de registros: <b id="b3">0</b>)</span></td>
+                    <td id="ibtnExcel" class="auto-style11">&nbsp;<asp:ImageButton ID="ibtnExportarExcel" Width="22px" runat="server" ImageUrl="~/Images/icono_excel.bmp" EnableViewState="true" onclick="ibtnExportarExcel_Click" style="vertical-align:bottom;"/></td>
+                    <td valign="bottom" style="text-align:right; " class="auto-style12">
+                    <a id="ibtnterminalhoa" href="javascript:void(0);" class="SelControl"><img src="../Images/Nuevo.png" alt="Nuevo terminalhoa"  border="0" style="vertical-align:bottom; height:22px;"/></a>
+                </td>
+                </tr>
+            </table>
+            <table id="dtgResult" class="OrdenTabla gridplomo display" style="width: 100%">
+                <thead>
+                    <tr align="center">
+                        <th align="center" class="auto-style4">N°</th>
+                        <th align="center" class="auto-style5">Dirección</th>
+                        <th id="thRazSoc" align="center" class="auto-style6">Operario(s)</th>
+                        <th id="thDirec" class="auto-style78">Documento</th>
+                        <%--<th id="thTipoTerminal" align="center" class="auto-style8">Tipo de Terminal</th>--%>
+                        <th id="thCModA" align="center" class="auto-style79">Modalidad Autorizada</th>
+                        <th align="center" class="auto-style2">Estado</th>
+                        <th align="center" class="auto-style80"></th>                       
+                    </tr>
+                </thead>                           
+                <tbody id="dtDatos">                    
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td id="div_loader" colspan="7" valign="middle" align="center" style="display:none">
+                            <img id="imgcargando" src="../Images/ajax_loader1.gif" width="110" height="100" alt="cargando" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="paginacion" align="right" style="padding-bottom:10px;"></div>
+      <div id="divRegistroterminalhoa">
+        <table width="100%"  class="formularioAC" border="0">
+            <tr>
+                <td class="tituloguion" colspan="8">
+                    DATOS DEL INMUEBLE DECLARADO
+                </td>           
+            </tr> 
+            <tr style="height:25px">                
+                <td class="auto-style22" align="left">Ruc</td>
+                <td class="auto-style13"></td>                 
+                <td colspan="5" align="left">
+                    <div id="divRucDi" style="width:100%">
+                        <input type="text" id="txtRucDi" class="control controltexto altotexto" style="width: 95%"/>
+                        <a id="ibtnBusRucDi" href="javascript:void(0);">
+                            <img src="../Images/btnBuscar.gif" alt="buscar" width="16px" border="0" />
+                        </a>
+                    </div>                    
+                    <span id="lblRucDi" style="width: 100%; font-size:8pt"></span>
+                </td>
+               <td class="auto-style13"></td>
+            </tr>
+            <tr style="height:25px">                
+                <td class="auto-style22" align="left">Razon Social</td>
+                <td class="auto-style13"></td>                 
+                <td colspan="5" align="left">
+                    <div id="divRazonSocialDi" style="width:100%">
+                        <input type="text" id="txtRazonSocialDi" class="control controltexto altotexto" style="width: 100%"/>                    
+                    </div>                    
+                    <span id="lblRazonSocialDi" style="width: 100%; font-size:8pt"></span>
+                </td>
+               <td class="auto-style13"></td>
+            </tr>
+            <tr style="height:25px">                
+                <td class="auto-style22" align="left">Ubicacion</td>
+                <td class="auto-style13"></td>                 
+                <td colspan="5" align="left">
+                    <div id="divUbica" style="width:100%">
+                        <input type="text" id="txtUbiLocal" class="control controltexto altotexto" style="width: 95%"/>
+                        <a id="ibtnBusDistrito" href="javascript:void(0);">
+                            <img src="../Images/btnBuscar.gif" alt="buscar" width="16px" border="0" />
+                        </a>
+                    </div>                    
+                    <span id="lblUbiLocal" style="width: 100%; font-size:8pt"></span>
+                </td>
+               <td class="auto-style13"></td>
+            </tr>
+            
+            <tr id="trDireccion">
+                <td class="auto-style22" align="left">Direccion</td>
+                <td class="auto-style82"></td>
+                <td colspan="5" align="left" class="auto-style83">
+                    <textarea id="txtDirLocal" name="" style="height:25px; width:90%" class="control controltexto" onkeyup="mayus(this);"> </textarea>
+                </td>
+                <td class="auto-style82"></td>
+            </tr> 
+            <tr style="height:25px">
+                <td class="auto-style22" align="left">Tp. Vía:</td>
+                <td class="auto-style13"></td>
+                <td align="left">
+                    <select id="cboTipoVia" class="combito1 controltexto" style="height: 20px; width:200px; font-size:8pt; font-weight:normal"></select>
+                </td>
+                <td class="auto-style13"></td>
+                <td class="auto-style22" align="left">Nombre Vía:</td>
+                <td class="auto-style13"></td>
+                <td align="left" class="auto-style68"> 
+                    <input type="text" id="txtNombreVia" class="control controltexto altotexto" onkeyup="mayus(this);"/></td>
+                <td class="auto-style65"></td>
+            </tr>
+            <tr style="height:25px" >
+                <td class="auto-style22" align="left">CCPP:</td>
+                <td class="auto-style13"></td>
+                <td align="left">
+                    <select id="cboCCPP" class="combito1 controltexto" style="height: 20px;  width:200px; font-size:8pt; font-weight:normal"></select>
+                </td>
+                <td class="auto-style13"></td>
+                <td class="auto-style22" align="left">Nombre CCPP.:</td>
+                <td class="auto-style13"></td>
+                <td align="left" class="auto-style68"> 
+                    <input type="text" id="txtNombreCCPP" class="control controltexto altotexto" onkeyup="mayus(this);"/></td>
+                <td class="auto-style65"></td>
+            </tr>            
+            <tr style="height:25px">
+                <td class="auto-style22" align="left">Nro / Mz / Km:</td>
+                <td class="auto-style13"></td>
+                <td align="left">
+                    <select id="cboNuMaKm" class="combito1 controltexto" style="height: 20px; width:200px; font-size:8pt; font-weight:normal"></select>
+                </td>
+                <td class="auto-style65"></td>
+                <td class="auto-style22" align="left"> N°:</td>
+                <td class="auto-style13"></td>
+                <td align="left" class="auto-style68"> 
+                    <input type="text" id="txtNumNroMZKm" class="control controltexto altotexto" onkeyup="mayus(this);"/></td>
+                <td class="auto-style65"></td>
+            </tr>
+             <tr style="height:25px">
+                <td class="auto-style22" align="left">Lote / Int / Dpto:</td>
+                <td class="auto-style13"></td>
+                <td align="left">
+                    <select id="cboLoteIntDpto" class="combito1 controltexto" style="height: 20px; width:200px; font-size:8pt; font-weight:normal"></select>
+                </td>
+                <td class="auto-style13"></td>
+                <td class="auto-style22" align="left">N°:</td>
+                <td class="auto-style13"></td>
+                <td align="left">                 
+                    <input type="text" id="txtNumLoteIntDpto" class="control controltexto altotexto" onkeyup="mayus(this);"/></td>
+               <td class="auto-style65"></td>
+            </tr>             
+        </table>  
+        <table width="100%">
+        <tr>
+            <td class="auto-style22" align="left">Referencia:</td>             
+            <td class="auto-style13"></td>
+            <td align="left">           
+                <input type="text" id="txtReferencia" class="control controltexto altotexto" style="width:564px; font-size:8pt" onkeyup="mayus(this);"/>
+            </td>              
+            <td class="auto-style13"></td>
+        </tr>       
+        </table>             
+        <table width="100%">
+        <tr>
+            <td class="auto-style22" align="left">Tipo de Terminal:</td>
+            <td class="auto-style13"></td>
+            <td align="left">
+                <select id="cboTipodeTerminal" class="combito1 controltexto" style="height: 20px; width:200px; font-size:8pt; font-weight:normal"></select>
+            </td>
+            <td class="auto-style13"></td>
+            <td class="auto-style22" align="left">Modalidad Autorizada:</td>
+            <td class="auto-style13"></td>
+            <td align="left">
+                <select id="cboModalidadAutorizada" class="combito1 controltexto" style="height: 20px; width:200px; font-size:8pt; font-weight:normal"></select>
+            </td>
+        </tr>   
+         <tr style="height:25px">
+                <td class="auto-style22" align="left">Tipo de Documento Terminal :</td>
+                <td class="auto-style13"></td>
+                <td align="left">
+                    <select id="cboTipoDocHOA" class="combito1 controltexto" style="height: 20px; width:200px; font-size:8pt; font-weight:normal"></select>
+                </td>
+                <td class="auto-style13"></td>
+                <td class="auto-style22" align="left">Documento Terminal:</td>
+                <td class="auto-style13"></td>
+                <td align="left">                 
+                    <input type="text" id="txtNumDocHOA" class="control controltexto altotexto" style="font-size:8pt" onkeyup="mayus(this);"/></td>
+               <td class="auto-style65"></td>
+            </tr>               
+        <tr><td colspan="8" style="padding-top:2px"></td></tr> 
+        </table>
+       
+          <table width ="100%" class="formularioAC" border="0">          
+                
+                <tr>
+                <td class="tituloguion" colspan="8">
+                    LISTADO DE OPERADOR:
+                </td>               
+                <td align="right">
+                    <a id="ibtnOperador" href="javascript:void(0);">
+                        <img src="../Images/btnBuscar.gif" alt="buscar" width="16px" border="0" />
+                    </a>
+                </td>   
+                    <td class="auto-style13"></td>
+                </tr> 
+              <tr><td></td></tr>
+         </table> 
+         
+        <table id="dtgArrendador" class="OrdenTabla gridplomo display" style="width: 100%">
+        <thead>   
+            <tr id="dtCabeceraOperador"  align="center">                    
+                <th align="center" class="auto-style30">Nro</th>  
+                <th align="center" class="auto-style30" style="display:none">Codterminaloperador</th>
+                <th align="center" class="auto-style30" style="display:none">CodTipoDoc</th>
+                <th align="center" class="auto-style31">Tipo Documento</th>                        
+                <th align="center" class="auto-style32">Nro Documento</th>                            
+                <th align="center" class="auto-style33">Nombre Operador</th>  
+                <th align="center" class="auto-style30"></th>  
+            </tr>                                                                                              
+        </thead>           
+        <tbody id="dtgArrendadorDatos">
+        </tbody>
+        </table>  
+         <table width ="100%">
+               <tr>                    
+                    <%--<td align="center">
+                        <input id="btnCancelar"  type="button" value="Cancelar" class="btnTrf"  style=" width:120px;" />                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input id="btnGuardar"  type="button" value="Guardar" class="btnTrf"  style=" width:120px;" />
+                    </td>              --%>      
+                </tr>  
+                <tr id="pnlBotones" style="height:30px;"><td align="center" colspan="5">
+                    <input type="button" id="btnGuardar" class="gris" value="Guardar" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="button" id="btnCancelar" class="gris" value="Cancelar" /></td></tr>
+            <tr id="pnlConfirmSiNo" style="height:30px; display: none">
+                <td colspan="4">
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td class="confirmacionalerta"><span id="lblconfirm" class="mensajenegro"></span><br />Verifique los Datos</td>
+                            <td style="font-weight: bold; width: 6%" class="confirmacionfondo"><input type="button" id="btnSi" class="gris" value="  SI  " /></td>
+                            <td style="font-weight: bold; width: 6%" class="confirmacionfondo"><input type="button" id="btnNo" class="gris" value="  NO  " /></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr id="pnlConfirmOK" style="height:30px; display: block">
+                <td colspan="4">
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td style="font-weight: bold; width: 1%"></td>
+                            <%--<td align="left"><span id="lblmns" class="confirmacionmensaje"></span></td>--%>
+                            <td style="font-weight: bold; width: 1%"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+         </table>   
+   </div>      
+      
+     
+       <div id="divOperadorDatos" style="width:100%;">
+       <%-- <table width="100%">               
+             <tr class="auto-style32" style="height:30px; background-color:  #D3D3D3">
+                <td  align="left" style="height: 20px; font-size:8pt; font-weight:bold; width:200px; background-color: #F2F2F2">INFORMACION DEL OPERADOR</td>                
+            </tr>
+        </table>    --%>     
+        <table cellpadding="0" cellspacing="0" width="100%" class="auto-style54">               
+         <tr style = "height:35px; background-color:lightyellow;">
+                <td  align="right" style="height: 20px; width:25%; font-size:8pt; font-weight:bold; border-top: #000000 1px solid; border-bottom: #000000 1px solid;">Tipo de Documento:</td>                
+                <td align="center"  style="height: 25px; width:30%; font-size:8pt; font-weight:bold; border-top: #000000 1px solid; border-bottom: #000000 1px solid;">
+                    <select id="cboTipoDocumento" class="combito1 controltexto" style="height: 25px; font-size:8pt; font-weight:normal" name="D1"></select>
+                </td>    
+                <td align="left" style="height: 25px; width:20%; font-size:8pt; font-weight:bold; border-top: #000000 1px solid; border-bottom: #000000 1px solid;">                    
+                    <input type="text" id="txtNumDocumento" style="width: 150px; margin-top: 0px;" class="textobusca"/>
+                </td> 
+                <td align="center" style="height: 25px; width:30%; font-size:8pt; font-weight:bold; border-top: #000000 1px solid; border-bottom: #000000 1px solid;">                                                   
+                    
+                    <input id="btnBuscarDocumento"  type="button" value="BUSCAR" class="btnTrf"  style=" width:60px;" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input id="btnLimpiar"  type="button" value="LIMPIAR" class="btnTrf"  style=" width:60px;" />           
+                 </td>   
+                <td class="auto-style47"></td>
+             </tr>                  
+        </table>
+         <table width="100%">               
+             <tr>                
+                <td align="center" colspan="8">
+                <span id="lblMensajeSunat" style="width:500px; font-size:7pt; font-weight:bold; color:  #E60026">el servidor no responde</span>
+                </td>
+            </tr>            
+        </table> 
+        <div id="divDNI" style="width:100%;">
+       <table width ="100%" class="formularioAC" border="0">       
+            <tr>
+            <td class="tituloguion" colspan="8">
+                    DATOS DEL OPERADOR:
+            </td> 
+            </tr>  
+        </table>         
+        <table width="100%">
+             <tr id="trNombreApe1">
+                 <td class="auto-style20" align="left">Nombres:</td>             
+                 <td class="auto-style13"></td>
+                <td align="left" class="auto-style50">           
+                    <input type="text" id="txtNombres" class="control controltexto altotexto" style="width:580px; font-size:8pt" onkeypress="return soloLetrasPatron(event)" onblur="limpiaNombres()" onkeyup="mayus(this);"/>
+                </td>              
+                 <td class="auto-style13"></td>
+            </tr>       
+        </table>
+        <table width="100%">
+             <tr id="trNombreApe2" style="height:25px">  
+                <td class="auto-style20" align="left">Apellido Paterno:</td>         
+                <td class="auto-style13"></td>
+                <td align="left" class="auto-style46">
+                    <input type="text" id="txtApePaterno" style="width: 208px; font-size:8pt; margin-top: 0px;" onkeypress="return soloLetrasPatron(event)" onblur="limpiaPaterno()"  onkeyup="mayus(this);"/>
+                </td>    
+                <td class="auto-style13"></td>
+                <td class="auto-style20" align="left">Apellido Materno:</td>
+                <td class="auto-style13"></td>
+                <td align="left">                 
+                    <input type="text" id="txtApeMaterno" style="width: 208px; font-size:8pt; margin-top: 0px;" onkeypress="return soloLetrasPatron(event)" onblur="limpiaMaterno()"  onkeyup="mayus(this);"/>
+                </td>
+                <td class="auto-style13"></td>
+             </tr>  
+        </table>
+        <table width="100%">
+            <tr id="trRazonSocial" style="height:25px;" >                  
+                <td class="auto-style20" align="left">Razon Social:</td>
+                <td class="auto-style13"></td>
+                <td align="left" class="auto-style50">           
+                    <input type="text" id="txtRazonSocial" class="control controltexto altotexto" style="width:580px; font-size:8pt" onblur="limpiaRazonSocial()" onkeyup="mayus(this);" />                    
+                </td>               
+                <td class="auto-style13"></td>
+             </tr>              
+        </table>
+         <table width="100%">            
+             <tr>
+                <td id="div_loaderOperador" colspan="7" valign="middle" align="center" style="display:none">
+                    <img id="imgcargandoLoadOperador" src="../Images/ajax_loader1.gif" width="110" height="100" alt="cargando" />
+                </td>
+            </tr>
+        </table>       
+        </div>
+
+        <table width="100%">  
+            <tr id="trBotonesOperador" style="height:30px;"><td align="center" colspan="5">
+            <input type="button" id="btnAgregar" class="gris" value="Agregar" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="button" id="btnCancelarAgregar" class="gris" value="Cancelar" /></td></tr>
+        </table>
+       </div>
+
+
+    </div>
+    
+    
+     <div id="DialogUbigeo">
+            <table class="formulario" cellpadding="0" cellspacing="0" width="100%">    
+                <tr>
+                    <td colspan="3" class="auto-style81" colspan="4">Busqueda por:</td>
+                </tr>    
+                <tr>
+                    <td colspan="3" class="auto-style1" style="text-align:left; ">
+                        <input id="ubigeo1" type="radio" name="filtroUbigeo" value="1" etiqueda="Departamento"/><label for="ubigeo1">Departamento</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input id="ubigeo2" type="radio" name="filtroUbigeo" value="2" etiqueda="Provincia"/><label for="ubigeo2">Provincia</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input id="ubigeo3" type="radio" name="filtroUbigeo" value="3" etiqueda="Distrito"/><label for="ubigeo3">Distrito</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>                   
+                    <td class="auto-style77">&nbsp;Departamento&nbsp;:</td>
+                    <td style="text-align:center;" class="auto-style75">&nbsp;&nbsp;</td>
+                    <td class="auto-style8">
+                        <select id="cboDpto" class="control" style="height: 20px; width:200px;">
+                            <option value='00'>- TODOS -</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="auto-style77">&nbsp;Provincia&nbsp;:</td>
+                    <td style="text-align:center;" class="auto-style75">&nbsp;&nbsp;</td>
+                    <td class="auto-style8">
+                        <select id="cboProv" class="control" style="height: 20px; width:200px;">
+                            <option value='00'>- TODOS -</option>                    
+                        </select>
+                    </td>
+                </tr>
+                 <tr>
+                    <td style="width:20px; height:20px;" class="labelNormal11">&nbsp;Distrito&nbsp;:</td>
+                    <td style="width:5px; text-align:center;">&nbsp;&nbsp;</td>
+                    <td style="width:250px; text-align:left;">
+                        <select id="cboDist" class="control" style="height: 20px; width:200px;">
+                            <option value='00'>- TODOS -</option>                    
+                        </select>
+                        &nbsp;&nbsp;<a id="btnBusDistrito" href="javascript:void(0);" style="display:none;"><img src="../Images/btnBuscar.gif" alt="buscar" border="0" style="vertical-align:top;" /></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" align="center" style="height:50px;">
+                        <input id="btnPasar" type="button" value="Buscar" class="btnTrf" style="width:100px" />
+                    </td>
+                </tr>
+            </table>    
+        </div>
+    <div id="divDialogDistritos" style="width:680px">
+            <table width="100%" class="formulario" >
+                <tr>
+                    <td align="left" style="width: 30%; vertical-align:middle">
+                        Nombre del distrito:
+                        &nbsp;
+                        <input type="text" id="txtDistFiltro" style="width: 150px; margin-top: 0px" class="textobusca" />
+                        &nbsp;
+                        <a id="ibtnDistBuscar" href="javascript:void(0);">
+                            <img src="../Images/btnBuscar.gif" alt="buscar" width="16px" border="0" />
+                        </a>
+                    </td>
+                </tr>
+                <tr><td style="height:10px"></td></tr>
+                <tr>
+                    <td align="right" valign="bottom" style="width: 97%;">
+                        <span id="lblTotalDistritos" class="text-plomo3">Total de distritos: <b>(0)</b></span>
+                    </td>
+                </tr>
+            </table>
+            <table class="gridplomo display" style="height: 100%">
+                <thead>
+                    <tr align="center">
+                        <th align="center" class="auto-style69">Item</th>
+                        <th align="center" class="auto-style70">Acci&#243;n</th>
+                        <th align="center" class="auto-style71">Distrito</th>
+                        <th align="center" class="auto-style72">Poblado</th>
+                        <th align="center" class="auto-style71">Provincia</th>
+                        <th align="center" class="auto-style71">Departamento</th>                    
+                        <th align="center" class="auto-style73">Pais</th>
+                    </tr>
+                </thead>
+                <tbody id="dtgDistritoVacio">
+                    <tr>
+                        <td class="auto-style74"></td><td class="auto-style74"></td><td class="auto-style74"></td><td class="auto-style74"></td><td class="auto-style74"></td><td class="auto-style74"></td><td class="auto-style74"></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                    </tr>
+                </tbody>
+                <tbody id="dtgDistritoDatos">
+                </tbody>
+            </table>
+            <div id="dis_paginacion" align="right" ></div>
+            <div style="height:20px"></div>
+        </div>
+    <input type="hidden" id="hdUbi" />
+    <input type="hidden" id="hdIdLocalTerminal" />
+    <asp:HiddenField ID="hdstip" runat="server" />
+    <asp:HiddenField ID="hdsfil" runat="server" />
+    <asp:HiddenField ID="hdsubi" runat="server" />
+    <asp:HiddenField ID="hdsest" runat="server" />
+    <input type="hidden" id="hdUbigeo" />
+    <input type="hidden" id="hdstr_distritoDif" />
+    
+   
+
+</asp:Content>

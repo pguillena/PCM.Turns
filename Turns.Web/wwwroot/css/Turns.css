@@ -1,0 +1,1544 @@
+/* //////////////////////////////////////////////////////////
+Libro de Reclamaciones Virtual
+Copyright 2019 Presidencia del Consejo de Ministros - PCM
+
+Colores principales:
+--------------------
+Rojo    -> BF0909
+Gris    -> 3C4145
+Turquesa -> 0CAFD0
+Celeste  -> C1EEF7
+
+/* FONTS CUSTOM ------------------
+--------------------------------*/
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../webfonts/montserrat-regular-webfont.woff2') format('woff2'), url('../webfonts/montserrat-regular-webfont.woff') format('woff');
+}
+
+/* RESET -----------------------
+------------------------------*/
+* {
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    word-wrap: break-word;
+    text-decoration: none !important;
+}
+
+html {
+    font-size: 1rem;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif !important;
+    display: flex;
+    flex-direction: column;
+}
+
+html, body {
+    min-height: 100%;
+}
+
+span {
+    width: 100%;
+}
+
+nav, ul, li, h1, h2, h3, h4 {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    /*color: #BF0909 !important;*/
+    text-decoration: none !important;
+}
+
+    a:hover {
+        text-decoration: none !important;
+    }
+
+img {
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto !important;
+}
+
+.custom-file-label::after {
+    content: "Examinar" !important;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.margin-width-auto {
+    margin: 0 auto;
+}
+
+.card-body {
+    font-size: .9rem;
+}
+
+/* OVERRIDES ---------------------
+--------------------------------*/
+.bg-danger, .bg-turnos {
+    background-color: #4BA1D0 !important;
+    color: #fff !important;
+}
+
+.bg-info {
+    background-color: #0CAFD0 !important;
+    color: #fff !important;
+    border-color: #0CAFD0 !important;
+}
+
+.card {
+    margin-bottom: 1em;
+    border-radius: calc(.50rem - 1px) calc(.50rem - 1px) !important;
+    border: 0 !important;
+}
+
+.card-header {
+    border-radius: 0 !important;
+    font-weight: bold;
+    padding: 8px;
+    text-transform: uppercase;
+    font-size: .9rem;
+}
+
+table th {
+    padding: 8px !important;
+}
+
+.alert {
+    width: 100%;
+}
+
+label {
+    font-weight: bold;
+}
+
+.fa-search, .fa-edit {
+    margin-bottom: .3em;
+}
+
+.modal-lg {
+    max-width: 60% !important;
+}
+
+.question {
+    color: #BF0909;
+    display: block;
+    font-weight: bold;
+}
+
+.border-card {
+    border: 1px solid #ddd;
+    padding: 30px 10px;
+    border-radius: 5px;
+}
+
+input [type="text"] {
+    font-size: 5px !important;
+    color: green !important;
+}
+
+/* APLICATIVO WEB --------------
+------------------------------*/
+
+hr.hr-videos {
+    display: block;
+    clear: both;
+    width: 100%;
+    height: 1px;
+    border: 0;
+    border-top: .5px solid #ddd;
+    margin: 20px 0 5px;
+}
+
+.icono-fa a {
+    color: #BF0909 !important;
+    text-decoration: none !important;
+}
+
+    .icono-fa a:hover {
+        color: #6c757d !important;
+        text-decoration: none !important;
+    }
+
+.tabla-datos tr td {
+    padding: 1px 5px;
+    vertical-align: middle;
+    word-break: break-word;
+}
+/* -> HOME ---------------------
+------------------------------*/
+header {
+    background-color: #BF0909;
+}
+
+.header__content {
+    height: 4.375em; /*70px*/
+}
+
+img.logo__escudo {
+    width: 2.875em;
+}
+
+img.logo__gobpe {
+    margin-left: .3em;
+    width: 5.625em;
+}
+
+img.logo__texto {
+    width: 14em;
+    padding-left: .9em;
+    margin-left: .7em;
+    border-left: 1px solid #fff;
+}
+
+img.logo__texto_cita {
+    width: 14em;
+    padding-left: 20em;
+    margin-left: 20em;
+    border-left: 2px solid #fff;
+}
+
+.main-content, .main-content--oscuro {
+    min-height: 100%;
+    background: url("../images/fondo_aplicativo.svg") #F2F2F2 bottom center no-repeat;
+    background-size: contain;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: calc(100vh - 142px) !important;
+}
+
+.main-content--oscuro {
+    height: auto;
+    padding: 2em 0;
+}
+
+.content-wrapper:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    opacity: .5;
+}
+
+h1.titulo-aplicativo {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 2em 0 .6em;
+    font-size: 2.8rem;
+    font-weight: bold;
+}
+
+/* Portada */
+.dashboard {
+    padding-top: 220px;
+    height: calc(100vh - 142px);
+    cursor: pointer;
+    text-align: center;
+}
+
+h1.title-bienvenida {
+    font-size: 6rem;
+    font-family: Montserrat, sans-serif;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    padding: 10px 0 0;
+    margin: 0;
+    line-height: 1;
+}
+
+h2.title-aplicacion {
+    font-size: 2rem;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    margin-bottom: 60px;
+    color: #606A70;
+}
+
+span.btn-ingreso {
+    display: inline-flex;
+    justify-content: center;
+    padding: 15px 50px;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #09B196;
+    color: #FFF;
+    border-radius: 50px;
+    width: auto;
+    transition: .4s ease-in-out;
+}
+
+    span.btn-ingreso:hover {
+        color: #fff;
+        background: #087E8B;
+        text-decoration: none;
+    }
+
+/* Fin */
+
+.subtitulo-turnos {
+    background: #C7EFCF;
+    padding: 10px;
+    font-size: 1.1rem;
+    text-align: center;
+    border-radius: 5px;
+    color: #555;
+}
+
+.desc-bienvenida {
+    padding: 1em 0;
+    font-size: 1.2rem;
+}
+
+.info-reclamo, .preguntas-frecuentes {
+    padding: 1em 0 0;
+}
+
+.info-footer ul li {
+    font-size: 1rem;
+    padding: 0;
+}
+
+footer {
+    background-color: #3C4145;
+    color: #fff;
+    padding: 1.5em;
+}
+
+/* -> LOGIN --------------------
+------------------------------*/
+.wrapper-frmSesion {
+    /*padding: 5em 0;*/
+}
+
+    .wrapper-frmSesion .card {
+        margin: 0 auto;
+        padding: 1.6em 1em;
+        width: 28.125rem;
+    }
+
+    .wrapper-frmSesion button {
+        padding: 1.2em 1em;
+        width: 100%;
+        font-size: .9rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: .2em 0 1em;
+    }
+
+.form-login input {
+    padding: 1.4em 1em;
+    margin-bottom: 1em;
+}
+
+.olvide-contrasenia {
+    font-size: .9rem;
+    text-decoration: underline;
+}
+
+/* FORM RECLAMACIONES ----------
+------------------------------*/
+
+h1.titulo-hoja-reclamacion {
+    font-size: 1.5rem;
+    padding: .5em 0;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
+
+ul.motivos-reclamo {
+    margin: 0;
+}
+
+    ul.motivos-reclamo li {
+        display: block;
+        padding: .4em 0;
+        font-size: 1rem;
+    }
+
+.cbo-motivos option {
+    padding: .4em 0;
+    word-wrap: break-word;
+}
+
+.logo-form {
+    text-align: left;
+}
+
+    .logo-form img {
+        width: 70%;
+    }
+
+.info-header-form {
+    text-align: left;
+}
+
+    .info-header-form input[type=date] {
+        border: 0;
+    }
+
+.titulo-form {
+    text-align: right;
+    font-size: .8rem;
+}
+
+.fecha-reclamo {
+    text-align: right;
+}
+
+.texto-rojo {
+    color: #BF0909;
+    font-weight: normal;
+    font-size: .8rem;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    color: #fff;
+    border-color: #BF0909 !important;
+    background-color: #BF0909 !important;
+}
+
+.confirmacion {
+    margin: 4em 0;
+    padding: 5em 2em;
+}
+
+    .confirmacion p {
+        font-size: 1.2rem;
+    }
+
+span.codigo-reclamo {
+    padding-top: .2em;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.confirmacion button {
+    margin-right: .5em;
+    margin-top: 1em;
+    width: 13.75em;
+    font-size: 1.2rem;
+}
+
+#divOtraSede {
+    display: none;
+}
+
+.shadow-bg {
+    -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,0.1), -1px 0 2px rgba(0,0,0,0.05);
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.1), -1px 0 2px rgba(0,0,0,0.05);
+}
+
+.text {
+    width: 80%;
+}
+
+.item-panel {
+    padding: 11px 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: .25rem;
+}
+
+.item-panel-vencidos-off {
+    background-color: #E1E3E5 !important;
+}
+
+.item-panel-atender {
+    background-color: #E1E3E5 !important;
+}
+
+.item-panel-reponder {
+    background-color: #E1E3E5 !important;
+}
+
+.item-panel .icon {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    min-width: 60px;
+    max-width: 60px;
+    color: #000;
+    font-size: 1rem;
+    border-radius: 50%;
+    margin-left: 15px;
+}
+
+.icon-contador {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 50%;
+    background: #FF3900;
+}
+
+.item-panel strong {
+    font-size: .9rem;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.icon-atender {
+    color: #fff !important;
+}
+
+.item-panel .small-text {
+    color: #777;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+
+
+/* BOTONERA --------------------
+------------------------------*/
+.botones-aplicativo {
+    width: 33%;
+    /*display: flex;*/
+    margin-left: 1%;
+    float: left;
+    /*justify-content: space-between;*/
+    /*margin: 0 auto;*/
+}
+
+.content-right {
+    width: 66%;
+    /*display: flex;*/
+    float: left;
+    text-align: center;
+    font-size: 1.5rem;
+    /*justify-content: space-between;*/
+    /*margin: 0 auto;*/
+}
+
+.botones-service-left {
+    width: 75%;
+    /*display: flex;*/
+    float: left;
+    /*justify-content: space-between;*/
+    /*margin: 0 auto;*/
+}
+
+
+.botones-service-right {
+    width: 25%;
+    /*display: flex;*/
+    float: left;
+    /*justify-content: space-between;*/
+    /*margin: 0 auto;*/
+}
+
+button.btn-Service {
+    width: 10em;
+    height: 9em;
+    padding: 1em;
+    color: #333333;
+    background-color: #ffffff;
+    border: 0;
+    outline: none;
+    -moz-box-shadow: 3px 3px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 6px #ccc;
+    box-shadow: 3px 3px 6px #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    font-family: 'montserrat', sans-serif;
+    font-size: 1rem;
+    float: left;
+    margin: 0.5em;
+}
+
+button.btn-ServiceActive {
+    width: 10em;
+    height: 9em;
+    padding: 1em;
+    color: #333333;
+    background-color: #ffffff;
+    border: 0;
+    outline: none;
+    -moz-box-shadow: 3px 3px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 6px #ccc;
+    box-shadow: 3px 3px 6px #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    font-family: 'montserrat', sans-serif;
+    font-size: 1rem;
+    float: left;
+    margin: 0.5em;
+    border-top: 3px solid #BF0909;
+}
+
+button.btn-Number {
+    width: 7.3em;
+    height: 4em;
+    color: #333333;
+    background-color: #ffffff;
+    border: 0;
+    outline: none;
+    -moz-box-shadow: 3px 3px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 6px #ccc;
+    box-shadow: 3px 3px 6px #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    font-family: 'montserrat', sans-serif;
+    font-size: 1.2rem;
+    float: left;
+    margin: .2em;
+}
+
+
+button.btn-Number2 {
+    width: 15em;
+    height: 4em;
+    padding: 1em;
+    color: #333333;
+    background-color: #ffffff;
+    border: 0;
+    outline: none;
+    -moz-box-shadow: 3px 3px 6px #ccc;
+    -webkit-box-shadow: 3px 3px 6px #ccc;
+    box-shadow: 3px 3px 6px #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    font-family: 'montserrat', sans-serif;
+    font-size: 1.2rem;
+    float: left;
+    margin: .2em;
+}
+
+button.btn-Number:hover {
+    border-top: 3px solid #BF0909;
+}
+
+a:hover, button.btn-Service:hover, a:hover, button.btn-Number2:hover {
+    border-top: 3px solid #BF0909;
+}
+
+.header__content .btn-danger {
+    background-image: linear-gradient(to top, #e1474d, #e85054, #ef585a, #f66061, #fd6868);
+    border-color: #FD6868;
+}
+
+    .header__content .btn-danger:hover {
+        border-color: #F2F2F2;
+        border-width: .0625em;
+        transition: all 0.2s linear;
+    }
+
+.alert-secondary {
+    color: #383d41;
+    background-color: #f2f2f2 !important;
+    border-color: #d6d8db;
+}
+
+.btn-info {
+    background-color: #0CAFD0 !important;
+    color: #fff !important;
+    border-color: #0CAFD0 !important;
+}
+
+    .btn-info:hover {
+        background-color: #098199 !important;
+        color: #fff !important;
+        border-color: #098199 !important;
+    }
+
+.btn-success {
+    background-color: #00B2C9 !important;
+    color: #fff !important;
+    border-color: #00B2C9 !important;
+}
+
+    .btn-success:hover {
+        background-color: #009BB0 !important;
+        color: #fff !important;
+        border-color: #009BB0 !important;
+    }
+
+.btn-secondary {
+    background-color: #92A5B0;
+    border: 1px solid #92A5B0;
+    color: #fff;
+}
+
+    .btn-secondary:hover {
+        background-color: #8A9CA6;
+        border: 1px solid #8A9CA6;
+        color: #fff;
+    }
+
+.btn-outline-secondary {
+    color: #91A4AE !important;
+    background-color: #fff !important;
+    border-color: #91A4AE !important;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #fff !important;
+        border: 1px solid #7F9099 !important;
+        color: #7F9099 !important;
+    }
+
+.btn-danger {
+    color: #E44634;
+    background-color: #FFF;
+    border-color: #E44634;
+}
+
+    .btn-danger:hover {
+        color: #FFF;
+        background-color: #E44634;
+        border-color: #E44634;
+    }
+
+.table {
+    border: 1px solid #EDF0F2 !important;
+}
+
+.table-bordered td, .table-bordered th {
+    border: 0 !important;
+    border-bottom: 1px solid #EDF0F2 !important;
+}
+
+.table tr:hover {
+    background-color: #E1F7FB !important;
+}
+
+/* --- MEDIA QUERIES -------------------- */
+/* -------------------------------------- */
+/* MOVILES (vertical) ----------------*/
+/* MEDIDAS: 16px = 1em / 320px = 20em */
+@media screen and (max-width: 20em) {
+    /* HOME -----------------------
+	-----------------------------*/
+    .header__content {
+        height: 100%;
+        padding: .5em;
+    }
+
+        .header__content button {
+            width: 100%;
+            font-size: .8rem;
+        }
+
+    .logo {
+        text-align: center;
+        width: 50%;
+        box-sizing: border-box;
+    }
+
+    img.logo__texto {
+        display: none;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 0;
+        font-size: 2.2rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+    .botones-aplicativo {
+        width: 90%;
+        display: inherit;
+        font-size: 1rem;
+        word-wrap: break-word;
+        text-align: center;
+    }
+
+    button.btn-registro, button.btn-consulta {
+        width: 70%;
+        height: 8em;
+        margin-bottom: 1em;
+        font-size: 1rem;
+    }
+
+    .btn-modal {
+        margin-top: 1em;
+    }
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+    /* LOGIN ----------------------
+	-----------------------------*/
+    .wrapper-frmSesion {
+        padding: 6em 1em;
+    }
+
+        .wrapper-frmSesion .card {
+            padding: 1.2em 0;
+            width: 100%;
+        }
+
+        .wrapper-frmSesion button {
+            padding: 1em;
+            font-size: .8rem;
+            margin-bottom: 1.2em;
+        }
+
+    .form-login input {
+        padding: 1.3em .8em;
+    }
+
+    /* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+
+    .logo-form img {
+        width: 100%;
+    }
+
+    .titulo-form {
+        padding: 1em 0 0;
+        text-align: center;
+        font-size: .2em !important;
+        font-weight: normal !important;
+    }
+
+    .info-header-form {
+        text-align: center;
+    }
+
+    h1.titulo-hoja-reclamacion {
+        padding: .4em 0 .3em;
+        font-size: 1.2em;
+    }
+
+    .fecha-reclamo {
+        text-align: center;
+    }
+}
+
+/* MOVILES (Paisaje - Landscape) -------------------------*/
+/* MEDIDAS: 16px = 1em / 321px = 20.0625em - 480px = 30em */
+
+@media screen and (min-width: 20.0625em) and (max-width: 30em) {
+
+    /* HOME ---------------------------
+	---------------------------------*/
+
+    .header__content button {
+        width: 100%;
+        font-size: .9rem;
+    }
+
+    img.logo__texto {
+        display: none;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 0;
+        font-size: 2.2rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+    .botones-aplicativo {
+        width: 90%;
+        display: inherit;
+        font-size: 1rem;
+        word-wrap: break-word;
+        text-align: center;
+    }
+
+    button.btn-registro, button.btn-consulta {
+        width: 11.25rem;
+        height: 8em;
+        margin: 0 1em 1em;
+        font-size: 1rem;
+    }
+
+    .btn-modal {
+        margin-top: 1em;
+    }
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+    /* LOGIN ----------------------
+	-----------------------------*/
+
+    .wrapper-frmSesion {
+        padding: 6em 1.2em;
+    }
+
+        .wrapper-frmSesion .card {
+            padding: 1.2em 0;
+            width: 100%;
+        }
+
+        .wrapper-frmSesion button {
+            padding: 1.1em 1em;
+            font-size: .9rem;
+            margin-bottom: 1.3em;
+        }
+
+    .form-login .form-control input {
+        padding: 1.3em .8em;
+    }
+
+    /* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+
+    .logo-form {
+        text-align: center;
+    }
+
+        .logo-form img {
+            width: 98%;
+        }
+
+    .titulo-form {
+        padding: 1em 0 0;
+        text-align: center;
+        font-size: 1.1em;
+    }
+
+    h1.titulo-hoja-reclamacion {
+        padding: .3em 0 .1em;
+        font-size: 1.4em;
+    }
+
+    .info-header-form {
+        text-align: center;
+    }
+
+    .fecha-reclamo {
+        text-align: center;
+    }
+}
+
+/* TABLETS ---------------------------------------------- */
+/* MEDIDAS: 16px = 1em / 481px = 30.0625em - 768px = 48em */
+
+@media screen and (min-width: 30.0625em) and (max-width: 48em) {
+
+    /* HOME ---------------------------
+	---------------------------------*/
+
+    .header__content button {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    img.logo__texto {
+        display: none;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 0;
+        font-size: 2.8rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+    .botones-aplicativo {
+        width: 50%;
+        display: inherit;
+        font-size: 1rem;
+    }
+
+    button.btn-registro, button.btn-consulta {
+        width: 11.25rem;
+        height: 8em;
+        margin: 0 1em 1em;
+        font-size: 1rem;
+    }
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+    /* LOGIN ----------------------
+	-----------------------------*/
+
+    .wrapper-frmSesion {
+        padding: 6em 1.5em;
+    }
+
+        .wrapper-frmSesion .card {
+            padding: 1.2em 0;
+            width: 21.875rem;
+        }
+
+        .wrapper-frmSesion button {
+            padding: 1.1em 1em;
+            font-size: .9rem;
+            margin-bottom: 1.3em;
+        }
+
+    .form-login .form-control input {
+        padding: 1.3em .8em;
+    }
+
+    /* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+
+    .logo-form {
+        text-align: left;
+    }
+
+        .logo-form img {
+            width: 95%;
+        }
+
+    .titulo-form {
+        padding: 1.5em 0 0;
+        text-align: center;
+    }
+
+    .info-header-form {
+        text-align: center;
+    }
+
+    h1.titulo-hoja-reclamacion {
+        padding: .5em 0 0;
+        font-size: 1.4em;
+    }
+
+    .fecha-reclamo {
+        text-align: center;
+    }
+}
+
+/* DESKTOP --------------------------------------------------- */
+/* MEDIDAS: 16px = 1em / 769px = 48.0625em - 1326px = 82.875em */
+
+@media screen and (min-width: 48.0625em) and (max-width: 82.875em) {
+
+    /* HOME ---------------------------
+	---------------------------------*/
+
+    .header__content button {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    h1.titulo-aplicativo {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 1.5em 0 1em;
+        font-size: 2.8rem;
+    }
+
+    .titulo-bienvenida {
+        padding: 1em 0 0;
+        font-size: 1.5rem;
+    }
+
+    .desc-bienvenida {
+        padding: .5em 0 1em;
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+
+    .info-footer ul li {
+        display: block;
+        padding-bottom: 1em;
+        font-size: .95rem;
+    }
+
+    .botones-aplicativo {
+        width: 100%;
+        display: inherit;
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    button.btn-registro, button.btn-consulta {
+        width: 11.25rem;
+        height: 8em;
+        margin: 0 1em 1em;
+        font-size: 1rem;
+    }
+
+    .modal-lg {
+        max-width: 100% !important;
+    }
+
+    /* LOGIN ----------------------
+	-----------------------------*/
+
+    .wrapper-frmSesion {
+        padding: 6em 1.5em;
+    }
+
+        .wrapper-frmSesion .card {
+            padding: 1.2em 0;
+            width: 26rem;
+        }
+
+        .wrapper-frmSesion button {
+            padding: 1.1em 1em;
+            font-size: .9rem;
+            margin-bottom: 1.3em;
+        }
+
+    .form-login .form-control input {
+        padding: 1.3em .8em;
+    }
+
+    /* FORMULARIO RECLAMOS --------
+	-----------------------------*/
+    .logo-form {
+        text-align: left;
+    }
+
+        .logo-form img {
+            width: 80%;
+        }
+
+    .titulo-form {
+        padding: 0;
+        text-align: right;
+    }
+
+    h1.titulo-hoja-reclamacion {
+        padding: .5em 0;
+        font-size: 1.4em;
+    }
+
+    .fecha-reclamo {
+        text-align: right;
+    }
+
+    .info-header-form {
+        text-align: left;
+    }
+}
+
+
+.containerDisplay {
+    /*margin:0 2% 0 2%;*/
+}
+
+.contentVideo {
+    background-color: black;
+    /*width: 100%;*/
+    min-height: calc(100vh - 400px) !important;
+}
+
+.videoDisplay1 {
+    width: 100%;
+    height: calc(100vh - 400px) !important;
+}
+
+.textoDisplay1 {
+    background-color: #002A6F;
+    width: 100%;
+    color: white;
+    /*min-height: calc(100vh - 880px) !important;*/
+    font-size: 4rem;
+    padding: 0px;
+    vertical-align: middle;
+}
+
+.contentTurn1 {
+    background-color: black;
+    min-height: calc(100vh - 712px) !important;
+    height: 100%;
+}
+
+.cardTurn {
+    border: #2786F3 solid;
+    color: white;
+    font-size: 5rem;
+    /*vertical-align: middle !important;*/
+    padding: 10px 0px;
+}
+
+
+.cardTurnActivo {
+    border: #2786F3 solid;
+    color: white;
+    font-size: 5rem;
+    vertical-align: middle !important;
+    animation-name: anim;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+
+.main-contentDisplay, .main-content--oscuro {
+    min-height: 100%;
+    /*background: url("../images/fondo_aplicativo.svg") #F2F2F2 bottom center no-repeat;*/
+    background-size: contain;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: calc(100vh - 70px) !important;
+}
+
+@media (min-width: 987px) and (max-width: 1750px) {
+    .videoDisplay1 {
+        min-height: calc(100vh - 320px) !important;
+    }
+}
+
+/*******VIDEO 2*****/
+
+.contentVideo2 {
+    background-color: black;
+    width: 100%;
+    /*height: 87%;*/
+}
+
+.videoDisplay2 {
+    width: auto;
+    min-height: calc(100vh - 200px) !important;
+    object-fit: cover;
+    width: 100%;
+}
+
+.contentTurn2 {
+    background-color: black;
+    /*min-height: calc(100vh-400px) !important;*/
+}
+
+.cardTurn2 {
+    border: #FD6868 solid;
+    color: white;
+    font-size: 3rem;
+    vertical-align: middle !important;
+    padding: 5% 0px 5% 0px;
+}
+
+.textoDisplay2 {
+    background-color: #BF0909;
+    width: 100%;
+    color: white;
+    min-height: calc(100vh - 850px) !important;
+    font-size: 5rem;
+    vertical-align: middle;
+}
+
+@keyframes anim {
+    0% {
+        background-color: #0080C0;
+    }
+    /*Amarillo*/
+    25% {
+        background-color: #0080C0;
+    }
+    /*Naranja*/
+    50% {
+        background-color: #000;
+    }
+    /*Negro*/
+    75% {
+        background-color: #0080C0;
+    }
+    /*Otra vez naranja*/
+    100% {
+        background-color: #0080C0;
+    }
+    /*Otra vez amarillo*/
+}
+
+.cardTurn2Activo {
+    border: #FD6868 solid;
+    color: white;
+    font-size: 3rem;
+    vertical-align: middle !important;
+    padding: 5% 0px 5% 0px;
+    animation-name: anim;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+
+/*******VIDEO 2*****/
+
+/*******VIDEO 3*****/
+
+.videoDisplay3 {
+    width: auto;
+    min-height: calc(100vh - 400px) !important;
+    object-fit: cover;
+}
+
+.textoDisplay3 {
+    background-color: #BF0909;
+    width: 100%;
+    color: white;
+    min-height: calc(100vh - 900px) !important;
+    font-size: 3rem;
+    vertical-align: middle;
+}
+
+.contentTurn3 {
+    background-color: black;
+    min-height: calc(100vh - 712px) !important;
+}
+
+.cardTurn3 {
+    border: #FD6868 solid;
+    color: white;
+    font-size: 2.5rem;
+    vertical-align: middle !important;
+}
+/*******VIDEO 3*****/
+
+
+.contentVideo5 {
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+
+.videoDisplay5 {
+    width: auto;
+    min-height: calc(100vh - 150px) !important;
+    object-fit: cover;
+}
+
+.contentTurn5 {
+    background-color: black;
+    /*min-height: calc(100vh-400px) !important;*/
+}
+
+.textoDisplay5 {
+    background-color: #BF0909;
+    width: 100%;
+    color: white;
+    min-height: calc(100vh - 900px) !important;
+    font-size: 3rem;
+    vertical-align: middle;
+}
+
+.btn {
+    font-size: .98rem;
+}
+
+
+/****************SLIM MENU**********/
+.slim-navbar {
+    padding: 15px 0 15px 0;
+    background-color: #fff;
+    border-bottom: 1px solid #ced4da;
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+.slim-navbar .nav-item {
+    flex: 1 1 0;
+}
+
+.slim-navbar .nav-link {
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: .7px;
+    font-weight: 500;
+    color: #656d75 !important;
+    height: 46px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-right-width: 0;
+    float: left;
+    width: 100%;
+}
+
+.nav-link:hover {
+    background-color: #fff;
+    color: #dc3545 !important;
+    text-decoration: none !important;
+}
+
+.sub-nav-link {
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: .7px;
+    font-weight: 500;
+    color: #656d75 !important;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-right-width: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+    .sub-nav-link:hover {
+        background-color: #fff !important;
+        color: #dc3545 !important;
+        text-decoration: none !important;
+        border-top: 1px solid #dee2e6;
+    }
+
+/* Fin menu */
+
+.fa-trash {
+    color: #E44634;
+}
+
+.fa-edit {
+    color: #808080;
+}
+
+.table .thead-dark th {
+    background-color: #EFF7FF !important;
+    border-color: #EFF7FF !important;
+    color: #333;
+}
+
+.link-red a, .link-red a:hover {
+    color: #BF0909 !important;
+}
+
+.link-pagina a, .link-pagina a:hover {
+    color: #4BA1D0 !important;
+    font-size: 14px;
+}
+
+
+.tabla-estado-reclamos {
+    font-size: .84rem;
+}
+
+#navtabAtencion .nav-link {
+    color: #222 !important;
+    text-decoration: none !important;
+}
+
+    #navtabAtencion .nav-link:hover {
+        color: #fff !important;
+        background-color: #dc3545;
+        text-decoration: none !important;
+    }
+
+#tablaReclamo label {
+    font-size: .8rem;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: #EFFBFD !important;
+}
+
+#tablaReclamo .btn-outline-secondary {
+    height: 50px;
+}
+
+#tablaReclamo .btn-secondary {
+    background-color: #7A7A7A !important;
+    border-color: #7A7A7A !important;
+}
+
+    #tablaReclamo .btn-secondary:hover, #tablaReclamo .btn-secondary:focus, #tablaReclamo .btn-secondary:active, #tablaReclamo .btn-secondary.active {
+        color: #fff;
+        background-color: #BF0909 !important;
+        border-color: #BF0909 !important;
+    }
+
+/* Datatables Overrides */
+div.dataTables_wrapper div.dataTables_length label, div.dataTables_wrapper div.dataTables_filter label, div.dataTables_wrapper div.dataTables_info, div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    font-size: .9rem;
+}
+
+.navbar {
+    padding: 0 !important;
+}
+
+.navbar-nav {
+    padding: 0 !important;
+}
+
+.page-item.active .page-link {
+    color: #fff !important;
+    background-color: #BF0909 !important;
+    border-color: #BF0909 !important;
+}

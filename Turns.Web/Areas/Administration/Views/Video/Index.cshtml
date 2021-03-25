@@ -1,0 +1,423 @@
+﻿@model Turns.Web.Models.ParameterModel;
+ 
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {      
+        $('.myselect2').select2();
+        CargarVideo();
+        Clasificador.LoadGrilla(1);            
+    });
+
+    function CargarVideo() {
+         $.ajax({
+            type: "GET",
+            //url: "https://localhost:44382/api/AutocompleteVideo",
+            url: "@Model.Parametros.WebApiUrl.VideoService/AutocompleteVideo",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if (data.length>0) {
+                    $("#cbxVideo").empty();
+                    $("#cbxVideo").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#cbxVideo").append("<option value=" + data[i].codeVideo + ">"+ data[i].videoName+ "</option>");
+                    }
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    Clasificador = {
+
+        reset: function () {
+            $("#cbxZona").empty();
+            $("#cbxZona").append('<option value=-1>--Seleccione--</option>');
+            LoadComboZona();
+
+            $("#cbxVentanilla").empty();
+            $("#cbxVentanilla").append('<option value=-1>--Seleccione--</option>');
+            LoadComboVentanilla();
+
+            Clasificador.LoadGrilla(1);
+        },
+
+        editar: function (identificador) {
+            var dato = {
+                CodeWindow: identificador
+            };
+
+            if (identificador != 0) { //editar una entidad
+                $("#IdWindow").val(identificador);
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44313/api/CurrentRowWindow",
+                    url: "@Model.Parametros.WebApiUrl.WindowService/CurrentRowWindow",
+                    data: dato,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+
+                            $('#myModal').show();
+                            $('#idVentanilla').val(data[0].windowName);
+                            $('#icbZona').val(data[0].codeZone);
+                            $('#icbZona').change();
+                        }
+                    }
+                });
+
+            } else {//registra nueva zona
+                $("#lblError").text("");
+                $("#IdWindow").val(0);
+                $('#idVentanilla').val("");
+                $("#customFile").val("");
+                $("#txtNameVideo").val("");
+            }
+
+        },
+
+        delete: function (identificador) {
+            fnGlobales.msg.confirm("Eliminar el registro", function () {
+                $.ajax({
+                    //url: "https://localhost:44382/api/DeleteVideo",
+                    url: "@Model.Parametros.WebApiUrl.VideoService/DeleteVideo",
+                    data: JSON.stringify({ CodeVideo: identificador }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.codeVideo) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            case 0:
+                                fnGlobales.msg.error("No se puede eliminar un video aprobado", function () { });
+                                break;
+                            default:
+                                Clasificador.LoadGrilla(1);
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        },
+
+        Aprobar: function (identificador) {
+            fnGlobales.msg.confirm("Aprobar el video", function () {
+                $.ajax({
+                    //url: "https://localhost:44382/api/AprobarVideo",
+                    url: "@Model.Parametros.WebApiUrl.WindowService/CurrentRowWindow",
+                    data: JSON.stringify({ CodeVideo: identificador }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.codeVideo) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.LoadGrilla(1);
+                                fnGlobales.msg.automatico("Se aprobó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        },
+
+        LoadGrilla: function (page) {
+            table = $('#tblVideo');
+            var dato = {
+                strField: 'CodeVideo',
+                strOrder: 'DESC',
+                strPagDesde: page,//(table.data('pagesize') * (page) - table.data('pagesize') + 1),
+                strPagHasta: table.data('pagesize'),// (table.data('pagesize') * (page))
+                strCboEstado: $("#miselect").val(),
+                strCboVideo: $("#cbxVideo").val() == null ? -1 : $("#cbxVideo").val()
+            };
+            $.ajax({
+                //url: "https://localhost:44382/api/Video",
+                url: "@Model.Parametros.WebApiUrl.VideoService/Video",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                //beforeSend: function () {
+                //    fnGlobales.wait.appendOverlay('#boxLista');
+                //},
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tblVideo tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tblVideo');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeVideo);
+                rows += fnGlobales.string.format('<td style="text-align:center;width:10%">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left;width:20%">{0}</td>', r.videoName)
+                rows += fnGlobales.string.format('<td style="text-align:left;width:10%">{0}</td>', r.videoStateName==null? "":r.videoStateName);
+                rows += fnGlobales.string.format('<td style="width:45%">{0}</td>', r.videoAdress==null? "":r.videoAdress);
+                rows += '<td style="width:8%">';
+                rows += fnGlobales.string.format('<div class="d-flex justify-content-left">');
+                rows += fnGlobales.string.format('<div class="align-content-left text-left"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeVideo);
+                rows += fnGlobales.string.format('<div class="align-content-left text-left"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.delete({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeVideo);
+                if (r.codeVideoState == 1) {
+                    rows += fnGlobales.string.format('<div class="align-content-left text-left"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.Aprobar({0})"><span class="fas fa-check "></span><span class="hidden-xs"> </span></button></div> ', r.codeVideo);
+                }
+                //else {
+                //    rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.Aprobar({0})"><span class="fas fa-check-double "></span><span class="hidden-xs"> </span></button></div> ', r.codeVideo);
+                //}
+                rows += '</div>';
+                rows += '</td>';
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        },
+
+        reset: function () {
+            $('#miselect').val("0");
+             $("#cbxVideo").empty();
+             $("#cbxVideo").append('<option value=-1>--Seleccione--</option>');
+             CargarVideo();
+             Clasificador.LoadGrilla(1);
+
+        }
+    };
+
+    $("#formuploadajax").on("submit", function (e) {
+
+        alert("jjj");
+
+    });
+
+    function validar() {
+        if ($("#file").val()!= "") {
+            fileUpload = $("#file").get(0);
+            if (fileUpload.files[0].size > 100000000) {
+                alert("El archivo no debe superar los 100MB");
+                return false;
+            } else {
+                if ($("#txtNameVideo").val() != "") {
+                    
+                    var ext = fileUpload.files[0].name.split('.').pop();
+
+                    switch (ext)
+                    {
+                        case "mp4":
+                        //case "avi":
+                        //case "m4v":
+                        //case "mov":
+                        //case "wmv":
+                            break; 
+                        default:
+                            //$("#lblError").text("El tipo de archivo no esta permitido (no se permiten archivos tipo .JPG,.PNG,.DOC,.XLS,.PPT,.PDF,.ZIP");
+                            $("#lblError").text("Solo se permiten archivos tipo .mp4");
+                            return false;
+                    }
+
+                } else {
+                    $("#lblError").text("Debe de Ingresar el nombre del Video");
+                     return false;
+                }
+            }
+        } else {
+            $("#lblError").text("No se selecciono el archivo");
+            return false;
+        } 
+    }
+
+
+
+    //function AgregarDocMod(fuUpload) {
+    //    alert("ffferf");
+
+        @*var fileUpload = $("#" + fuUpload).get(0);
+        var files = fileUpload.files;
+
+        var ext = fileUpload.files[0].name.split('.').pop();
+        switch (ext) {
+            //case 'jpg','jpeg':
+            //case 'png':
+            //case 'doc':
+            //case 'docx':
+            //case 'xls':
+            //case 'xlsx':
+            //case 'ppt':
+            //case 'pptx':
+            //case 'zip':
+            //case 'rar':
+            case 'pdf':
+                 alert('El tipo de archivo no esta permitido (se permiten archivos tipo .JPG,.PNG,.DOC,.XLS,.PPT,.PDF,.ZIP)');
+                     return false
+                break;
+            default:
+                {
+                    alert('El tipo de archivo no esta permitido (se permiten archivos tipo .JPG,.PNG,.DOC,.XLS,.PPT,.PDF,.ZIP)');
+                    return false
+                }
+        }
+        if (fileUpload.files[0].size > 100000000)
+        {
+            alert("El archivo no debe superar los 100MB");
+        }
+        //$("#" + fuUpload).val('');
+
+         //var formData = new FormData(document.getElementById("formuploadajax"));
+         //   formData.append("dato", "valor");
+
+
+        //var fileData = new FormData(document.getElementById("formuploadajax"));
+        //fileData.append("filesToDelete", "Value");
+        //fileData.append("clientContactId", (clientContactId != undefined || clientContactId != null) ? clientContactId : '');
+
+           for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+          $.ajax({
+                url: '@Url.Action("save_file", "Video")',
+                type: "POST",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: JSON.stringify(fuUpload),
+                cache: false,
+                success: function (result) {
+
+
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });*@
+    //}
+
+</script>
+
+<div class="card mb-0">
+    <div class="card-header text-center bg-danger">
+        Búsqueda de Videos
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2 border-card">
+            <div class="col-md-1"><strong>Video</strong></div>
+            <div class="col-md-3"><select class="myselect2 form-control" id="cbxVideo" name="cbxVideo"></select></div>
+
+            <div class="col-md-2"><strong>Estado</strong></div>
+            <div class="col-md-4">
+                <select class="form-control" id="miselect">
+                    <option value="0">Seleccione</option>
+                    <option value="1">Registrado</option>
+                    <option value="2">Aprobado</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="col-md-12 mt-4 d-flex justify-content-center">
+            <button type="button" class="btn btn-success mr-1" onclick="Clasificador.LoadGrilla(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+            <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+            <button type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal" onclick="Clasificador.editar(0)"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+        </div>
+        <hr class="hr-videos" />
+        <div class="card mt-4">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover tabla-datos" id="tblVideo" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.LoadGrilla" data-paginator="paginator">
+                    <tbody></tbody>
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th class="align-middle" style="display:none">codeVideo</th>
+                            <th class="align-middle" style="text-align:center;width:10%">N°</th>
+                            <th class="align-middle" style="text-align:center;width:25%">Video</th>
+                            <th class="align-middle" style="text-align:center;width:10%">Estado</th>
+                            <th class="align-middle" style="text-align:center;width:35%">Dirección Ruta</th>
+                            <th class="text-center" style="width:20%">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                                    <div style="font-size:16px; padding-left: 15px;"></div>
+                                    <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*@using (Html.BeginForm("save_file", "Video", FormMethod.Post, new { enctype = "multipart/form-data" }))*@
+@*{*@
+<div class="modal " id="myModal">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Registro de Video</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <form action="../Video/save_file" enctype="multipart/form-data" method="post" id="formuploadajax" onsubmit="return validar()">
+                    @*@using (Html.BeginForm("save_file", "Video", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {*@
+                    <div class="row col-md-11">
+                        <div class="col-md-2">
+                            <label> Video:</label>
+                        </div>
+                        <div class="col-md-2">
+                            <input style="width:385px" class="form-control" id="txtNameVideo" name="txtNameVideo" />
+                        </div>
+                    </div>
+                    <input type="file" name="file" id="file" />
+                    <div class="modal-footer">
+                        @*<button type="submit">Upload File2</button>*@
+                        <button type="submit" class="btn btn-secondary"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+                    </div>
+                    @*<--informacion del cuerpo--/>*@
+                    @*}*@
+                </form>
+                <label id="lblError" style="color:red"></label> 
+            </div>
+        </div>
+    </div>
+</div>
+@*}*@
+

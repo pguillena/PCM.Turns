@@ -1,0 +1,794 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        AutoCompletePeople();
+        if (sessionStorage.getItem("SessionRoles") == null) {
+            window.location.href = "http://192.168.120.205";
+        }
+        var usuario = sessionStorage.getItem("SessionRoles");        
+        //console.log(JSON.parse(usuario));
+        $("#_PersonId").val(JSON.parse(usuario).data[0].PersonId);
+        $("#_UserName").val(JSON.parse(usuario).userName);
+
+
+        cargaInicial();
+        $("#btnSiguiente").click(function () {
+            $.ajax({
+                //url: "https://localhost:44321/api/ObtenerTicket",
+                url: "@Model.Parametros.WebApiUrl.TicketService/ObtenerTicket",
+                data: JSON.stringify({ PersonId: parseInt($("#_PersonId").val()),UserName:$("#_UserName").val()}),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    if (resultado.ticketName != null) {
+                        $('#idCodeTicket').val(resultado.codeTicket);
+                        $('#NroTicket').text(resultado.ticketName);
+                        $('#idNameVisitante').text(resultado.nombre);
+                        document.getElementById("btnIniciar").disabled = false;
+                        document.getElementById("btnSiguiente").disabled = true;
+                        document.getElementById("btnRellamado").disabled = false;
+                        //document.getElementById("btnAbandono").disabled = false;
+                        document.getElementById("btnSuspender").disabled = true;
+                    } else {
+                         fnGlobales.msg.existe("No existe ticket para su ventanilla", function () { });
+                    } 
+                },
+                error: function (resultado) {
+                    alert("error");
+                }
+            });
+        });
+
+        $("#btnIniciar").click(function () {
+       
+            $("#cbxServicio").empty();
+            $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+            $("#pnlGrillaAtencion").show();
+            $('#btnIniciar').attr("disabled", true);
+            $('#btnFinalizarAtencion').attr("disabled", false);
+            document.getElementById("btnRellamado").disabled = true;
+            document.getElementById("btnAbandono").disabled = true;
+            document.getElementById("btnDerivar").disabled = false;
+            document.getElementById("btnSuspender").disabled = true;
+            $("#cbxAtencion").show();
+            //$("#btnAtender").show();
+            listarServiciosTicket();
+        });
+
+        $("#btnFinalizarAtencion").click(function () {
+            $("#pnlGrillaAtencion").hide(true);
+            $('#btnIniciar').attr("disabled", false);
+            $('#btnFinalizarAtencion').attr("disabled", true);
+            document.getElementById("btnSiguiente").disabled = false;
+            document.getElementById("btnRellamado").disabled = true;
+            document.getElementById("btnAbandono").disabled = true;
+            document.getElementById("btnDerivar").disabled = true;
+            document.getElementById("btnSuspender").disabled = false;
+            document.getElementById("btnIniciar").disabled = true;
+            $("#cbxAtencion").hide();
+            //$('#idCodeTicket').val(resultado.codeTicket);//se necesita cambiar de estado del Ticket como atendido al memnos en su servicio
+            $('#NroTicket').text("");
+            $('#idNameVisitante').text("");
+
+        });
+
+        $("#cbxEntidad").change(function () {
+                var identi = parseInt($('#cbxEntidad').val());
+                if (parseInt(identi) != -1) {
+                    //$("#cbxServicio").attr('disabled', false);
+                    $("#cbxServicio").val("-1");
+                    CargarRow({ CodeEntity: identi });
+
+                } else {
+                    $("#cbxServicio").val("-1");
+                    //$("#cbxServicio").attr('disabled', true);
+                    //limpiarGrilla();
+                }
+        });
+
+        $("#btnRellamado").click(function () {
+
+            @*window.location.href = '@Url.Content("~/Ticket/Ticket/Service")?datos=' + $('#apellido').val() + ',' + $('#nombre').val() + '&nro=' + $('#nroDocumento').val() + '&tipoDoc=' + parseInt($('#ddlTipoDocumento').val());*@
+        });
+
+        $("#profile-tab").click(function () {
+             Clasificador.listar(1);            
+        });
+
+        $("#profile1-tab").click(function () {
+            Clasificador.listar2(1);  
+        });
+
+      
+    });
+
+    Clasificador = {
+
+        listar: function (page) {
+           table = $('#tablaTicketAtendidos');  
+            $.ajax({
+                //url: "https://localhost:44321/api/ListarTicketAtendidos",
+                url: "@Model.Parametros.WebApiUrl.TicketService/ListarTicketAtendidos",               
+                type: "GET",
+                data: { UserName:$("#_UserName").val()},
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        var rows = '';
+                        $.each(data, function (i, r) {
+                            rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeAttention);
+                            rows += fnGlobales.string.format('<td style="text-align:center" >{0}</td>', r.rowNumber)
+                            rows += fnGlobales.string.format('<td style="text-align:left;width:250px" >{0}</td>', r.ticketName);
+                            rows += fnGlobales.string.format('<td style="text-align: left;width:100px">{0}</td>', r.nombre);  
+                            rows += fnGlobales.string.format('<td style="text-align:left;width:100px">{0}</td>', r.stateName);
+                            rows += fnGlobales.string.format('<td style="text-align:left;width:100px">{0}</td>', r.registryDate);
+                            //rows += '<td style="width:120px;">';
+                            rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                            //rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeService);
+                            //rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.eliminar({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeService);
+                            rows += '</div>';
+                            rows += '</td>';
+                            rows += '</tr>';
+                        });
+                        fnGlobales.pagination.update(table);
+                        tabla.append(rows);
+
+                    } else {
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tablaTicketAtendidos tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        listar2: function (page) {
+            //var dato = {
+            //    strField: 'CodeService',
+            //    strOrder: 'DESC',
+            //    strPagDesde: page,//(table.data('pagesize') * (page) - table.data('pagesize') + 1),
+            //    strPagHasta: table.data('pagesize'), // (table.data('pagesize') * (page))
+            //    strServicio: valor,
+
+            //        //(document.getElementById("#cboServicio")).options[document.getElementById("#cboServicio").selectedIndex].value,
+            //        //$("#cboServicio").val() == null ? -1 : $("#cboServicio").val(),//,
+            //    strIdTipoServicio: $("#cbxTipoServicio").val() == null ? -1 : $("#cbxTipoServicio").val()
+            //};
+
+
+            table = $('#tablaTicket');  
+            $.ajax({
+                //url: "https://localhost:44321/api/ListarTicketGenerados",
+                url: "@Model.Parametros.WebApiUrl.TicketService/ListarTicketGenerados",
+                type: "GET",
+                 data: { PersonId: parseInt($("#_PersonId").val()),IdPeople: $("#cbxPeople").val() == null ? -1 : $("#cbxPeople").val(),IdEstado:$("#miselect").val()==0?-1:$("#miselect").val()},
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        var rows = '';
+                        $.each(data, function (i, r) {
+                            rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codePeople);
+                            rows += fnGlobales.string.format('<td style="text-align:center" >{0}</td>', r.rowNumber)
+                            rows += fnGlobales.string.format('<td style="text-align:left;width:250px" >{0}</td>', r.ticketName);
+                            rows += fnGlobales.string.format('<td style="text-align: left;width:100px">{0}</td>', r.nombre);  
+                            rows += fnGlobales.string.format('<td style="text-align:left;width:100px">{0}</td>', r.stateName);
+                            rows += fnGlobales.string.format('<td style="text-align:left;width:100px">{0}</td>', r.registryDate);
+                            //rows += '<td style="width:120px;">';
+                            rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                            //rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeService);
+                            //rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.eliminar({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeService);
+                            rows += '</div>';
+                            rows += '</td>';
+                            rows += '</tr>';
+                        });
+                        fnGlobales.pagination.update(table);
+                        tabla.append(rows);
+
+                    } else {
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tablaTicket tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+        
+        reset: function () {
+            $('#cbxPeople').val("-1");
+            $("#cbxPeople").empty();
+            $("#cbxPeople").append('<option value=-1>--Seleccione--</option>');
+            AutoCompletePeople();
+            $("#miselect").val(0)
+            Clasificador.listar2(1);
+          
+        }
+    }
+
+
+    function cargaInicial() {
+        document.getElementById("btnRellamado").disabled = true;
+        document.getElementById("btnAbandono").disabled = true;
+        document.getElementById("btnDerivar").disabled = true;
+        document.getElementById("btnIniciar").disabled = true;
+        document.getElementById("btnFinalizarAtencion").disabled = true;
+        //$("#btnAtender").hide();
+        $("#cbxAtencion").hide();
+        //AJAX PARA CARGAR LA CANT. DE TICKET PENDIENTES POR ATENDER
+        $("#pnlGrillaAtencion").hide();
+        $.ajax({
+            //url: "https://localhost:44321/api/TicketPendientexAtender",
+            url: "@Model.Parametros.WebApiUrl.TicketService/TicketPendientexAtender",
+            data: JSON.stringify({ PersonId: parseInt($("#_PersonId").val()),UserName:$("#_UserName").val()}),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (resultado) {
+                if (resultado!= null) {
+                    $('#CantTicket').text(resultado);                
+                } else {
+                        fnGlobales.msg.existe("No existe ticket para su ventanilla", function () { });
+                } 
+            },
+            error: function (resultado) {
+                alert("error");
+            }
+        });
+    }
+
+    function loadEntidad(codeEntity) {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44301/api/AutocompleteEntidad",
+            url: "@Model.Parametros.WebApiUrl.EntityService/AutocompleteEntidad",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                data = data.filter(x => x.codeEntity==codeEntity);
+                $("#cbxEntidad").empty();
+                //$("#cbxEntidad").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxEntidad").append("<option value=" + data[i].codeEntity + ">" + data[i].description + "</option>");
+                }
+                CargarRow({ CodeEntity: codeEntity });
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function CargarRow(datos) {
+        $.ajax({
+            //url: "https://localhost:44340/api/ListarCurrentEntityService",
+            url: "@Model.Parametros.WebApiUrl.EntitybyService/ListarCurrentEntityService",
+            type: "GET",
+            data: datos,
+            dataType: "json",
+            success: function (data) {
+                $("#cbxServicio").empty();
+                $("#cbxServicio").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                        $("#cbxServicio").append("<option value=" + data[i].codeService + ">" + data[i].description + "</option>");
+                }
+            },
+            error: function (data) {
+                fnGlobales.error.show('mensajes', data.responseText);
+            }
+        });
+    }
+
+    function listarServiciosTicket() {//falta filtrar solo las entidades que le pertenece el que atiende
+        $.ajax({
+            //url: "https://localhost:44321/api/ListarServiciosTicket",
+            url: "@Model.Parametros.WebApiUrl.TicketService/ListarServiciosTicket",
+            data: JSON.stringify({ CodeTicket: parseInt($('#idCodeTicket').val()),PersonId: parseInt($("#_PersonId").val()),UserName:$("#_UserName").val()}),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data.length > 0) {
+                    loadEntidad(data[0].codeEntity);
+                    limpiarGrilla();
+                    if (data.length > 0) {
+                        for (var j = 0; j < data.length; j++) {
+                            var fila = '<tr id="row' + (j + 1) + '"><td style="display:none">' + data[j].codeServiceTicket + '</td><td style="display:none">' + data[j].codeEntity + '</td><td style="text-align:left">' + data[j].nameEntity + '</td><td style="display:none">' + data[j].codeService + '</td><td style="text-align:left">' + data[j].nameService + '</td><td style="text-align:center"><button type="button" name="remove" id="' + (j + 1) + '" class="editar edit-modal btn  btn_remove"><span class="fa fa-trash btn_remove"></span></button></td></tr>';
+                            ///*fin*/
+                            $('#tblAgregacion tr:first').after(fila);
+                            $("#adicionados").text(""); //esta instruccion limpia el div adicioandos para que no se vayan acumulando
+                            var nFilas = $("#tblAgregacion tr").length;
+                            $("#adicionados").append(nFilas - 1);
+                        }
+                    }
+                } else {
+                    fnGlobales.msg.existe("No existe servicios para este Ticket", function () { });
+                    document.getElementById("btnSiguiente").disabled = false;
+                    document.getElementById("btnSuspender").disabled = false;
+                    document.getElementById("btnDerivar").disabled = true;
+                    document.getElementById("btnFinalizarAtencion").disabled = true;
+                    document.getElementById("btnIniciar").disabled = false;
+                    $("#cbxAtencion").hide();
+                    $("#pnlGrillaAtencion").hide();
+                }
+            },
+            error: function (resultado) {
+                alert("error");
+            }
+        });
+        
+    }
+
+    function limpiarGrilla() {
+        for (var i = 0; i < 10000; i++) {
+            $("#row" + i).remove();
+        }
+    }
+
+    function AgregarServicio() {
+        if (parseInt($("#cbxServicio").val()) != -1) {
+            var combo = document.getElementById("cbxServicio");
+            var comboEntidad = document.getElementById("cbxEntidad");
+
+            var selected = combo.options[combo.selectedIndex].text;
+            var selected2 = comboEntidad.options[comboEntidad.selectedIndex].text;
+
+            var CodeService = parseInt($("#cbxServicio").val());
+            var CodeEntidad = parseInt($("#cbxEntidad").val());
+
+            var descriptionEntidad = selected2;
+            var descriptionServicio = selected;
+            IdTabla = "CONTENIDO_TABLA";
+            for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+                IdTabla = document.getElementById('tblAgregacion').rows[i].cells[3].innerHTML;
+                IdCodeEntidadTabla = document.getElementById('tblAgregacion').rows[i].cells[1].innerHTML;
+                if (parseInt(IdTabla) == CodeService && parseInt(IdCodeEntidadTabla)==CodeEntidad) {
+                    fnGlobales.msg.error("Ya existe agregado el servicio", function () {
+
+                    });
+                    return false
+                }
+            }
+            if (CodeEntidad != parseInt(IdCodeEntidadTabla)) {
+                var fila = '<tr id="row' + i + '"><td style="display:none">' + 1 + '</td><td style="display:none">' + CodeEntidad + '</td><td style="text-align:left">' + descriptionEntidad + '</td><td style="display:none">' + CodeService + '</td><td style="text-align:left">' + descriptionServicio + '</td><td style="text-align:center"><button type="button" name="remove" id="' + i + '" class="editar edit-modal btn  btn_remove"><span class="fa fa-trash btn_remove"></span></button></td></tr>';
+            } else {
+                var fila = '<tr id="row' + i + '"><td style="display:none">' + 1 + '</td><td style="display:none">' + CodeEntidad+ '</td><td style="text-align:left">' + descriptionEntidad + '</td><td style="display:none">'+CodeService+'</td><td style="text-align:left">' + descriptionServicio + '</td><td style="text-align:center"><button type="button" name="remove" id="' + i + '" class="editar edit-modal btn  btn_remove"><span class="fa fa-trash btn_remove"></span></button></td></tr>';
+            }
+
+
+            /*fin*/
+            $('#tblAgregacion tr:first').after(fila);
+            $("#adicionados").text(""); //esta instruccion limpia el div adicioandos para que no se vayan acumulando
+            var nFilas = $("#tblAgregacion tr").length;
+            $("#adicionados").append(nFilas - 1);
+        }
+        else {
+            fnGlobales.msg.error("Debe seleccionar un servicio", function () {
+            });
+        }
+    }
+
+    $(document).on('click', '.btn_remove', function () {
+            var button_id = $(this).attr("id");
+            //cuando da click obtenemos el id del boton
+            $('#row' + button_id + '').remove(); //borra la fila
+            //limpia el para que vuelva a contar las filas de la tabla
+            $("#adicionados").text("");
+            var nFilas = $("#tblAgregacion tr").length;
+            $("#adicionados").append(nFilas - 1);
+    });
+
+    function SaveAtendidos() {        
+        var seleccion = [];
+        for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+
+             var objService = {
+                        'CodeService': parseInt(document.getElementById('tblAgregacion').rows[i].cells[3].innerHTML),
+                        'CodeEntity': parseInt(document.getElementById('tblAgregacion').rows[i].cells[1].innerHTML),
+                        'CodeAtendido': true
+             }
+            seleccion.push(objService);
+        }      
+        $.ajax({
+                //url: "https://localhost:44321/api/SaveServiciosTicket",
+                url: "@Model.Parametros.WebApiUrl.TicketService/SaveServiciosTicket",
+                data: JSON.stringify({ CodeTicket: parseInt($("#idCodeTicket").val()),UserName:$("#_UserName").val(), PersonId: parseInt($("#_PersonId").val()),listaTicket: seleccion}),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    //console.log(Hola);
+                    switch (resultado) {
+                        case 1:
+                            fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                            cargaInicial();
+                            break;
+                        case -1:
+                            fnGlobales.msg.error("Hubo un error al realizar la operación", function () { });
+                            break;
+                        default:
+                            //Clasificador.Listar(1);
+                            fnGlobales.msg.existe("Hubo un error al realizar la operación", function () { });
+                            break;
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+        });
+
+    } 
+
+    var contador = 0;
+    function Rellamado(ide) {
+        if (contador <=3 ) {
+            contador++;
+            $("#Cont").text(contador);
+        }
+        if (contador == 3) {
+            $("#btnAbandono").attr("disabled", false);
+             $("#btnRellamado").attr("disabled", true);
+        }
+        //btnAbandono        
+    }
+
+    function Derivar() {
+        $("#myModal1").show();
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44301/api/AutocompleteEntidad",
+            url: "@Model.Parametros.WebApiUrl.EntityService/AutocompleteEntidad",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {                   
+                $("#cbEntidad").empty();
+                $("#cbEntidad").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbEntidad").append("<option value=" + data[i].codeEntity + ">" + data[i].description + "</option>");
+                }
+                CargarRow({ CodeEntity: codeEntity });
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function Abandono() {       
+        fnGlobales.msg.confirm("confirmar el abandono", function () {
+            $.ajax({
+                    //url: "https://localhost:44321/api/AbandonoTicket",
+                    url: "@Model.Parametros.WebApiUrl.TicketService/AbandonoTicket",
+                    data: JSON.stringify({ CodeTicket: parseInt($("#idCodeTicket").val()),PersonId: parseInt($("#_PersonId").val()),UserName:$("#_UserName").val()}),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        //console.log(Hola);
+                        if (resultado > 0) {
+                            fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                            cargaInicial();
+                        } else {
+                             fnGlobales.msg.existe("Hubo un error al realizar la operación", function () { });
+                        }                        
+                    },
+                    failure: function (data) {
+                        alert(data.responseText);
+                    }, //End of AJAX failure function
+                    error: function (data) {
+                        alert(data.responseText);
+                    } //End of AJAX error function
+            });
+            return true;
+        });
+    }
+
+
+     function AutoCompletePeople() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44321/api/AutoCompletePeople",
+            url: "@Model.Parametros.WebApiUrl.TicketService/AutoCompletePeople",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxPeople").empty();
+                $("#cbxPeople").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxPeople").append("<option value=" + data[i].codePeople + ">" + data[i].nombre + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+</script>
+<input id="idCantLlamado" type="hidden" value="1">
+<input id="_PersonId" type="hidden">
+<input id="_UserName" type="hidden">
+<div class="card">
+    <ul class="nav nav-item" id="navtabAtencion" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><strong>Atención</strong></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true"><strong>Consultas</strong></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile1-tab" data-toggle="tab" href="#profile1" role="tab" aria-controls="profile1" aria-selected="true"><strong>Listado Tickets</strong></a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div border="0" style="width: 97%; margin-left: 15px;" class="col-sx-12 wrapper-frmSesion">
+                <div style="width:250px;float:left">
+                    <tr style="height:15px;">
+                        <th><button id="btnSiguiente" type="button" class="btn btn-outline-secondary"><i class="fas fa-step-forward fa-2x" style="margin-right:60px;"></i>Siguiente</button></th>
+                    </tr>
+                    <tr style="height:15px;">
+                        <th>
+                            <button id="btnRellamado" name="btnRellamado" type="button" class="btn btn-outline-secondary" onclick="Rellamado(1);" style="display: flex; justify-content: space-around; align-items: center;"><i class="fas fa-forward fa-2x"></i>Rellamado<div id="Cont" name="Cont" class="icon-contador">0</div></button>
+                        </th>
+                    </tr>
+                    <tr style="height:20px;">
+                        <th><button id="btnAbandono" type="button" class="btn btn-outline-secondary" onclick="Abandono();"><i class="fas fa-paper-plane fa-2x" style="margin-right:55px;"></i>Abandono</button></th>
+                    </tr>
+                    <tr style="height:20px;">
+                        <th><button id="btnDerivar" type="button" class="btn btn-outline-secondary" onclick="Derivar()" data-toggle="modal" data-target="#myModal1"><i class="fas fa-share-square fa-2x" style="margin-right:65px;"></i>Derivar</button></th>
+                    </tr>
+                    <tr style="height:20px;">
+                        <th>
+                            <button id="btnSuspender" type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal"><i class="fas fa-pause fa-2x" style="margin-right:65px;"></i>SUSPENDER</button>
+                        </th>
+                    </tr>
+                </div>
+            </div>
+            <div style="text-align:center">             
+                <div class=" offset-md-9 item-panel d-flex  shadow-bg">
+                    <div class="text"><strong>Aviso</strong><br /><p class="small-text">Ticket pendientes por atender</p></div>
+                    <div id="CantTicket" name="CantTicket" class="icon bg-danger"></div>
+                </div>                  
+
+                <div>
+                    <input id="idCodeTicket" type="hidden">
+                    <h1 id="NroTicket" class="display-1"></h1>
+                </div>
+                <div id="idNameVisitante">
+                    <h3></h3>
+                </div>
+            </div>
+            <div style="padding-top:45px;text-align:center" id="panelBotonAtencion" name="panelBotonAtencion">
+                <button id="btnIniciar" type="button" class="btn btn-outline-success"><i class="far fa-window-close2 fa-2x"></i>Iniciar Atención</button>
+                <button id="btnFinalizarAtencion" type="button" class="btn btn-outline-danger" onclick="SaveAtendidos()"><i class="far fa-window-close1 fa-2x"></i>Finalizar Atención</button>
+                @*<button id="btnAtender" name="btnAtender" type="button" class="btn btn-outline-success" onclick="SaveAtendidos()"><i class="fas fa-file-export"></i>Atender</button>*@
+                @*<div class="offset-md-3 col-md-9 mt-4" id="cbxAtencion">
+                    <div style="display: flex; justify-content: center; align-items:center;">
+                        <strong>Estado</strong>
+                        <select class="form-control ml-2" id="miselect" style="width: auto!important;">
+                            <option value="1">Atención solicitada</option>
+                            <option value="2">Agregar atención</option>
+                            <option value="3">Derivar</option>
+                        </select>
+                    </div>
+                </div>*@
+            </div>
+            <div class="row" style="padding-left:20px;padding-top:25px;" id="pnlGrillaAtencion">
+                <select class=" myselect2 custom-select" style="width:345px;clear:left" id="cbxEntidad" name="cbxEntidad"></select>
+                <select class="custom-select" style="width:345px;clear:left" id="cbxServicio" name="cbxServicio"></select>
+                <button type="button" class="btn btn-outline-success" style="margin-left:5px;" onclick="AgregarServicio();"><i class="far fa-window-close1 fa-1x"></i>Editar</button>
+                <div class="row p-3" style="width:100%">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tblAgregacion">
+                            <thead class="thead-dark text-center">
+                                <tr>
+                                    <th class="align-middle" style="display:none" id="idsDeclarados1">codeServiceTicket</th>
+                                    <th class="align-middle" style="display:none" id="idsDeclarados2">codeEntity</th>
+                                    <th class="align-middle">Entidad</th>
+                                    <th class="align-middle" style="display:none" id="idsDeclarados3">CodServicio</th>
+                                    <th class="align-middle">Servicio</th>
+                                    @*<th class="align-middle" width="8%">Quitar</th>*@
+                                    <th class="align-middle" width="8%"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*///fin de primer tab*@
+
+
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" style="width:100%">
+            <div class="row p-3">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos mb-0" id="tablaTicketAtendidos" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.listar" data-paginator="paginator">
+                        <tbody class="text-center">
+                        </tbody>
+                        <thead class="thead-dark text-center">
+                            <tr>
+                                <th class="align-middle" width="5%">N°</th>
+                                <th class="align-middle" width="10%">Ticket</th>
+                                <th class="align-middle" width="50%">Ciudadano</th>
+                                <th class="align-middle" width="20%">Estado</th>
+                                <th class="align-middle" width="15%">Fecha de Atteción</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="d-flex justify-content-center align-items-center">                                 
+                                        <div style="font-size:16px; padding-left: 15px;"></div>
+                                        <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>@*//fin del segundo tab//*@
+
+    <div class="tab-pane fade" id="profile1" role="tabpanel" aria-labelledby="profile-tab" style="width:100%">
+        <div class="card mb-0">
+
+            <div class="card-header text-center bg-danger">
+               Busqueda Ticket
+            </div>
+            <div class="card-body p-3">
+                <div class="row m-2 border-card justify-content-center align-items-center">
+                    <div class="col-md-2"><strong>Ciudadano</strong></div>
+                    <div class="col-md-4"><select class="myselect2 form-control" id="cbxPeople" name="cbxPeople"></select></div>
+
+                    <div class="col-md-1"><strong>Estado</strong></div>
+                    <div class="col-md-3">
+                        <select class="form-control" id="miselect">
+                            <option value="0">Seleccione</option>
+                            <option value="1">En espera</option>
+                            <option value="2">Abandono</option>
+                            @*<option value="3">Reactivado</option>*@
+                            <option value="4">Atendido</option>                                                                                         
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 d-flex justify-content-center">
+            <button type="button" class="btn btn-success mr-1" onclick="Clasificador.listar2(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+            <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+
+        </div>
+        <div class="row p-3">
+            @*<div class="table-responsive">*@
+
+
+
+
+            <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos mb-0" id="tablaTicket" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.listar2" data-paginator="paginator">
+                <tbody class="text-center">
+                </tbody>
+                <thead class="thead-dark text-center">
+                    <tr>
+                        <th class="align-middle" width="5%">N°</th>
+                        <th class="align-middle" width="10%">Ticket</th>
+                        <th class="align-middle" width="50%">Ciudadano</th>
+                        <th class="align-middle" width="20%">Estado</th>
+                        <th class="align-middle" width="15%">Fecha de Atteción</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div style="font-size:16px; padding-left: 15px;"></div>
+                                <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            @*</div>*@
+        </div>
+    </div>
+
+
+    </div>
+</div>
+
+<div class="modal" id="myModal">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="card-header text-left bg-danger">
+                Motivos de suspensión de Atención
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <h4 style="padding-left:20px;float:left;width:150px;align-items:center">Motivos:</h4>
+                <select class="custom-select" style="width:auto">
+                    <option>Seleccione</option>
+                    @*<option>Servicio Higienico</option>
+                        <option>Salud personal</option>*@
+                    <option>Hora de Almuerzo</option>
+                    <option>Otros Motivos</option>
+                </select>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="myModal1">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="card-header text-left bg-danger">
+                Derivar Atención
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <h4 style="float:left;width:110px;align-items:center">Entidad:</h4>
+                <select class="custom-select" style="width:auto" id="cbEntidad" name="cbEntidad">
+                    @*<option>Seleccione</option>
+                    <option>Servicio Higienico</option>
+                    <option>Salud personal</option>
+                    <option>Hora de Almuerzo</option>
+                    <option>Otros Motivos</option>*@
+                </select>
+               
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

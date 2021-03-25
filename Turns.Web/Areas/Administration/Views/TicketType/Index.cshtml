@@ -1,0 +1,305 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //AutocompleteService();
+        //ComboTipoServicio();
+        ComboTipoTicket();
+        Clasificador.LoadGrilla(1);
+        $('.myselect2').select2();
+    });
+
+    Clasificador = {
+        LoadGrilla: function (page) {
+            table = $('#tablaTipoTicket');
+            var dato = {
+                strField: 'CodeTicketType',
+                strOrder: 'DESC',
+                strPagDesde: page,//(table.data('pagesize') * (page) - table.data('pagesize') + 1),
+                strPagHasta: table.data('pagesize'),
+                strTipoTicket: $("#cbxTipoTicket").val() == null ? -1 : $("#cbxTipoTicket").val(),
+                strPrioridad: $("#txtPrioridad").val() == "" ? -1 : $("#txtPrioridad").val()
+            };
+            $.ajax({
+                //url: "https://localhost:44315/api/TicketType",
+                url: "@Model.Parametros.WebApiUrl.TicketTypeService/TicketType",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tablaTipoTicket tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tablaTipoTicket');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeTicketType);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.description)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.priority);
+                rows += '<td style="width:120px;">';
+                rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeTicketType);
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.delete({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeTicketType);
+                rows += '</div>';
+                rows += '</td>';
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        },
+
+        editar: function (identificador) {
+            var dato = {
+                CodeTicketType: identificador
+            };
+
+            if (identificador != 0) { //editar una entidad
+                $("#IdTipoTicket").val(identificador);
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44315/api/CurrentRowTipoTicket",
+                    url: "@Model.Parametros.WebApiUrl.TicketTypeService/CurrentRowTipoTicket",
+                    data: dato,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $('#myModal').show();
+                            $('#idTicket').val(data[0].description);
+                            $('#lblPrioridad').val(data[0].priority);
+                            $('#chbxPreferencial')[0].checked = data[0].isPreferential
+                        }
+                    }
+                });
+            }
+
+            else {//registra nueva zona
+                $("#IdTipoTicket").val(0);
+                $('#idTicket').val("");
+                $('#lblPrioridad').val("");
+            }
+        },
+
+        delete: function (identificador) {
+            fnGlobales.msg.confirm("Eliminar el registro", function () {
+                $.ajax({
+                    //url: "https://localhost:44315/api/DeleteTypeTicket",
+                    url: "@Model.Parametros.WebApiUrl.TicketTypeService/DeleteTypeTicket",
+                    data: JSON.stringify({ CodeTicketType: identificador }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.codeTicketType) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.LoadGrilla(1);
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        },
+
+        reset: function () {
+            $("#cbxTipoTicket").empty();
+            $("#cbxTipoTicket").append('<option value=-1>--Seleccione--</option>');
+            ComboTipoTicket();
+            Clasificador.LoadGrilla(1);
+            $("#txtPrioridad").val("");
+
+        }
+    };
+
+    function save() {
+        fnGlobales.msg.confirm("de guardar la información", function () {
+            var dato = {
+                CodeTicketType: parseInt($("#IdTipoTicket").val()),//identificador
+                Description: $("#idTicket").val(),
+                Priority: parseInt($("#lblPrioridad").val()),
+                IsPreferential: $("#chbxPreferencial")[0].checked
+
+            }
+            $.ajax({
+                //url: "https://localhost:44315/api/SaveTypeTicket",
+                url: "@Model.Parametros.WebApiUrl.TicketTypeService/SaveTypeTicket",
+                data: JSON.stringify(dato),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    switch (resultado.codeTicketType) {
+                        case 0:
+                            fnGlobales.msg.existe("Ya existe registrada la Ventanilla", function () { });
+                            break;
+                        case -1:
+                            fnGlobales.msg.error("Hubo un error al realizar la operación", function () { });
+                            break;
+                        default:
+                            Clasificador.LoadGrilla(1);
+                            fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                            break;
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+            });
+        });
+    }
+
+    function ComboTipoTicket() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44315/api/AutocompleteTipoTicket",
+            url: "@Model.Parametros.WebApiUrl.TicketTypeService/AutocompleteTipoTicket",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxTipoTicket").empty();
+                $("#cbxTipoTicket").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxTipoTicket").append("<option value=" + data[i].codeTicketType + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+/**/</script>
+
+<div class="card mb-0">
+    <div class="card-header text-center bg-danger">
+        Búsqueda de Tipo de Ticket
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2 border-card justify-content-center align-items-center">
+            <div class="col-md-2">
+                <label id="lblTicket">Tipo de Ticket:</label>
+            </div>
+            <div class="col-md-4">
+                <select id="cbxTipoTicket" class="myselect2 form-control"></select>
+            </div>
+                <div class="col-md-2"> <label id="idPrioridad"> Prioridad:</label></div>
+                <div class="col-md-4">
+                    <input class="form-control" id="txtPrioridad" />
+                </div>
+            </div>
+        </div>
+
+</div>
+<div class="col-md-12 d-flex justify-content-center">
+    <button type="button" class="btn btn-success mr-1 " onclick="Clasificador.LoadGrilla(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+    <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+    <button type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal" onclick="Clasificador.editar(0)"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+</div>
+<div class="col-md-12 row mt-1 m-0"><hr class="hr-videos" /></div>
+<div id="IdTipoTicket"></div>
+<div class="card mx-4 mt-4">
+    <div class=table-responsive>
+        <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tablaTipoTicket" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.LoadGrilla" data-paginator="paginator">
+            <tbody></tbody>
+            <thead class="thead-dark ">
+                <tr>
+                    <th class="align-middle" style="display:none"> CodeTicketType</th>
+                    <th class="align-middle" style="text-align:center;width:10%">N°</th>
+                    <th class="align-middle" style="text-align:center;width:48%">Ticket</th>
+                    <th class="align-middle" style="text-align:center;width:30%">Prioridad</th>
+                    <th class="align-content-center text-center" colspan="1" style="width:12%">Acciones</th>
+
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <div class="d-flex justify-content-center align-items-center">
+                            @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                            <div style="font-size:16px; padding-left: 15px;"></div>
+                            <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+</div>
+
+<div class="modal " id="myModal">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Tipo de ticket</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row col-md-12">
+                    <div class="col-md-5">
+                        <label> Ticket:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input style="width:275px" class="form-control" id="idTicket" />
+                    </div>
+                </div>
+                <div class="row col-md-12" style="padding-top:10px;">
+                    <div class="col-md-5">
+                        <label> Prioridad:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input style="width:275px" class="form-control" id="lblPrioridad" />
+                    </div>
+                </div>
+                <div class="row col-md-8">
+                    <div class="col-md-8">
+                        <label> Preferencial:</label>
+                    </div>
+
+                    <div class="col-md-2">
+                        <input type="checkbox" id="chbxPreferencial" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            @*<--informacion del cuerpo--/>*@
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="save()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+            </div>
+        </div>
+    </div>
+</div>

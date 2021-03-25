@@ -1,0 +1,389 @@
+﻿@model Turns.Web.Models.ParameterModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        CargarComboZona();
+        $('.myselect2').select2();
+        //LoadComboVentanilla();
+        LoadComboCentroAtencion();
+        LoadComboZona();
+          $("#cbxCentroAttention").change(function () {
+            var identi = parseInt($('#cbxCentroAttention').val());
+              if (parseInt(identi) != -1) {
+                  LoadComboZona();
+            } else {
+            }
+        });
+        //LoadComboCentroAtencion();
+        Clasificador.LoadGrilla(1);
+    });
+
+    Clasificador = {
+
+        reset: function () {
+            $("#cbxZona").empty();
+            $("#cbxZona").append('<option value=-1>--Seleccione--</option>');
+            LoadComboZona();
+            $("#cbxCentroAttention").empty();
+            $("#cbxCentroAttention").append('<option value=-1>--Seleccione--</option>');
+            LoadComboCentroAtencion();
+            Clasificador.LoadGrilla(1);
+        },
+
+        editar: function (identificador) {
+            var dato = {
+                CodeWindow:identificador
+            };
+
+            if (identificador != 0) { //editar una entidad
+                $("#IdWindow").val(identificador);
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44313/api/CurrentRowWindow",
+                    url: "@Model.Parametros.WebApiUrl.WindowService/CurrentRowWindow",
+                    data: dato,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 0) {
+
+                            $('#myModal').show();
+                            $('#idVentanilla').val(data[0].windowName);
+                            $('#icbZona').val(data[0].codeZone);
+                            $('#icbZona').change();
+                        }
+                    }
+                });
+
+            } else {//registra nueva zona
+                $("#IdWindow").val(0);
+                $('#idVentanilla').val("");
+            }
+
+        },
+
+        delete: function (identificador) {
+            fnGlobales.msg.confirm("Eliminar el registro", function () {
+                $.ajax({
+                    //url: "https://localhost:44313/api/DeleteWindow",
+                    url: "@Model.Parametros.WebApiUrl.WindowService/DeleteWindow",
+                    data: JSON.stringify({ CodeWindow:identificador }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado.codeWindow) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.LoadGrilla(1);
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        },
+
+        LoadGrilla: function (page) {
+            table = $('#tblVentanilla');
+            var dato = {
+                strField: 'CodeWindow',
+                strOrder: 'DESC',
+                strPagDesde:page ,//(table.data('pagesize') * (page) - table.data('pagesize') + 1),
+                strPagHasta: table.data('pagesize'), // (table.data('pagesize') * (page))
+                strCboZona: $("#cbxZone").val()==null? -1 :$("#cbxZone").val(),
+                strCodeCenterAttention: $("#cbxCentroAttention").val() == null ? -1 : $("#cbxCentroAttention").val()
+            };
+            $.ajax({
+                //url: "https://localhost:44313/api/Window",
+                url: "@Model.Parametros.WebApiUrl.WindowService/Window",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                //beforeSend: function () {
+                //    fnGlobales.wait.appendOverlay('#boxLista');
+                //},
+                success: function (data) {
+                    if (data.length>0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        Clasificador.generar(data);
+                    } else {
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tblVentanilla tbody').append("<tr><td colspan='8' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        generar: function (lista) {
+            var table = $('#tblVentanilla');
+            var tabla = table.children('tbody');
+            tabla.children('tr').remove();
+            var rows = '';
+            $.each(lista, function (i, r) {
+                rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeWindow);
+                rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.windowName);
+                    rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.zoneName);
+                rows += fnGlobales.string.format('<td style="text-align:left">{0}</td>', r.description)
+
+
+                rows += '<td style="width:120px;">';
+                rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeWindow);
+                rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.delete({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeWindow);
+                rows += '</div>';
+                rows += '</td>';
+                rows += '</tr>';
+            });
+            fnGlobales.pagination.update(table);
+            tabla.append(rows);
+        }
+    };
+
+    function LoadComboZona()
+    {
+
+        var dato = {
+                CodeCentroAttention: $("#cbxCentroAttention").val()==null? -1 :$("#cbxCentroAttention").val()
+            };
+         $.ajax({
+            type: "GET",
+            //url: "https://localhost:44314/api/AutocompleteZona",
+            url: "@Model.Parametros.WebApiUrl.ZoneService/ListarZonaCentroAtencion",
+             contentType: "application/json; charset=utf-8",
+              data: dato,
+            dataType: "json",
+            success: function (data) {
+                $("#cbxZone").empty();
+                $("#cbxZone").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxZone").append("<option value=" + data[i].codeZone + ">"+ data[i].zoneName + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function CargarComboZona()
+    {
+          $.ajax({
+                type: "GET",
+                //url: "https://localhost:44314/api/AutocompleteZona",
+                url: "@Model.Parametros.WebApiUrl.ZoneService/AutocompleteZona",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#icbZona").empty();
+                    $("#icbZona").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#icbZona").append("<option value=" + data[i].codeZone + ">" + data[i].zoneName + " - " + data[i].description+ "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+        });
+    }
+
+    function LoadComboCentroAtencion() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+            url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxCentroAttention").empty();
+                $("#cbxCentroAttention").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxCentroAttention").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+       });
+    }
+
+    function LoadComboVentanilla() {
+        $.ajax({
+            type: "GET",
+            //url: "https://localhost:44313/api/AutocompleteWindow",
+            url: "@Model.Parametros.WebApiUrl.WindowService/AutocompleteWindow",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#cbxVentanilla").empty();
+                $("#cbxVentanilla").append('<option value=-1>--Seleccione--</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#cbxVentanilla").append("<option value=" + data[i].codeWindow + ">" + data[i].windowName + "</option>");
+                }
+            },
+            failure: function (data) {
+                alert(data.responseText);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+
+    }
+
+    function Save() {
+        fnGlobales.msg.confirm("de guardar la información", function () {
+            var dato = {
+                WindowName: $("#idVentanilla").val(),
+                CodeWindow:parseInt($("#IdWindow").val()),//identificador
+                CodeZone:parseInt($("#icbZona").val())
+            }
+            $.ajax({
+                //url: "https://localhost:44313/api/SaveWindow",
+                url: "@Model.Parametros.WebApiUrl.WindowService/SaveWindow",
+                data: JSON.stringify(dato),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    switch (resultado.codeWindow) {
+                        case 0:
+                            fnGlobales.msg.existe("Ya existe registrada la Ventanilla", function () { });
+                            break;
+                        case -1:
+                            fnGlobales.msg.error("Hubo un error al realizar la operación", function () { });
+                            break;
+                        default:
+                            Clasificador.LoadGrilla(1);
+                            fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                            break;
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    alert(data.responseText);
+                } //End of AJAX error function
+            });
+        });
+    }
+
+</script>
+
+<div class="card mb-0">
+    <div class="card-header text-center bg-danger">
+        Búsqueda de Ventanillas
+    </div>
+    <div class="card-body p-3">
+        <div class="row m-2 border-card justify-content-center align-items-center">
+            @*<div class="col-md-2"><strong>Centro de Atención</strong></div>
+            <div class="col-md-3"><select class="myselect2 form-control" id="cboServicio"></select></div>*@
+            <div class="col-md-2"><strong>Centro de Atención</strong></div>
+            <div class="col-md-3">
+                <select class="myselect2 form-control" id="cbxCentroAttention"></select>
+            </div>
+            <div class="col-md-2"><strong>Zona</strong></div>
+            <div class="col-md-5">
+                <select id="cbxZone" class="myselect2 form-control"></select>
+            </div>
+            @*<div style="width:155px;">
+                <select id="cbxZona" class="myselect2 form-control"></select>
+            </div>*@
+
+        </div>
+        <div class="col-md-12 d-flex justify-content-center pt-3">
+            <button type="button" class="btn btn-success mr-1 " onclick="Clasificador.LoadGrilla(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+            <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+            <button type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal" onclick="Clasificador.editar(0)"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+        </div>
+        <div class="col-md-12 row m-0 p-0"><hr class="hr-videos mb-0" /></div>
+        <div id="IdWindow"></div>
+        <div class="row p-4">
+            <div class=table-responsive>
+                <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos" id="tblVentanilla" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.LoadGrilla" data-paginator="paginator">
+                    <tbody></tbody>
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th class="align-middle" style="display:none"> codeEntity</th>
+                            <th class="align-middle" style="text-align:center;width:10%">N°</th>
+                            <th class="align-middle" style="text-align:center;width:15%">Ventanilla</th>
+
+                            <th class="align-middle" style="text-align:center;width:15%">Zona</th>
+                            <th class="align-middle" style="text-align:center;width:48%">Centro de Atención</th>
+                            <th class="align-content-center text-center" colspan="1" style="width:12%">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                                    <div style="font-size:16px; padding-left: 15px;"></div>
+                                    <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal " id="myModal">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Registro de Ventanilla</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row col-md-12">
+                    <div class="col-md-5">
+                        <label> Ventanilla:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input style="width:275px" class="form-control" id="idVentanilla" />
+                    </div>
+                </div>
+                <div class="row col-md-12" style="padding-top:10px;">
+                    <div class="col-md-5">
+                        <label> Zona:</label>
+                    </div>
+                    <div class="col-md-2"><select class="myselect2 form-control" id="icbZona" style="width:270px;"></select></div>
+                </div>
+            </div>
+            @*<--informacion del cuerpo--/>*@
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Save()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+            </div>
+        </div>
+    </div>
+</div>

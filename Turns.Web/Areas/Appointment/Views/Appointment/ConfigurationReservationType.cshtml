@@ -1,0 +1,715 @@
+﻿
+@{
+    ViewData["Title"] = "ConfigurationReservationType";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<script type="text/javascript">
+        $(document).ready(function () {
+
+            Clasificador.listar(1);
+            CargarComboCentroAtencion();
+
+        });
+
+        function CargarComboCentroAtencion() {
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdCentroAtencion").empty();
+                    $("#IdCentroAtencion").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdCentroAtencion").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+        function CargarComboEntidad(vCodeCentro) {
+            var dato = { CodeAttentionCenter:vCodeCentro };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetEntitybyAttentionCenter",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdEntidades").empty();
+                    $("#IdEntidades").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdEntidades").append("<option value=" + data[i].codeEntity + ">" + data[i].descriptionEntity + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+
+        function CargarComboEntidadmodal(vCodeCentro) {
+            var dato = { CodeAttentionCenter:vCodeCentro };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetEntitybyAttentionCenter",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdEntidadesmodal").empty();
+                    $("#IdEntidadesmodal").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdEntidadesmodal").append("<option value=" + data[i].codeEntity + ">" + data[i].descriptionEntity + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+
+        function CargarComboEntidadmodalEditar(vCodeCentro, CodigoEntidad) {
+            var dato = { CodeAttentionCenter:vCodeCentro };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetEntitybyAttentionCenter",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdEntidadesmodal").empty();
+                    $("#IdEntidadesmodal").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].codeEntity == CodigoEntidad) {
+                            $("#IdEntidadesmodal").append("<option value=" + data[i].codeEntity + " selected>" + data[i].descriptionEntity + "</option>");
+                        }
+                        else {
+                            $("#IdEntidadesmodal").append("<option value=" + data[i].codeEntity + ">" + data[i].descriptionEntity + "</option>");
+                        }
+
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+
+        function CargarComboEntidadService(vCodeServices) {
+            var dato = { CodigoEntity:vCodeServices };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetServiceEntitybyCodeEntityComboCitas",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdServicios").empty();
+                    $("#IdServicios").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdServicios").append("<option value=" + data[i].codeServiceEntity + ">" + data[i].descriptionService + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        };
+
+
+        function CargarComboEntidadServicemodal(vCodeServices) {
+            var dato = { CodigoEntity:vCodeServices };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetServiceEntitybyCodeEntityComboCitas",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdServiciosmodal").empty();
+                    $("#IdServiciosmodal").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdServiciosmodal").append("<option value=" + data[i].codeServiceEntity + ">" + data[i].descriptionService + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        };
+
+
+
+        function CargarComboEntidadServicemodalEditar(vCodeServices, CodigoServicio) {
+            var dato = { CodigoEntity:vCodeServices };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetServiceEntitybyCodeEntityComboCitas",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdServiciosmodal").empty();
+                    $("#IdServiciosmodal").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].codeServiceEntity == CodigoServicio) {
+                            $("#IdServiciosmodal").append("<option value=" + data[i].codeServiceEntity + " selected>" + data[i].descriptionService + "</option>");
+                        }
+                        else {
+                            $("#IdServiciosmodal").append("<option value=" + data[i].codeServiceEntity + ">" + data[i].descriptionService + "</option>");
+                        }
+
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        };
+
+
+
+
+
+
+        function CargaReservationType(CodigoAttencioCentetr) {
+            var dato = { CodeReservationType:0 };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetReservationType",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdTipo").empty();
+                    $("#IdTipo").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdTipo").append("<option value=" + data[i].codeReservationType + ">" + data[i].descriptionReservationType + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+
+        function CargaReservationTypeEditar(CodigoReservationType) {
+            var dato = { CodeReservationType:0 };
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetReservationType",
+                data: dato,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdTipo").empty();
+                    $("#IdTipo").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].codeReservationType == CodigoReservationType) {
+                            $("#IdTipo").append("<option value=" + data[i].codeReservationType + " selected>" + data[i].descriptionReservationType + "</option>");
+                        }
+                        else {
+                            $("#IdTipo").append("<option value=" + data[i].codeReservationType + ">" + data[i].descriptionReservationType + "</option>");
+                        }
+
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+
+
+        $(document).on('change', '#IdCentroAtencion', function (event) {
+
+            var vCodeCentro = $('#IdCentroAtencion').val();
+            CargarComboEntidad(vCodeCentro);
+        });
+
+        $(document).on('change', '#IdEntidades', function (event) {
+
+            var vCodeService = $('#IdEntidades').val();
+            CargarComboEntidadService(vCodeService);
+        });
+
+        $(document).on('change', '#IdCentroAtencionmodal', function (event) {
+
+            var vCodeCentro = $('#IdCentroAtencionmodal').val();
+            CargarComboEntidadmodal(vCodeCentro);
+        });
+
+        $(document).on('change', '#IdEntidadesmodal', function (event) {
+
+            var vCodeService = $('#IdEntidadesmodal').val();
+            CargarComboEntidadServicemodal(vCodeService);
+        });
+
+        function CargaCentroAtencionModal() {
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdCentroAtencionmodal").empty();
+                    $("#IdCentroAtencionmodal").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdCentroAtencionmodal").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+
+        function CargaCentroAtencionModalEditar(AttencionCenter) {
+            $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdCentroAtencionmodal").empty();
+                    $("#IdCentroAtencionmodal").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+
+                        if (data[i].codeAttentionCenter == AttencionCenter) {
+                            $("#IdCentroAtencionmodal").append("<option value=" + data[i].codeAttentionCenter + " selected>" + data[i].description + "</option>");
+                        }
+                        else {
+                            $("#IdCentroAtencionmodal").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                        }
+
+
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+
+
+
+    Clasificador = {
+        editar: function (identificador) {
+            //CargarComboCentroAtencion();
+            var dato = {
+                CodeServAttenCenter: identificador
+            };
+
+            if (identificador != 0) {//boton editar
+
+                $("#hdCentroAtencion").val(identificador);
+                $.ajax({
+                    type: "GET",
+                    //url: "https://localhost:44303/api/CurrentRowCenterAttention",
+                    url: "@Model.Parametros.WebApiUrl.AppointmentService/GetRecordServiceAttentionCenter",
+                    data: dato,
+                    dataType: "json",
+                    //beforeSend: function () {
+                    //    //Globales.wait.modal('ventana-container');
+                    //    $('#modal-ventana').modal('show');
+                    //},
+                    success: function (data) {
+                        $("#IdCentroAtencionmodal").empty();
+                        $("#IdEntidadesmodal").empty();
+                        $("#IdServiciosmodal").empty();
+                        $("#codigoServAttencionModal").val(identificador);
+
+                        if (data.length > 0) {
+
+                            var AttencionCenter = data[0].codeAttentionCenter;
+                            var Entity = data[0].codeEntity;
+                            var ServiceEntity = data[0].codeServiceEntity;
+                            var ReservationType = data[0].codeReservationType;
+
+                            CargaCentroAtencionModalEditar(AttencionCenter);
+                            CargarComboEntidadmodalEditar(AttencionCenter, Entity);
+                            CargarComboEntidadServicemodalEditar(Entity, ServiceEntity);
+                            CargaReservationTypeEditar(ReservationType);
+                        }
+                    }
+                });
+            } else {//boton Nuevo
+                //alert('aqui2');
+                //CargarComboCentroAtencion();
+                //$('#chbxEstado')[0].checked = false;
+                $("#codigoServAttencionModal").val(0);
+                $("#IdEntidadesmodal").empty();
+                $("#IdEntidadessmodal").append('<option value=-1>--Seleccione--</option>');
+                $("#IdServiciosmodal").empty();
+                $("#IdServiciosmodal").append('<option value=-1>--Seleccione--</option>');
+                CargaReservationType();
+               $.ajax({
+                type: "GET",
+                //url: "https://localhost:44303/api/AutocompleteCentroAtencion",
+                url: "@Model.Parametros.WebApiUrl.AttentionCenterService/AutocompleteCentroAtencion",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#IdCentroAtencionmodal").empty();
+                    $("#IdCentroAtencionmodal").append('<option value=-1>--Seleccione--</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#IdCentroAtencionmodal").append("<option value=" + data[i].codeAttentionCenter + ">" + data[i].description + "</option>");
+                    }
+                },
+                failure: function (data) {
+                    alert(data.responseText);
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            });
+            }
+        },
+
+        eliminar: function (identificador) {
+            var dato = {
+                //Description: $("#txtCentroAtencion").val(),
+                //Abbreviation: $("#txtAbreviatura").val(),
+                CodeServAttenCenter: identificador
+            };
+            fnGlobales.msg.confirm("Eliminar el registro", function () {
+                $.ajax({
+                    type: "POST",
+                    //url: "https://localhost:44303/api//Eliminar",
+                    url: "@Model.Parametros.WebApiUrl.AppointmentService/DeleteServiceAttentionCenter",
+                    data: JSON.stringify(dato),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        switch (resultado) {
+                            case -1:
+                                fnGlobales.msg.error("Hubo error al realizar la operación", function () { });
+                                break;
+                            default:
+                                Clasificador.listar(1);
+                                fnGlobales.msg.automatico("Se eliminó correctamente", function () { });
+                                break;
+                        }
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+            });
+        },
+
+        listar: function (page) {
+            table = $('#tblCentroAtencion');
+            var dato = {
+                strOrder: 'DESC',
+                PagDesde: 10,
+                PagHasta: page,
+                CodeAttentionCenter: $("#IdCentroAtencion").val() == null ? -1 : $("#IdCentroAtencion").val(),
+                CodeEntity: $("#IdEntidades").val() == null || $("#IdEntidades").val() == -1 ? 0 :$("#IdEntidades").val(),
+                CodeServiceEntity:  $("#IdServicios").val() == null || $("#IdServicios").val() == -1  ? 0 : $("#IdServicios").val(),
+                strIdComboActivo: $("#miselect").val()
+            };
+            $.ajax({
+                //url: "https://localhost:44303/api/AttentionCenter",
+                url: "@Model.Parametros.WebApiUrl.AppointmentService/GetAllConfigurationType",
+                type: "GET",
+                data: dato,
+                dataType: "json",
+                success: function (data) {
+                    if (data.length > 0) {
+                        table.data('page', page);
+                        table.data('totalrows', data[0].totalRows);
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        debugger;
+                        var rows = '';
+                        $.each(data, function (i, r) {
+                            rows += fnGlobales.string.format('<tr><td id="idElCodigo" style="display:none;">{0}</td>', r.codeServAttenCenter);
+                            rows += fnGlobales.string.format('<td style="text-align:center">{0}</td>', r.rowNumber)
+                            rows += fnGlobales.string.format('<td style="text-align:left width:250px" >{0}</td>', r.descriptionAttentionCenter);
+                            rows += fnGlobales.string.format('<td style="text-align:left width:250px" >{0}</td>', r.descriptionEntity);
+                            rows += fnGlobales.string.format('<td style="text-align:left width:250px" >{0}</td>', r.descriptionService);
+                            rows += fnGlobales.string.format('<td style="text-align:left width:250px" >{0}</td>', r.descriptionReservationType);
+                            rows += '<td style="width:120px;">';
+                            rows += fnGlobales.string.format('<div class="d-flex justify-content-center">');
+                            rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEditar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.editar({0})" data-toggle="modal" data-target="#myModal"><span class="fa fa-edit "></span><span class="hidden-xs"> </span></button></div> ', r.codeServAttenCenter);
+                            rows += fnGlobales.string.format('<div class="align-content-center text-center"> <button type="button" id="ButtonEliminar" class="editar edit-modal btn  botonEditar" onclick="Clasificador.eliminar({0})"><span class="fa fa-trash "></span><span class="hidden-xs"> </span></button></div> ', r.codeServAttenCenter);
+                            rows += '</div>';
+                            rows += '</td>';
+                            rows += '</tr>';
+                        });
+                        fnGlobales.pagination.update(table);
+                        tabla.append(rows);
+                    } else {
+                        var tabla = table.children('tbody');
+                        tabla.children('tr').remove();
+                        $('#tblCentroAtencion tbody').append("<tr><td colspan='6' class='text-center text-bold'>NO SE ENCONTRARON REGISTROS.</td></td>");
+                    }
+                },
+                error: function (data) {
+                    fnGlobales.error.show('mensajes', data.responseText);
+                }
+            });
+        },
+
+        reset: function () {
+            $("#IdEntidades").empty();
+            $("#IdEntidades").append('<option value=-1>--Seleccione--</option>');
+            $("#IdServicios").empty();
+            $("#IdServicios").append('<option value=-1>--Seleccione--</option>');
+            CargarComboCentroAtencion();
+            $("#miselect").val("1");
+            Clasificador.listar(1);
+        }
+        }
+        function AgregarServicio() {
+
+        if (parseInt($("#cbxServicio").val()) != -1) {
+            var combo = document.getElementById("cbxServicio");
+            var selected = combo.options[combo.selectedIndex].text;
+            var CodeService = parseInt($("#cbxServicio").val());
+            var descriptionServicio = selected;
+
+            IdTabla = "CONTENIDO_TABLA";
+            for (var i = 1; i < document.getElementById('tblAgregacion').rows.length; i++) {
+                IdTabla = document.getElementById('tblAgregacion').rows[i].cells[0].innerHTML;
+                if (parseInt(IdTabla) == CodeService) {
+                    fnGlobales.msg.error("Ya existe agregado el servicio", function () {
+
+                    });
+                    return false
+                }
+            }
+            //var fila = '<tr id="row' + j + '"><td style="text-align:center">' + j + '</td><td style="display:none">' + CodeService + '</td><td>' + descriptionServicio + '</td><td style="text-align:center"><button type="button" name="remove" id="' + j + '" <span class="fa fa-trash btn_remove"></span><span class="hidden-xs"> </span></button></td></tr>'; //esto seria lo que contendria la fila
+            var fila = '<tr id="row' + j + '"><td style="display:none">' + CodeService + '</td><td>' + descriptionServicio + '</td><td style="text-align:center"><button type="button" name="remove" id="' + j + '" <span class="fa fa-trash btn_remove"></span><span class="hidden-xs"> </span></button></td></tr>'; //esto seria lo que contendria la fila
+
+            /*fin*/
+            $('#tblAgregacion tr:first').after(fila);
+            $("#adicionados").text(""); //esta instruccion limpia el div adicioandos para que no se vayan acumulando
+            var nFilas = $("#tblAgregacion tr").length;
+            $("#adicionados").append(nFilas - 1);
+            j = j + 1;
+
+        }
+        else {
+            fnGlobales.msg.error("Debe seleccionar un servicio", function () {
+            });
+        }
+    }
+        function Save() {
+            if (parseInt($("#IdCentroAtencionmodal").val()) == -1) {
+                return fnGlobales.msg.error("Debe seleccionar un Centro de atención", function () {
+                });
+            }
+
+            if (parseInt($("#IdEntidadesmodal").val()) == -1) {
+                return fnGlobales.msg.error("Debe seleccionar una Entidad", function () {
+                });
+            }
+
+            if (parseInt($("#IdServiciosmodal").val()) == -1) {
+                return fnGlobales.msg.error("Debe seleccionar un Servicio", function () {
+                });
+            }
+
+            if (parseInt($("#IdTipo").val()) == -1) {
+                return fnGlobales.msg.error("Debe seleccionar un tipo de servicio", function () {
+                });
+            }
+
+            var dato = {
+                CodeAttentionCenter: parseInt($("#IdCentroAtencionmodal").val()),
+                CodeEntity: parseInt($("#IdEntidadesmodal").val()),
+                CodeServiceEntity: parseInt($("#IdServiciosmodal").val()),
+                CodeReservationType: parseInt($("#IdTipo").val()),
+                CodeServAttenCenter: parseInt($("#codigoServAttencionModal").val())
+            };
+
+             $.ajax({
+                    type: "POST",
+                    url: "@Model.Parametros.WebApiUrl.AppointmentService/SaveServiceReservationType",
+                    data: JSON.stringify(dato),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    //beforeSend: function () {
+                    //    //Globales.wait.modal('ventana-container');
+                    //    $('#modal-ventana').modal('show');
+                    //},
+                    success: function (data) {
+
+                            if (data.messageCode == "OK") {
+                                fnGlobales.msg.automatico("Se guardó correctamente", function () { });
+                                Clasificador.listar(1);
+                            }
+                            else if (data.messageCode == "DU")
+                            {
+                                fnGlobales.msg.automatico("Registro Duplicado", function () { });
+                             }else{
+                                        fnGlobales.msg.automatico("Error al guardar registro", function () { });
+                             }
+
+
+                    },
+                    error: function (resultado) {
+                        alert("error");
+                    }
+                });
+        }
+
+
+</script>
+
+<div class="card mb-0">
+    <div class="card-header text-center bg-danger">
+        Configuración de Tipo de Servicio
+    </div>
+
+    <div class="card-body">
+        <div class="row m-2 border-card justify-content-center align-items-center">
+            <div class="col-md-2"><strong>Centro de Atención</strong></div>
+            <div class="col-md-2"><select class="myselect2 form-control" id="IdCentroAtencion"></select></div>
+
+            <div class="col-md-1.5"><strong>Entidades</strong></div>
+            <div class="col-md-2"><select class="myselect2 form-control" id="IdEntidades"></select></div>
+
+            <div class="col-md-1.5"><strong>Servicios</strong></div>
+            <div class="col-md-2"><select class="myselect2 form-control" id="IdServicios"></select></div>
+        </div>
+        <div class="col-md-12 mt-4 d-flex justify-content-center mb-1">
+            <button type="button" class="btn btn-success mr-1" onclick="Clasificador.listar(1)"><i class="fas fa-search" style="margin-right:5px;"></i>Buscar</button>
+            <button type="button" class="btn btn-secondary mr-1" style="margin-left:3px;" onclick="Clasificador.reset()"><i class="fas fa-times-circle"></i>Limpiar</button>
+            <button type="button" class="btn btn-outline-secondary" style="margin-left:3px;" data-toggle="modal" data-target="#myModal" onclick="Clasificador.editar(0)"><i class="fas fa-plus-circle" style="margin-right:5px;"></i>Nuevo</button>
+        </div>
+        <div class="col-md-12 row m-0 p-0"><hr class="hr-videos mb-2" /></div>
+        <div id="IdZone"></div>
+
+        <div class="row px-4 py-2">
+            <div class=table-responsive>
+                <table class="table table-bordered table-hover tabla-estado-reclamos tabla-datos mb-0" id="tblCentroAtencion" data-pagesize="10" data-page="1" data-totalrows="0" data-function="Clasificador.listar" data-paginator="paginator">
+                    <tbody></tbody>
+                    <thead class="thead-dark ">
+                        <tr>
+                            <th class="align-middle" style="display:none">codeEntity</th>
+                            <th class="align-middle" style="text-align:center;width:10%">N°</th>
+                            <th class="align-middle" style="text-align:center;width:18%">Centro de Atención</th>
+                            <th class="align-middle" style="text-align:center;width:30%">Entidad</th>
+                            <th class="align-middle" style="text-align:center;width:30%">Servicio</th>
+                            <th class="align-middle" style="text-align:center;width:30%">Tipo De Servicio</th>
+                            <th class="align-content-center text-center" colspan="1" style="width:12%">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    @*<div style="font-size:16px; padding-left: 15px;">Mostrando 1 al 10 de 50 registros.</div>*@
+                                    <div style="font-size:16px; padding-left: 15px;"></div>
+                                    <div id="paginator" class="btn btn-group font-weight-bold" role="group"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal " id="myModal">
+
+    <div class="modal-dialog  modal-dialog-centered" style="max-width:800px !important">
+        <div class="modal-content">
+            <div class="modal-header bg-danger" id="cabecera">
+                <h5 class="modal-title">Registro Tipo de servicio por servicios</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="padding: 2em 1em;">
+                    <div class="row col-md-12" style="padding-bottom:20px;">
+                        <div class="col-md-2"><strong>Centro Atencion:</strong></div>
+                        <div class="col-md-8"><select class="myselect2 form-control" style="width:450px;" name="IdCentroAtencionmodal" id="IdCentroAtencionmodal"></select></div>
+
+                    </div>
+                    <div class="row col-md-12" style="padding-bottom:20px;">
+                        <div class="col-md-2"><strong>Entidad:</strong></div>
+                        <div class="col-md-8"><select class="myselect2 form-control" style="width:450px;" name="IdEntidadesmodal" id="IdEntidadesmodal"></select></div>
+
+                    </div>
+                    <div class="row col-md-12" style="padding-bottom:20px;">
+                        <div class="col-md-2"><strong>Servicio:</strong></div>
+                        <div class="col-md-8"><select class="form-control myselect2" style="width:450px;" name="IdServiciosmodal" id="IdServiciosmodal"></select></div>
+                    </div>
+
+                    <div class="row col-md-12" style="padding-bottom:20px;">
+                        <div class="col-md-2"><strong>Tipo:</strong></div>
+                        <div class="col-md-8"><select class="form-control myselect2" style="width:450px;" name="IdTipo" id="IdTipo"></select></div>
+                    </div>
+                    <input name="codigoServAttencionModal" id="codigoServAttencionModal" type="hidden" />
+
+                </div>
+            </div>
+            @*<--informacion del cuerpo--/>*@
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Save()"> <i class="fas fa-save" style="padding-right:8px;"></i>Guardar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-window-close" style="padding-right:8px;"></i>Cerrar</button>
+
+            </div>
+        </div>
+    </div>
+</div>
